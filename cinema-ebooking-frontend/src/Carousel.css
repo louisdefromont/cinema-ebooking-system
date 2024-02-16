@@ -1,0 +1,44 @@
+.carousel-container {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	margin: 20px 0;
+}
+
+.carousel {
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	scroll-behavior: smooth;
+}
+
+.carousel-item {
+	flex: 0 0 auto;
+	width: 200px;
+	margin-right: 10px;
+}
+
+.carousel-item img {
+	width: 100%;
+	border-radius: 5px;
+}
+
+.carousel-btn {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	border: none;
+	padding: 10px;
+	cursor: pointer;
+	outline: none;
+}
+
+.carousel-btn.prev {
+	left: 0;
+}
+
+.carousel-btn.next {
+	right: 0;
+}
