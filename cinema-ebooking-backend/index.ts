@@ -1,9 +1,11 @@
 import express, { Express } from 'express'
 import { PrismaClient } from '@prisma/client'
+import cors from 'cors'
 
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
+app.use(cors())
 
 app.get('/movies', async (req, res) => {
 	try {
