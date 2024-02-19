@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Carousel from './Carousel';
 import axios from 'axios';
+import Homepage from './components/Homepage'
 
 
 function App() {
@@ -24,7 +25,9 @@ function App() {
   }, []);
 
   return (
-    <Carousel items={items} />
+    <Homepage />
+    
+    
   );
 
 }
