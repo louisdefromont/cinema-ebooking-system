@@ -1,7 +1,7 @@
-import WebsiteLogo from './WebsiteLogo';
+import WebsiteLogo from '../components/WebsiteLogo';
 import Button from '@mui/material/Button';
 
-export default function AdminMainScreen() {
+export default function AdminControl() {
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 			<WebsiteLogo />

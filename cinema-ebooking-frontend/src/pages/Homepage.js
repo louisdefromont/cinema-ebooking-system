@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import './Homepage.css'
-import logo_holder from './logo_holder.jpg'
-import Carousel from './Carousel';
+import logo_holder from '../components/logo_holder.jpg'
+import Carousel from '../components/Carousel';
 import axios from 'axios';
 
 
