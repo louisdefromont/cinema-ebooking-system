@@ -33,8 +33,26 @@ li > a {
 
 nav > button {
     float: right;
+    transform: translate(-10%, 20%);
 }
 
-.log_button {
-    
+.playing_carousel {
+    width: 75%;
+    margin: auto;
+    /*
+    display: grid;
+    grid-template-rows: 100px 1fr;
+    */
+}
+
+.soon_carousel {
+    width: 75%;
+    margin: auto;
+}
+
+.header_font {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    font-style: normal;
+    color: white;
 }

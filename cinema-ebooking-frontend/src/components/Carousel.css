@@ -3,6 +3,8 @@
 	width: 100%;
 	overflow: hidden;
 	margin: 20px 0;
+	margin-top: 50px;
+	overflow: hidden;
 }
 
 .carousel {
@@ -10,13 +12,33 @@
 	flex-wrap: nowrap;
 	overflow-x: auto;
 	scroll-behavior: smooth;
+	overflow: hidden;
 }
 
 .carousel-item {
+	position: relative;
+	display: block;
+	transition: transform 500ms;
+	flex: 1 1 0px;
+	/*
 	flex: 0 0 auto;
+	*/
+	
 	width: 200px;
 	margin-right: 10px;
+	color: white;
+	text-align: center;
 }
+
+.carousel-item:focus,
+.carousel-item:hover {
+	transform: scale(1.5);
+	transform-origin: top left;
+  	z-index: 1;}
+
+.carousel-item:hover ~ .carousel-item {
+	transform: translateX(45%);
+  }
 
 .carousel-item img {
 	width: 100%;
