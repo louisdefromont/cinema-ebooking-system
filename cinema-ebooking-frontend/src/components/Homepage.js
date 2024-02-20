@@ -37,6 +37,10 @@ const Homepage = () => {
                     <li><a href=' '>Login/Signup</a></li>
                 </ul>
             </nav>
+
+            <section>
+                <Carousel items={items}/>
+            </section>
         </>
     )
 }
