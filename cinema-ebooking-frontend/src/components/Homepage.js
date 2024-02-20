@@ -4,6 +4,7 @@ import './Homepage.css'
 import logo_holder from './logo_holder.jpg'
 import Carousel from '../Carousel';
 import axios from 'axios';
+import Button from '@mui/material/Button'
 
 
 const Homepage = () => {
@@ -29,13 +30,16 @@ const Homepage = () => {
     return(
         <>
             <nav>
-                <img src={logo_holder} alt="logo" length="100" width="100" />
+                <img src={logo_holder} alt="logo" length="50" width="50" />
+                
                 <ul>
                     <li><a href=" ">Movies</a></li>
                     <li><a href=' '>Showtimes</a></li>
                     <li><a href=' '>Search</a></li>
-                    <li><a href=' '>Login/Signup</a></li>
+                    
                 </ul>
+
+                <Button variant="contained">Login/Signup</Button>
             </nav>
 
             <section>

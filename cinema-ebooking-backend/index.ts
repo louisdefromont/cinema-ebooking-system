@@ -13,7 +13,7 @@ app.get('/movies', async (req, res) => {
 
 		let movies;
 
-		movies = [{"id":1,"title":"example","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":2,"title":"example2","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":3,"title":"example3","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":4,"title":"example4","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"}]
+		movies = [{"id":1,"title":"example","trailerUrl":"example.com","thumbnailUrl":"https://m.media-amazon.com/images/I/61QbqeCVm0L.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":2,"title":"example2","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":3,"title":"example3","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":4,"title":"example4","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"}]
 		res.json(movies);
 
 		// if (title) {
