@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Carousel from './Carousel';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
+import Homepage from './components/Homepage'
 
 
 function App() {
@@ -24,7 +26,16 @@ function App() {
   }, []);
 
   return (
-    <Carousel items={items} />
+    <Router>
+      <div>
+        <Routes>
+          <Route exact path='/' element={<Homepage />} />
+        </Routes>
+      </div>
+    </Router>
+    
+    
+    
   );
 
 }
