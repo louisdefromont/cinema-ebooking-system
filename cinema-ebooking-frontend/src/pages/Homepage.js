@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import './Homepage.css'
-import logo_holder from '../components/logo_holder.jpg'
+import NavBar from '../components/NavBar';
 import Carousel from '../components/Carousel';
 import axios from 'axios';
 
@@ -28,15 +28,7 @@ const Homepage = () => {
 
     return(
         <>
-            <nav>
-                <img src={logo_holder} alt="logo" length="100" width="100" />
-                <ul>
-                    <li><a href=" ">Movies</a></li>
-                    <li><a href=' '>Showtimes</a></li>
-                    <li><a href=' '>Search</a></li>
-                    <li><a href=' '>Login/Signup</a></li>
-                </ul>
-            </nav>
+            <NavBar />
 
             <section>
                 <Carousel items={items}/>

@@ -3,7 +3,8 @@ import Carousel from './components/Carousel';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Homepage from './pages/Homepage'
-import AdminControl from './pages/AdminControl';
+import AdminControl from './pages/admin/AdminControl';
+import AdminPromotions from './pages/admin/Promotions';
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
       <div>
         <Routes>
           <Route exact path='/' element={<Homepage />} />
-          <Route path='/admin-control' element={<AdminControl />} />
+          <Route path='/admin' element={<AdminControl />} />
+          <Route path='/admin/promotions' element={<AdminPromotions />} />
         </Routes>
       </div>
     </Router>

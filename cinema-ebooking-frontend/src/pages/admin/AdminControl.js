@@ -1,4 +1,4 @@
-import WebsiteLogo from '../components/WebsiteLogo';
+import WebsiteLogo from '../../components/WebsiteLogo';
 import Button from '@mui/material/Button';
 
 export default function AdminControl() {
