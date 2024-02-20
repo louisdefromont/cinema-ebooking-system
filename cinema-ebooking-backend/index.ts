@@ -13,19 +13,22 @@ app.get('/movies', async (req, res) => {
 
 		let movies;
 
-		if (title) {
-			const movies = await prisma.movie.findMany({
-				where: {
-					title: {
-						contains: title.toString() // Search for movies containing the specified title
-					},
-				},
-			});
-		} else {
-			movies = await prisma.movie.findMany(); // Fetch all movies if no search query is provided
-		}
-
+		movies = [{"id":1,"title":"example","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":2,"title":"example2","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":3,"title":"example3","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"},{"id":4,"title":"example4","trailerUrl":"example.com","thumbnailUrl":"https://www.uga.edu/img/GEORGIA-FS-CW.c49269db.png","releaseDate":"2024-02-18T05:19:03.000Z"}]
 		res.json(movies);
+
+		// if (title) {
+		// 	const movies = await prisma.movie.findMany({
+		// 		where: {
+		// 			title: {
+		// 				contains: title.toString() // Search for movies containing the specified title
+		// 			},
+		// 		},
+		// 	});
+		// } else {
+		// 	movies = await prisma.movie.findMany(); // Fetch all movies if no search query is provided
+		// }
+
+		// res.json(movies);
 	} catch (error) {
 		console.error('Error fetching movies:', error);
 		res.status(500).json({ error: 'Internal server error' });
