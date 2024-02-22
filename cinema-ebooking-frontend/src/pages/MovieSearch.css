@@ -1,0 +1,83 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr 5fr;
+    border: 2px solid white; /* Border around the grid container */
+}
+  
+.grid-item-1 {
+    /* border: 1px solid white;  Border around each grid item */
+    /* color: white; */
+    padding: 10px; /* Adjust padding as needed */
+    text-align: center; /* Center the content */
+    grid-column-start: 2;
+}
+
+.grid-item-2 {
+    border: 1px solid white; /* Border around each grid item */
+    padding: 10px; /* Adjust padding as needed */
+    text-align: center; /* Center the content */
+    color: #8573D3;
+    grid-row-start: 2;
+}
+
+.grid-item-3 {
+    /* border: 1px solid white;  Border around each grid item */
+    /* color: white; */
+    padding: 10px; /* Adjust padding as needed */
+    text-align: center; /* Center the content */
+    grid-row-start: 2;
+    grid-column-start: 2;
+}
+
+div > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    width: 200px;
+    list-style-type: none;
+    grid-gap: 35%;
+}
+
+li > img {
+    width: 200px;
+}
+
+li > h3 {
+    color: white;
+}
+
+.dm-sans-medium {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+/* Search Box */
+.InputContainer {
+    width: 250px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    float: right;
+    justify-content: center;
+    background: linear-gradient(to bottom,rgb(227, 213, 255),rgb(255, 231, 231));
+    border-radius: 30px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.075);
+}
+  
+.input {
+    width: 240px;
+    height: 40px;
+    border: none;
+    outline: none;
+    caret-color: rgb(255, 81, 0);
+    background-color: rgb(255, 255, 255);
+    border-radius: 30px;
+    padding-left: 15px;
+    letter-spacing: 0.8px;
+    color: rgb(19, 19, 19);
+    font-size: 13.4px;
+}
