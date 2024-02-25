@@ -5,6 +5,7 @@ import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
 import AdminControl from './pages/admin/AdminControl';
 import AdminPromotions from './pages/admin/Promotions';
+import SelectAge from './pages/SelectAge';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/admin' element={<AdminControl />} />
           <Route path='/admin/promotions' element={<AdminPromotions />} />
+          <Route path='/select-age' element={<SelectAge />} />
         </Routes>
       </div>
     </Router>
