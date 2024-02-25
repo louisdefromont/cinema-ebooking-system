@@ -1,5 +1,7 @@
 import logo_holder from './logo_holder.jpg';
 import Button from '@mui/material/Button'
+import { Link } from 'react-router-dom';
+import './NavBar.css'
 
 export default function NavBar() {
 	return (
@@ -9,9 +11,13 @@ export default function NavBar() {
                 <ul>
                     <li><a href=" ">Movies</a></li>
                     <li><a href=' '>Showtimes</a></li>
-                    <li><a href=' '>Search</a></li>
+                    <Link to='/movie-search'>
+                        <li><a href=' '>Search</a></li>
+                    </Link>
                 </ul>
 
-                <Button variant="contained">Login/Signup</Button>
+                <Link to="/login">
+                    <Button variant="contained">Login/Signup</Button>
+                </Link>
 	</nav>);
 }

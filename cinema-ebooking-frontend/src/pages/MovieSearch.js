@@ -49,15 +49,15 @@ const MovieSearch = () => {
 
             <div  className='grid-container'>
                 <div className="grid-item-1">
-                <div  className='InputContainer'>
-                    <input
-                        type="text"
-                        value={searchItem}
-                        onChange={handleInputChange}
-                        placeholder='Search Movies'
-                        className='input'
-                    />
-                </div>
+                    <div className='InputContainer'>
+                        <input
+                            type="text"
+                            value={searchItem}
+                            onChange={handleInputChange}
+                            placeholder='Search Movies'
+                            className='input'
+                        />
+                    </div>
                 </div>
 
                 <div className="grid-item-2">
@@ -81,5 +81,5 @@ const MovieSearch = () => {
         </>
     );
 };
-// <li key={index}> {item.title} </li>
+
 export default MovieSearch;
