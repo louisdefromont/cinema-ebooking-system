@@ -36,9 +36,9 @@ export default function SelectAge() {
       <Button
         variant="contained"
         color="primary"
-        to="/select-seats"
+        to={"/select-seats?ticketcount=" + (adultTickets + childTickets + seniorTickets)}
         component={Link}
-      >Continue to Checkout</Button>
+      >Select Seats</Button>
     </Box>
   );
 }

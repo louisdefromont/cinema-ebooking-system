@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import AdminControl from './pages/admin/AdminControl';
 import AdminPromotions from './pages/admin/Promotions';
 import SelectAge from './pages/SelectAge';
+import SelectSeats from './pages/SelectSeats';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path='/admin' element={<AdminControl />} />
           <Route path='/admin/promotions' element={<AdminPromotions />} />
           <Route path='/select-age' element={<SelectAge />} />
+          <Route path='/select-seats' element={<SelectSeats />} />
         </Routes>
       </div>
     </Router>
