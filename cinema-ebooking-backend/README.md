@@ -1,5 +1,5 @@
 In the project directory, you can run:
 
-### `npx ts-node index.ts`
+### `npm start`
 
 Runs the app in the development mode on port 3000.
