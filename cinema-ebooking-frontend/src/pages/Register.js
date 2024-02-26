@@ -1,7 +1,7 @@
 import React from "react";
 import './Register.css'
 import NavBar from '../components/NavBar';
-import Button from '@mui/material/Button'
+import Button from '@mui/material/Button';
 
 const Register = () => {
 
@@ -189,7 +189,7 @@ const Register = () => {
                         </select>
                     </p>
                 </fieldset>
-                <div><Button className='button' variant="contained"> Register </Button></div>
+                <div><a href="/account"><Button className='button' variant="contained"> Register </Button></a></div>
             </form>
         </>
     )

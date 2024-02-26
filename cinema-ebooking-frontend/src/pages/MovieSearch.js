@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import './MovieSearch.css';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
+import Button from '@mui/material/Button';
 
 
 const MovieSearch = () => {
@@ -105,6 +106,7 @@ const MovieSearch = () => {
                             <li key={index}>
                                 <img src={item.imageUrl} alt={item.title} />
 						        <h3 className='dm-sans-medium'>{item.title}</h3>
+                                <a href='/select-age'><Button> Book Tickets </Button></a>
                             </li>
 				        ))}
                     </ul>

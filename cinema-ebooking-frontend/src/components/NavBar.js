@@ -9,11 +9,9 @@ export default function NavBar() {
 		<img src={logo_holder} alt="logo" length="50" width="50" />
                 
                 <ul>
-                    <li><a href=" ">Movies</a></li>
+                    <li><a href='/'>Home</a></li>
+                    <li><a href="/movie-search">Movies</a></li>
                     <li><a href=' '>Showtimes</a></li>
-                    <Link to='/movie-search'>
-                        <li><a href=' '>Search</a></li>
-                    </Link>
                 </ul>
 
                 <Link to="/login">

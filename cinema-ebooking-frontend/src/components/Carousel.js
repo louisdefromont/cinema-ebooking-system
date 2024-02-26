@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import './Carousel.css';
-import Modal from './Modal';
+// import Modal from './Modal';
 import ReactPlayer from 'react-player';
+import Button from '@mui/material/Button';
 
 export default function Carousel({ items }) {
 	const carouselRef = useRef(null);
@@ -25,8 +26,8 @@ export default function Carousel({ items }) {
 	const[openTrailer, setOpenTrailer] = useState(false);
  
 	//Modal
-	const[openModal, setOpenModal] = useState(false);
-	const[test, setTest] = useState([]);
+	// const[openModal, setOpenModal] = useState(false);
+	// const[test, setTest] = useState([]);
 
 	return (
 	<>
