@@ -34,17 +34,10 @@ export default function Carousel({ items }) {
 		<div className="carousel-container">
 			<div className="carousel" ref={carouselRef}>
 				{items.map((item, index) => (
-						<div key={index} className="carousel-item">
-							<button onClick={() => {
-								setTUrl(item.trailerUrl);
-								setOpenTrailer(true);
-								
-							}} 
-							className='showTrailer'>
-								<img src={item.imageUrl} alt={item.title} />
-								<h3 className='movieTitles'>{item.title}</h3>
-							</button>
-						</div>
+					<div key={index} className="carousel-item" onClick={item.onClick}>
+						<img src={item.imageUrl} alt={item.title} />
+						<h3>{item.title}</h3>
+					</div>
 				))}
 			</div>
 			<button className="carousel-btn prev" onClick={handleLeftClick}>
