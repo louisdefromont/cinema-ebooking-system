@@ -32,7 +32,7 @@ const OrderSummary = ({ orderDetails }) => {
 				<Button variant="contained" color="primary" component='a' href='/select-seats'>
 					Go Back
 				</Button>
-				<Button variant="contained" color="primary" component='a' href='/'>
+				<Button variant="contained" color="primary" component='a' href='/checkout'>
 					Confirm Order
 				</Button>
 			</div>

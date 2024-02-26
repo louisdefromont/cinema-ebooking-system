@@ -11,6 +11,8 @@ import AdminMovies from './pages/admin/Movies';
 import SelectAge from './pages/SelectAge';
 import SelectSeats from './pages/SelectSeats';
 import OrderSummary from './pages/OrderSummary';
+import Checkout from './pages/Checkout';
+import Confirmation from './pages/Confirmation';
 
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
           <Route path='/select-age' element={<SelectAge />} />
           <Route path='/select-seats' element={<SelectSeats />} />
           <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
+          <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
+          <Route path='/confirmation' element={<Confirmation />} />
         </Routes>
       </div>
     </Router>
