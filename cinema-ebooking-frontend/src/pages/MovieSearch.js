@@ -106,7 +106,6 @@ const MovieSearch = () => {
                             <li key={index}>
                                 <img src={item.imageUrl} alt={item.title} />
 						        <h3 className='dm-sans-medium'>{item.title}</h3>
-                                <a href='/select-age'><Button> Book Tickets </Button></a>
                             </li>
 				        ))}
                     </ul>
