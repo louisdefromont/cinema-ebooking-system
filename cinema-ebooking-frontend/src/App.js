@@ -20,16 +20,16 @@ function App() {
     {
       seatNumber: 'A1',
       type: 'adult',
-      cost: 10,
-      movie: 'Avengers: Endgame',
-      showtime: '12:00 PM',
+      cost: 12,
+      movie: 'Dune',
+      showtime: '6:00 PM',
     },
     {
       seatNumber: 'B3',
       type: 'child',
-      cost: 8,
-      movie: 'Avengers: Endgame',
-      showtime: '12:00 PM',
+      cost: 6,
+      movie: 'Dune',
+      showtime: '6:00 PM',
     },
   ];
 
