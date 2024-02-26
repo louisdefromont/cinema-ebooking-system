@@ -70,6 +70,24 @@ const Homepage = () => {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
+          <div>
+            <h3>Showtimes:</h3>
+            <ul>
+              <li>
+                <span>Showtime 1: 3:00 PM</span>
+                <Button color="primary" component="a" href="/select-age">
+                  Buy Tickets
+                </Button>
+              </li>
+              <li>
+                <span>Showtime 2: 6:00 PM</span>
+                <Button color="primary" component="a" href="/select-age">
+                  Buy Tickets
+                </Button>
+              </li>
+              {/* Add more showtimes as needed */}
+            </ul>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">
