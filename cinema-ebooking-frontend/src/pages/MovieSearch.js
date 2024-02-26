@@ -2,8 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './MovieSearch.css';
 import NavBar from '../components/NavBar';
-import Card from '@mui/material/Card';
 import axios from 'axios';
+import Button from '@mui/material/Button';
 
 
 const MovieSearch = () => {
@@ -61,9 +61,43 @@ const MovieSearch = () => {
                 </div>
 
                 <div className="grid-item-2">
-                    <Card selected className='filter-card'>
-                        <h3> Card </h3>
-                    </Card>
+                    <form>
+                        <fieldset>
+                            <h2> Filter </h2>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Action </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Comedy </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Drama </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Fanstasy </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Horror </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Romance </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Sci FI </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" value=""/>
+                                <label className='filter_label'> Thriller </label>
+                            </p>
+                        </fieldset>
+                    </form>
                 </div>
 
                 <div className="grid-item-3">
@@ -72,6 +106,7 @@ const MovieSearch = () => {
                             <li key={index}>
                                 <img src={item.imageUrl} alt={item.title} />
 						        <h3 className='dm-sans-medium'>{item.title}</h3>
+                                <a href='/select-age'><Button> Book Tickets </Button></a>
                             </li>
 				        ))}
                     </ul>

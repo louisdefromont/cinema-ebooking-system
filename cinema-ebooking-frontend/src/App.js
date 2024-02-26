@@ -4,6 +4,7 @@ import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
 import Register from './pages/Register';
+import UserAccount from './UserAccount';
 import AdminControl from './pages/admin/AdminControl';
 import AdminPromotions from './pages/admin/Promotions';
 import AdminUsers from './pages/admin/Users';
@@ -41,6 +42,7 @@ function App() {
           <Route path='/movie-search' element={<MovieSearch />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/account' element={<UserAccount />} />
           <Route path='/admin' element={<AdminControl />} />
           <Route path='/admin/promotions' element={<AdminPromotions />} />
           <Route path='/admin/users' element={<AdminUsers />} />
