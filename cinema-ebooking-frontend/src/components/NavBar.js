@@ -17,7 +17,7 @@ export default function NavBar() {
                 </ul>
 
                 <Link to="/login">
-                    <Button variant="contained">Login/Signup</Button>
+                    <Button className='nav_button' variant="contained">Login/Signup</Button>
                 </Link>
 	</nav>);
 }

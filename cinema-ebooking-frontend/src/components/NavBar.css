@@ -1,4 +1,4 @@
-button {
+.nav_button {
     float: right;
     transform: translate(-10%, 20%);
 }

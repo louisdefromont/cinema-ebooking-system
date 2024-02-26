@@ -8,10 +8,9 @@ const Login = () => {
         <>
             <NavBar />
 
-			
 			<div class="form">
 				<form class="login-form">
-					<input type="text" placeholder="username"/>
+					<input type="text" placeholder="email"/>
 					<input type="password" placeholder="password"/>
 					<button className="ripple">login</button>
 					<p class="message">Not registered? <a href="/register">Create an account</a></p>

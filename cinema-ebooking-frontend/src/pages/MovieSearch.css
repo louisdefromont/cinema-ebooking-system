@@ -14,7 +14,7 @@
 }
 
 .grid-item-2 {
-    border: 1px solid white; /* Border around each grid item */
+    /* border: 1px solid white;  Border around each grid item */
     padding: 10px; /* Adjust padding as needed */
     text-align: center; /* Center the content */
     color: #8573D3;
@@ -81,4 +81,9 @@ li > h3 {
     letter-spacing: 0.8px;
     color: rgb(19, 19, 19);
     font-size: 13.4px;
+}
+
+.filter_label {
+    font-size: x-large;
+    color: white;
 }
