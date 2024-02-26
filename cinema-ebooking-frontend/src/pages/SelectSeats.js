@@ -87,7 +87,7 @@ export default function SelectSeats() {
 			<Button
 				variant="contained"
 				color="primary"
-				to="/"
+				to="/order-summary"
 				component={Link}
 				disabled={seatsRemaining > 0}
 			>
