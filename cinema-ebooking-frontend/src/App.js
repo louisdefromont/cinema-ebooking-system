@@ -10,9 +10,29 @@ import AdminUsers from './pages/admin/Users';
 import AdminMovies from './pages/admin/Movies';
 import SelectAge from './pages/SelectAge';
 import SelectSeats from './pages/SelectSeats';
+import OrderSummary from './pages/OrderSummary';
+import Checkout from './pages/Checkout';
+import Confirmation from './pages/Confirmation';
 
 
 function App() {
+  const orderDetails = [
+    {
+      seatNumber: 'A1',
+      type: 'adult',
+      cost: 12,
+      movie: 'Dune',
+      showtime: '6:00 PM',
+    },
+    {
+      seatNumber: 'B3',
+      type: 'child',
+      cost: 6,
+      movie: 'Dune',
+      showtime: '6:00 PM',
+    },
+  ];
+
   return (
     <Router>
       <div>
@@ -27,6 +47,9 @@ function App() {
           <Route path='/admin/movies' element={<AdminMovies />} />
           <Route path='/select-age' element={<SelectAge />} />
           <Route path='/select-seats' element={<SelectSeats />} />
+          <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
+          <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
+          <Route path='/confirmation' element={<Confirmation />} />
         </Routes>
       </div>
     </Router>
