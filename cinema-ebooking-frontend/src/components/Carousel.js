@@ -22,7 +22,7 @@ export default function Carousel({ items }) {
 		<div className="carousel-container">
 			<div className="carousel" ref={carouselRef}>
 				{items.map((item, index) => (
-					<div key={index} className="carousel-item">
+					<div key={index} className="carousel-item" onClick={item.onClick}>
 						<img src={item.imageUrl} alt={item.title} />
 						<h3>{item.title}</h3>
 					</div>
