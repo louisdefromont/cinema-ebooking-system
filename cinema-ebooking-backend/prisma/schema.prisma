@@ -17,3 +17,7 @@ model Movie {
   thumbnailUrl String @db.VarChar(255)
   releaseDate DateTime @db.DateTime
 }
+
+model Test {
+  id       Int      @id @default(autoincrement())
+}
