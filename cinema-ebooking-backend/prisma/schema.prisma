@@ -63,34 +63,62 @@ enum CustomerStateEnum {
 }
 
 model Showing {
-  id              Int      @id @default(autoincrement())
-  dateTime        DateTime @db.DateTime
-  durationMinutes Int      @db.Int
-  movie           Movie    @relation(fields: [id], references: [id])
+  id              Int       @id @default(autoincrement())
+  dateTime        DateTime  @db.DateTime
+  durationMinutes Int       @db.Int
+  movie           Movie     @relation(fields: [id], references: [id])
+  Showroom        Showroom? @relation(fields: [showroomId], references: [id])
+  showroomId      Int?
 }
 
 model Showroom {
-  id Int @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
+  seats     Int
+  showings  Showing[]
+  Theater   Theater?  @relation(fields: [theaterId], references: [id])
+  theaterId Int?
 }
 
 model Theater {
-  id Int @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
+  showrooms Showroom[]
 }
 
 model Promotion {
-  id Int @id @default(autoincrement())
+  id             Int    @id @default(autoincrement())
+  expirationDate String
+  discAmount     String
+  regExpression  String
 }
 
 model BookingInfo {
-  id     Int   @id @default(autoincrement())
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  bookingNum    Int          @id @default(autoincrement())
+  movieTitle    String
+  showDate      String
+  showTime      String
+  creditCardNum Int
+  promotion     String
+  tickets       TicketType[]
+  User          User?        @relation(fields: [userId], references: [id])
+  userId        Int?
 }
 
-model TicketTypes {
-  id Int @id @default(autoincrement())
+model TicketType {
+  id                    Int            @id @default(autoincrement())
+  ticket                TicketTypeEnum
+  booking               BookingInfo    @relation(fields: [bookingInfoBookingNum], references: [bookingNum])
+  bookingInfoBookingNum Int
+}
+
+enum TicketTypeEnum {
+  ADULT
+  CHILD
+  SENIOR
 }
 
 model TicketPrices {
-  id Int @id @default(autoincrement())
+  id          Int   @id @default(autoincrement())
+  adultPrice  Float
+  childPrice  Float
+  seniorPrice Float
 }
