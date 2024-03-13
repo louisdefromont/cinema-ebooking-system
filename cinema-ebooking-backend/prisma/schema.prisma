@@ -21,49 +21,49 @@ model Movie {
 
 
 model User {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model PaymentCard {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Admin {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Customer {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model CustomerState {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Showing {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Showroom {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Theater {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model Promotion {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model BookingInfo {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model TicketTypes {
-
+  id        Int      @id @default(autoincrement())
 }
 
 model TicketPrices {
-
+  id        Int      @id @default(autoincrement())
 }
