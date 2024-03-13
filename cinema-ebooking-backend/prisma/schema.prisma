@@ -17,3 +17,51 @@ model Movie {
   thumbnailUrl String @db.VarChar(255)
   releaseDate DateTime @db.DateTime
 }
+
+model User {
+
+}
+
+model PaymentCard {
+
+}
+
+model Admin {
+
+}
+
+model Customer {
+
+}
+
+model CustomerState {
+
+}
+
+model Showing {
+
+}
+
+model Showroom {
+
+}
+
+model Theater {
+
+}
+
+model Promotion {
+
+}
+
+model BookingInfo {
+
+}
+
+model TicketTypes {
+
+}
+
+model TicketPrices {
+
+}
