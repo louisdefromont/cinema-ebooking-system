@@ -11,59 +11,86 @@ datasource db {
 }
 
 model Movie {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  trailerUrl String   @db.VarChar(255)
-  thumbnailUrl String @db.VarChar(255)
-  releaseDate DateTime @db.DateTime
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  trailerUrl   String    @db.VarChar(255)
+  thumbnailUrl String    @db.VarChar(255)
+  releaseDate  DateTime  @db.DateTime
+  Showing      Showing[]
 }
 
-
-
 model User {
-  id        Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
+  firstName   String        @db.VarChar(255)
+  lastName    String        @db.VarChar(255)
+  email       String        @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  paymentInfo PaymentCard[]
+  bookings    BookingInfo[]
+  Admin       Admin[]
+  Customer    Customer[]
 }
 
 model PaymentCard {
-  id        Int      @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [id], references: [id])
+  cardNum        Int      @db.Int
+  billingAddress String   @db.VarChar(255)
+  expirationDate DateTime @db.DateTime
 }
 
 model Admin {
-  id        Int      @id @default(autoincrement())
+  id   Int  @id @default(autoincrement())
+  user User @relation(fields: [id], references: [id])
 }
 
 model Customer {
-  id        Int      @id @default(autoincrement())
+  id    Int             @id @default(autoincrement())
+  user  User            @relation(fields: [id], references: [id])
+  state CustomerState[]
 }
 
 model CustomerState {
-  id        Int      @id @default(autoincrement())
+  id       Int               @id @default(autoincrement())
+  state    CustomerStateEnum
+  customer Customer          @relation(fields: [id], references: [id])
+}
+
+enum CustomerStateEnum {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
 }
 
 model Showing {
-  id        Int      @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
+  dateTime        DateTime @db.DateTime
+  durationMinutes Int      @db.Int
+  movie           Movie    @relation(fields: [id], references: [id])
 }
 
 model Showroom {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 }
 
 model Theater {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 }
 
 model Promotion {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 }
 
 model BookingInfo {
-  id        Int      @id @default(autoincrement())
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
 }
 
 model TicketTypes {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 }
 
 model TicketPrices {
-  id        Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 }
