@@ -1,29 +1,84 @@
-import React from "react";
+import React, { useState } from 'react';
 import './Register.css'
 import NavBar from '../components/NavBar';
 import Button from '@mui/material/Button';
 
 const Register = () => {
 
+    // Define state variables for input fields
+    const [email, setEmail] = useState('');
+    const [repeatEmail, setRepeatEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    // Add other state variables for personal and payment details if needed
+
+    // Function to handle form submission
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // Log the saved information from the input fields
+        console.log("Email:", email);
+        console.log("Repeat Email:", repeatEmail);
+        console.log("Password:", password);
+        console.log("Repeat Password:", repeatPassword);
+        // Add logging for other input fields if needed
+    };
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+
+    const handleRepeatEmailChange = (event) => {
+        setRepeatEmail(event.target.value);
+    };
+
+    const handleRepeatPasswordChange = (event) => {
+        setRepeatPassword(event.target.value);
+    };
+
+  
     return(
         <>
             <NavBar />
 
-            <form action="" class="register">
+            <form action="" class="register" onSubmit={handleSubmit}>
                 <h1> Registration </h1>
                 <fieldset class="row1">
                     <legend> Account Details </legend>
                     <p>
                         <label> Email * </label>
-                        <input type="text"/>
+                        <input 
+                            type="text" 
+                            value={email}
+                            onChange={handleEmailChange} 
+                            placeholder="Enter your email"
+                        />
                         <label> Repeat email * </label>
-                        <input type="text"/>
+                        <input 
+                            type="text" 
+                            value={repeatEmail} 
+                            onChange={handleRepeatEmailChange} 
+                            placeholder="Repeat your email" 
+                        />
                     </p>
                     <p>
                         <label> Password * </label>
-                        <input type="text"/>
+                        <input 
+                            type="password" 
+                            value={password} 
+                            onChange={handlePasswordChange} 
+                            placeholder="Enter your password" 
+                        />                        
                         <label> Repeat Password * </label>
-                        <input type="text"/>
+                        <input 
+                            type="password" 
+                            value={repeatPassword} 
+                            onChange={handleRepeatPasswordChange} 
+                            placeholder="Repeat your password" 
+                        />                        
                         <label class="obinfo"> * obligatory fields </label>
                     </p>
                 </fieldset>
@@ -189,7 +244,8 @@ const Register = () => {
                         </select>
                     </p>
                 </fieldset>
-                <div><a href="/account"><Button className='button' variant="contained"> Register </Button></a></div>
+                <div><Button className='button' type="submit" variant="contained">Register</Button></div>
+
             </form>
         </>
     )
