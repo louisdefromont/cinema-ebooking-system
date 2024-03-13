@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import './MovieSearch.css';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import Button from '@mui/material/Button';
 
 
 const MovieSearch = () => {
