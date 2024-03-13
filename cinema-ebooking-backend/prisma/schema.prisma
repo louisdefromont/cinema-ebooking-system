@@ -18,6 +18,52 @@ model Movie {
   releaseDate DateTime @db.DateTime
 }
 
-model Test {
-  id       Int      @id @default(autoincrement())
+
+
+model User {
+
+}
+
+model PaymentCard {
+
+}
+
+model Admin {
+
+}
+
+model Customer {
+
+}
+
+model CustomerState {
+
+}
+
+model Showing {
+
+}
+
+model Showroom {
+
+}
+
+model Theater {
+
+}
+
+model Promotion {
+
+}
+
+model BookingInfo {
+
+}
+
+model TicketTypes {
+
+}
+
+model TicketPrices {
+
 }
