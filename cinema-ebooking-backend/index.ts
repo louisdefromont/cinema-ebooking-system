@@ -1,17 +1,21 @@
 import express, { Express, Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { BodyParser } from 'body-parser'
 import cors from 'cors'
 
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
 app.use(cors())
+app.use(express.json())
 
 app.post('/', async (req: Request, res:Response) => {
 	const { email, password } = req.body; // Extract email and password from request body
        // Save the user login data to the database
-	   const user = await prisma.movie.create({
+	   const user = await prisma.user.create({
 		data: {
+			firstName: "John",
+			lastName: "Doe",
 			email: email,
 			password: password,
 		},
