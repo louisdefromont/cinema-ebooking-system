@@ -8,7 +8,38 @@ const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
+/** 
 
+// New endpoint for adding a payment card row
+app.post('/paymentCard', async (req: Request, res: Response) => {
+    const { cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
+
+    try {
+        // Create a new paymentCard row in the database
+        const newPaymentCard = await prisma.paymentCard.create({
+            data: {
+                cardName: cardName,
+                cardNum: cardNum,
+                cvv: cvv,
+                expirationDate: expirationDate,
+                billingAddress: billingAddress,
+                billCity: billCity,
+                billState: billState,
+            },
+        });
+
+        res.json(newPaymentCard);
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+*/
+
+
+// Login 
 app.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body; // Extract email and password from request body
@@ -40,11 +71,11 @@ app.post('/login', async (req: Request, res: Response) => {
 
 
 
+// Register and Create New User
+app.post('/register', async (req: Request, res: Response) => {
+    const { email, password, firstName, lastName, phone, street, city, state, regPromo, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
 
-
-
-app.post('/', async (req: Request, res: Response) => {
-    const { email, password, firstName, lastName, phone, street, city, state, regPromo } = req.body;
+   // const { email, password, firstName, lastName, phone, street, city, state, regPromo } = req.body;
 
     // Check if any of the required fields are null
     if (!email || !password || !firstName || !lastName || !phone) {
@@ -79,7 +110,22 @@ app.post('/', async (req: Request, res: Response) => {
             },
         });
 
-        res.json(newUser);
+        // Create a new payment card
+        const newPaymentCard = await prisma.paymentCard.create({
+            data: {
+                cardName: cardName,
+                cardNum: cardNum,
+                cvv: cvv,
+                expirationDate: expirationDate,
+                billingAddress: billingAddress,
+                billCity: billCity,
+                billState: billState,
+                // Connect the payment card to the newly created user
+                user: { connect: { id: newUser.id } },
+            },
+        });
+        
+        res.json({ newUser, newPaymentCard });
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -87,55 +133,8 @@ app.post('/', async (req: Request, res: Response) => {
 });
 
 
-/** 
-app.post('/', async (req: Request, res:Response) => {
-	const { email, password, firstName, lastName, phone, street, city, state  } = req.body; // Extract email and password from request body
-       // Save the user login data to the database
-	   const user = await prisma.user.create({
-		data: {
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
-			password: password,
-			phone: phone,
-			street: street,
-			city: city,
-			state: state
-		},
-	});
-	res.json(user);
-});
-*/
 
-/** 
-app.use(express.json()); // Add this line to parse JSON requests
 
-// Define a route to handle user login
-app.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body; // Extract email and password from request body
-
-        // Check if the email and password are provided
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        // Save the user login data to the database
-        const user = await prisma.User.create({
-            data: {
-                email: email,
-                password: password,
-            },
-        });
-
-        res.status(201).json({ message: 'User login data saved successfully', user });
-    } catch (error) {
-        console.error('Error saving user login data:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-*/
 
 app.get('/movies', async (req, res) => {
 	try {

@@ -40,9 +40,14 @@ model User {
 model PaymentCard {
   id             Int      @id @default(autoincrement())
   user           User     @relation(fields: [id], references: [id])
-  cardNum        Int      @db.Int 
+  cardName      String    @db.VarChar(255)
+  cardNum       String    @db.VarChar(255) 
+  cvv           String    @db.VarChar(255) 
+  expirationDate String    @db.VarChar(255)
   billingAddress String   @db.VarChar(255)
-  expirationDate DateTime @db.DateTime
+  billCity           String   @db.VarChar(255)
+  billState          String   @db.VarChar(255)
+
 }
 
 model Admin {

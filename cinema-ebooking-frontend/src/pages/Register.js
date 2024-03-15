@@ -21,15 +21,23 @@ const Register = () => {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [regPromo, setRegisterForPromotions] = useState(false); 
+
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [cardName, setCardName] = useState('');
+    const [cardNo, setCardNo] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [cardExpDate, setCardExpDate] = useState('');
+    const [billAdd, setBillAdd] = useState('');
+    const [billCity, setBillCity] = useState('');
+    const [billState, setBillState] = useState('');
 
 
    const handleSubmit = async (event) => {
     event.preventDefault();
     try {
         // Send a POST request to your backend endpoint with the email and password
-        const response = await axios.post('http://localhost:3000/', {
+        const response = await axios.post('http://localhost:3000/register', {
             email: email,
             password: password,
             firstName: fName, 
@@ -38,22 +46,26 @@ const Register = () => {
             street: street,
             city: city,
             state: state,
-            regPromo: regPromo // Include checkbox value in the data object
-        });
+            regPromo: regPromo,
 
+            cardName: cardName,
+            cardNum: cardNo,
+            cvv: cvv,
+            expirationDate: cardExpDate,
+            billingAddress: billAdd,
+            billCity: billCity,
+            billState: billState
+        });
         console.log(response.data); // Log the response from the backend
+        console.log("Card Name:", cardName);
+        console.log("Card Number:", cardNo);
+        console.log("CVV:", cvv);
+        console.log("Expiration Date:", cardExpDate);
+        console.log("Billing Address:", billAdd);
+        console.log("Billing City:", billCity);
+        console.log("Billing State:", billState);
         // Add logic to handle successful registration (e.g., redirect to another page)
     } catch (error) {
-     //   console.error('Error registering user:', error);
-        // Add logic to handle registration failure (e.g., display error message to the user)
-        /** 
-        if (error.response && error.response.status === 400) {
-            window.alert('An account with the email already exists');
-         } else {
-            console.error('Error registering user:', error);
-            window.alert('Registration failed. Please try again later.');
-         }
-         */
          if (error.response && error.response.status === 400) {
             console.log("err 1");
             if (error.response.data.error === 'Email already exists') {
@@ -105,7 +117,27 @@ const Register = () => {
     const handlePromotionsChange = (event) => {
         setRegisterForPromotions(event.target.checked);
     };
-
+    const handleCardNameChange = (event) => {
+        setCardName(event.target.value);
+    };
+    const handleCardNoChange = (event) => {
+        setCardNo(event.target.value);
+    };
+    const handleCvvChange = (event) => {
+        setCvv(event.target.value);
+    };
+    const handleCardExpDateChange = (event) => {
+        setCardExpDate(event.target.value);
+    };
+    const handleBillAddChange = (event) => {
+        setBillAdd(event.target.value);
+    };
+    const handleBillCityChange = (event) => {
+        setBillCity(event.target.value);
+    };
+    const handleBillStateChange = (event) => {
+        setBillState(event.target.value);
+    };
 
    return(
        <>
@@ -273,29 +305,60 @@ const Register = () => {
                    <legend> Payment Information </legend>
                    <p>
                        <label class="optional"> Card Holder Name </label>
-                       <input type="text" class="long"/>
+                       <input 
+                            type="text" 
+                            class="long"
+                            value={cardName}
+                            onChange={handleCardNameChange}
+                       />
                    </p>
                    <p>
                        <label class="optional"> Card Number </label>
-                       <input type="text" class="long"/>
-                   </p>
+                       <input 
+                            type="text" 
+                            class="long"
+                            value={cardNo}
+                            onChange={handleCardNoChange}
+                       />
+                    </p>
                    <p>
                        <label class="optional"> CVV </label>
-                       <input type="text" class="short"/>
+                       <input 
+                            type="text" 
+                            class="short"
+                            value={cvv}
+                            onChange={handleCvvChange}
+                       />
                        <label class="optional"> EXP Date </label>
                        <input type="text" class="short"/>
+                       <input 
+                            type="text" 
+                            class="short"
+                            value={cardExpDate}
+                            onChange={handleCardExpDateChange}
+                       />
                    </p>
                    <p>
                        <label class="optional"> Billing Address </label>
-                       <input type="text" class="long"/>
+                       <input 
+                            type="text" 
+                            class="long"
+                            value={billAdd}
+                            onChange={handleBillAddChange}
+                       />
                    </p>
                    <p>
                        <label class="optional"> City </label>
-                       <input type="text" class="long"/>
+                       <input 
+                            type="text" 
+                            class="long"
+                            value={billCity}
+                            onChange={handleBillCityChange}
+                       />
                    </p>
                    <p>
                        <label class="optional"> State </label>
-                       <select>
+                       <select value={billState} onChange={handleBillStateChange}>
                            <option></option>
                            <option value="AL">Alabama</option>
                            <option value="AK">Alaska</option>
