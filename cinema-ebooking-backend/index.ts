@@ -1,4 +1,4 @@
-import express, { Express } from 'express'
+import express, { Express, Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
 
@@ -6,6 +6,55 @@ const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
 app.use(cors())
+app.use(express.json())
+
+app.post('/', async (req: Request, res:Response) => {
+	const { email, password, firstName, lastName, phone, street, city, state  } = req.body; // Extract email and password from request body
+       // Save the user login data to the database
+	   const user = await prisma.user.create({
+		data: {
+			firstName: firstName,
+			lastName: lastName,
+			email: email,
+			password: password,
+			phone: phone,
+			street: street,
+			city: city,
+			state: state
+		},
+	});
+	res.json(user);
+});
+
+/** 
+app.use(express.json()); // Add this line to parse JSON requests
+
+// Define a route to handle user login
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body; // Extract email and password from request body
+
+        // Check if the email and password are provided
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Save the user login data to the database
+        const user = await prisma.User.create({
+            data: {
+                email: email,
+                password: password,
+            },
+        });
+
+        res.status(201).json({ message: 'User login data saved successfully', user });
+    } catch (error) {
+        console.error('Error saving user login data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+*/
 
 app.get('/movies', async (req, res) => {
 	try {

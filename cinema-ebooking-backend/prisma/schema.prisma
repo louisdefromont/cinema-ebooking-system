@@ -25,6 +25,10 @@ model User {
   lastName    String        @db.VarChar(255)
   email       String        @db.VarChar(255)
   password    String        @db.VarChar(255)
+  phone       String        @db.VarChar(255)@default("a")
+  street      String        @db.VarChar(255)@default("a")
+  city        String        @db.VarChar(255)@default("a")
+  state       String        @db.VarChar(255)@default("a")
   paymentInfo PaymentCard[]
   bookings    BookingInfo[]
   Admin       Admin[]
@@ -34,7 +38,7 @@ model User {
 model PaymentCard {
   id             Int      @id @default(autoincrement())
   user           User     @relation(fields: [id], references: [id])
-  cardNum        Int      @db.Int
+  cardNum        Int      @db.Int 
   billingAddress String   @db.VarChar(255)
   expirationDate DateTime @db.DateTime
 }
