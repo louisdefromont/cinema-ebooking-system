@@ -21,14 +21,16 @@ model Movie {
 
 model User {
   id          Int           @id @default(autoincrement())
-  firstName   String        @db.VarChar(255)
-  lastName    String        @db.VarChar(255)
-  email       String        @db.VarChar(255)
-  password    String        @db.VarChar(255)
-  phone       String        @db.VarChar(255)@default("a")
+  firstName   String?        @db.VarChar(255)
+  lastName    String?        @db.VarChar(255)
+  email       String?        @db.VarChar(255)
+  password    String?        @db.VarChar(255)
+  phone       String?        @db.VarChar(255)@default("a")
   street      String        @db.VarChar(255)@default("a")
   city        String        @db.VarChar(255)@default("a")
   state       String        @db.VarChar(255)@default("a")
+  status      Boolean       @default(true)
+  regPromo    Boolean       @default(false)
   paymentInfo PaymentCard[]
   bookings    BookingInfo[]
   Admin       Admin[]

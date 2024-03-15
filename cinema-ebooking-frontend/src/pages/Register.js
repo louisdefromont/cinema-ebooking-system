@@ -20,14 +20,13 @@ const Register = () => {
     const [street, setStreet] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-
+    const [regPromo, setRegisterForPromotions] = useState(false); 
     const [errorMessage, setErrorMessage] = useState('');
 
 
 
    const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
         // Send a POST request to your backend endpoint with the email and password
         const response = await axios.post('http://localhost:3000/', {
@@ -38,7 +37,8 @@ const Register = () => {
             phone: phone ,
             street: street,
             city: city,
-            state: state
+            state: state,
+            regPromo: regPromo // Include checkbox value in the data object
         });
 
         console.log(response.data); // Log the response from the backend
@@ -46,12 +46,28 @@ const Register = () => {
     } catch (error) {
      //   console.error('Error registering user:', error);
         // Add logic to handle registration failure (e.g., display error message to the user)
+        /** 
         if (error.response && error.response.status === 400) {
             window.alert('An account with the email already exists');
          } else {
             console.error('Error registering user:', error);
             window.alert('Registration failed. Please try again later.');
          }
+         */
+         if (error.response && error.response.status === 400) {
+            console.log("err 1");
+            if (error.response.data.error === 'Email already exists') {
+                window.alert('An account with the email already exists');
+           // } else if (error.response.data.error === 'Required fields are missing') {
+           //     window.alert('Please fill out all required fields');
+           } else {
+                window.alert('Please fill out all required fields');
+            }
+        } else {
+            console.log("err 2");
+            console.error('Error registering user:', error);
+            window.alert('Registration failed. Please try again later.');
+        }
     }
 };
 
@@ -62,7 +78,7 @@ const Register = () => {
        setPassword(event.target.value);
    };
    const handleRepeatEmailChange = (event) => {
-       setRepeatEmail(event.target.value);
+       setRepeatEmail(event.target.value); 
    };
    const handleRepeatPasswordChange = (event) => {
        setRepeatPassword(event.target.value);
@@ -86,7 +102,9 @@ const Register = () => {
     const handleStateChange = (event) => {
         setState(event.target.value);
     };
-    
+    const handlePromotionsChange = (event) => {
+        setRegisterForPromotions(event.target.checked);
+    };
 
 
    return(
@@ -234,8 +252,22 @@ const Register = () => {
                            <option value="WV">West Virginia</option>
                            <option value="WI">Wisconsin</option>
                            <option value="WY">Wyoming</option>
-                       </select>
+                       </select>     
                    </p>
+                   
+                    <p>
+                        <label> Register for promotions? </label>
+                        <input
+                            type="checkbox"
+                            checked={regPromo}
+                            onChange={handlePromotionsChange}
+                        />
+                    </p>
+
+
+
+
+
                </fieldset>
                <fieldset class="row3">
                    <legend> Payment Information </legend>

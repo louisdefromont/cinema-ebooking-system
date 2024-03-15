@@ -10,7 +10,12 @@ app.use(express.json())
 
 
 app.post('/', async (req: Request, res: Response) => {
-    const { email, password, firstName, lastName, phone, street, city, state } = req.body;
+    const { email, password, firstName, lastName, phone, street, city, state, regPromo } = req.body;
+
+    // Check if any of the required fields are null
+    if (!email || !password || !firstName || !lastName || !phone) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
 
     try {
         // Check if the email already exists in the database
@@ -36,6 +41,7 @@ app.post('/', async (req: Request, res: Response) => {
                 street: street,
                 city: city,
                 state: state,
+				regPromo: regPromo
             },
         });
 
