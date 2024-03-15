@@ -14,6 +14,8 @@ import SelectSeats from './pages/SelectSeats';
 import OrderSummary from './pages/OrderSummary';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
+import ForgotPassword from './pages/ForgotPassword';
+
 
 
 function App() {
@@ -52,6 +54,8 @@ function App() {
           <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+
         </Routes>
       </div>
     </Router>

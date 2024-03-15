@@ -29,15 +29,6 @@ const Login = () => {
     }
 };
 
-/** 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log("Email:", email); 	
-		console.log("Password:", password);
-		setEmail('');
-        setPassword('');
-    };
-*/
 	const handleEmailChange = (event) => {
         setEmail(event.target.value);
     };
@@ -56,6 +47,9 @@ const Login = () => {
 					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}/>
 					<input type="password" placeholder="password" value={password} onChange={handlePasswordChange}/>
 					<button className="ripple">login</button>
+                    <p class="message">
+                    <a href="/forgot-password">Forgot my password</a>
+                    </p>
 					<p class="message">Not registered? <a href="/register">Create an account</a></p>
 				</form>
 			</div>

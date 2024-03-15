@@ -57,13 +57,6 @@ const Register = () => {
             billState: billState
         });
         console.log(response.data); // Log the response from the backend
-        console.log("Card Name:", cardName);
-        console.log("Card Number:", cardNo);
-        console.log("CVV:", cvv);
-        console.log("Expiration Date:", cardExpDate);
-        console.log("Billing Address:", billAdd);
-        console.log("Billing City:", billCity);
-        console.log("Billing State:", billState);
         // Add logic to handle successful registration (e.g., redirect to another page)
     } catch (error) {
          if (error.response && error.response.status === 400) {
