@@ -21,6 +21,9 @@ const Register = () => {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
 
+    const [errorMessage, setErrorMessage] = useState('');
+
+
 
    const handleSubmit = async (event) => {
     event.preventDefault();
@@ -41,8 +44,14 @@ const Register = () => {
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful registration (e.g., redirect to another page)
     } catch (error) {
-        console.error('Error registering user:', error);
+     //   console.error('Error registering user:', error);
         // Add logic to handle registration failure (e.g., display error message to the user)
+        if (error.response && error.response.status === 400) {
+            window.alert('An account with the email already exists');
+         } else {
+            console.error('Error registering user:', error);
+            window.alert('Registration failed. Please try again later.');
+         }
     }
 };
 
@@ -310,6 +319,7 @@ const Register = () => {
                        </select>
                    </p>
                </fieldset>
+               <div className="error-message">{errorMessage}</div>
                <div><Button className='button' type="submit" variant="contained">Register</Button></div>
 
 

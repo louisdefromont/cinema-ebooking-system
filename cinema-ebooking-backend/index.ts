@@ -8,6 +8,46 @@ const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
+
+app.post('/', async (req: Request, res: Response) => {
+    const { email, password, firstName, lastName, phone, street, city, state } = req.body;
+
+    try {
+        // Check if the email already exists in the database
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                email: email, // Provide the email directly
+            },
+        });
+
+        // If the email already exists, return an error
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+
+        // If the email doesn't exist, create a new user
+        const newUser = await prisma.user.create({
+            data: {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password,
+                phone: phone,
+                street: street,
+                city: city,
+                state: state,
+            },
+        });
+
+        res.json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+/** 
 app.post('/', async (req: Request, res:Response) => {
 	const { email, password, firstName, lastName, phone, street, city, state  } = req.body; // Extract email and password from request body
        // Save the user login data to the database
@@ -25,6 +65,7 @@ app.post('/', async (req: Request, res:Response) => {
 	});
 	res.json(user);
 });
+*/
 
 /** 
 app.use(express.json()); // Add this line to parse JSON requests
