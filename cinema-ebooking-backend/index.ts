@@ -8,6 +8,8 @@ const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
+
+/** 
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -34,6 +36,47 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         res.status(200).json({ message: 'Email found', user });
     } catch (error) {
         console.error('Error checking email:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
+// Check if Email Exists and Reset Password
+app.post('/forgot-password', async (req: Request, res: Response) => {
+    try {
+        const { email, newPassword } = req.body; // Extract email and new password from request body
+
+        // Check if the email and new password are provided
+        if (!email || !newPassword) {
+            return res.status(400).json({ error: 'Email and new password are required' });
+        }
+
+        // Check if the email exists in the database
+        const user = await prisma.user.findFirst({
+            where: {
+                email: "2elainemaria@gmail.com"
+             //   email: email,
+            },
+        });
+
+        // If the email doesn't exist, return an error
+        if (!user) {
+            return res.status(404).json({ error: 'There is no account associated with that email' });
+        }
+
+        // If the email exists, update the user's password
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                password: newPassword,
+            },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Password reset successful' });
+    } catch (error) {
+        console.error('Error resetting password:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

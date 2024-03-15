@@ -15,7 +15,7 @@ import OrderSummary from './pages/OrderSummary';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
 import ForgotPassword from './pages/ForgotPassword';
-
+import PasswordReset from './pages/PasswordReset';
 
 
 function App() {
@@ -55,7 +55,7 @@ function App() {
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
-
+          <Route path='/password-reset' element={<PasswordReset />} />          
         </Routes>
       </div>
     </Router>
