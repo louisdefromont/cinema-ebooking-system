@@ -9,14 +9,18 @@ app.use(cors())
 app.use(express.json())
 
 app.post('/', async (req: Request, res:Response) => {
-	const { email, password } = req.body; // Extract email and password from request body
+	const { email, password, firstName, lastName, phone, street, city, state  } = req.body; // Extract email and password from request body
        // Save the user login data to the database
 	   const user = await prisma.user.create({
 		data: {
-			firstName: "John",
-			lastName: "Doe",
+			firstName: firstName,
+			lastName: lastName,
 			email: email,
 			password: password,
+			phone: phone,
+			street: street,
+			city: city,
+			state: state
 		},
 	});
 	res.json(user);
