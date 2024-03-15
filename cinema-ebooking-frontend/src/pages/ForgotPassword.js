@@ -21,17 +21,17 @@ const ForgotPassword = () => {
 
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful login (e.g., redirect to another page)
-        //        window.location.href = 'http://example.com/reset-password'; // Replace 'http://example.com/reset-password' with your desired URL
-
+        alert("Email was sent succesfully");
     } catch (error) {
         console.error('Error checking email:', error);
         if (error.response && error.response.status === 404) {
             console.error('Error 1');
-            setErrorMessage('There is no account associated with that email');
+            setErrorMessage();
+            alert('There is no account associated with that email');
         } else {
-            setErrorMessage('Email check failed. Please try again later.');
+            alert('Sending email failed. Please try again later.');
         }
-        alert(errorMessage);
+        
     }
 };
 

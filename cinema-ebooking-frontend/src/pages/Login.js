@@ -7,6 +7,7 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
    const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -21,13 +22,14 @@ const Login = () => {
     } catch (error) {
         console.error('Error logging in:', error);
         // Add logic to handle login failure (e.g., display error message to the user)
-        if (error.response && error.response.status === 400) {
-            setErrorMessage('Invalid email or password');
+        if (error.response && error.response.status === 401) {
+          //  setErrorMessage();
+            alert('Invalid email or password');
         } else {
-            setErrorMessage('Login failed. Please try again later.');
+          //  setErrorMessage('Login failed. Please try again later.');
+            alert('Login failed. Please try again later.');
         }
-        alert(errorMessage);
-
+        
     }
 };
 
