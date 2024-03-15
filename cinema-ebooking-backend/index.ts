@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json())
 
 
-
+/** 
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -39,10 +39,8 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+*/
 // Check if Email Exists and Reset Password
-
-/** 
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
         const { email, newPassword } = req.body; // Extract email and new password from request body
@@ -83,7 +81,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
     }
 });
 
-*/
+
 // Register and Create New User with Payment Card
 app.post('/register', async (req: Request, res: Response) => {
     const { email, password, firstName, lastName, phone, street, city, state, regPromo, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
