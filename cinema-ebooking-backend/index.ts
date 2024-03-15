@@ -9,6 +9,40 @@ app.use(cors())
 app.use(express.json())
 
 
+app.post('/login', async (req: Request, res: Response) => {
+    try {
+        const { email, password } = req.body; // Extract email and password from request body
+
+        // Check if the email and password are provided
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Check if the email and password combination exists in the database
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+                password: password,
+            },
+        });
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+
+        // If the user exists and the password matches, return success response
+        res.status(200).json({ message: 'Login successful', user });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
+
+
 app.post('/', async (req: Request, res: Response) => {
     const { email, password, firstName, lastName, phone, street, city, state, regPromo } = req.body;
 
