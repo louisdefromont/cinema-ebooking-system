@@ -23,10 +23,8 @@ const Login = () => {
         console.error('Error logging in:', error);
         // Add logic to handle login failure (e.g., display error message to the user)
         if (error.response && error.response.status === 401) {
-          //  setErrorMessage();
             alert('Invalid email or password');
         } else {
-          //  setErrorMessage('Login failed. Please try again later.');
             alert('Login failed. Please try again later.');
         }
         
