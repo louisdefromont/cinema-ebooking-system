@@ -1,3 +1,8 @@
+
+
+
+
+
 import express, { Express, Request, Response } from 'express'
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
@@ -9,7 +14,7 @@ app.use(cors())
 app.use(express.json())
 
 
-/** 
+ 
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -39,7 +44,14 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-*/
+
+
+
+
+
+
+/** 
+
 // Check if Email Exists and Reset Password
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -81,6 +93,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
     }
 });
 
+*/ 
 
 // Register and Create New User with Payment Card
 app.post('/register', async (req: Request, res: Response) => {
@@ -206,63 +219,3 @@ app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
 
-/** 
-// Register and Create New User
-app.post('/register', async (req: Request, res: Response) => {
-    const { email, password, firstName, lastName, phone, street, city, state, regPromo, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
-
-    // Check if any of the required fields are null
-    if (!email || !password || !firstName || !lastName || !phone) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    try {
-        // Check if the email already exists in the database
-        const existingUser = await prisma.user.findFirst({
-            where: {
-                email: email, // Provide the email directly
-            },
-        });
-
-        // If the email already exists, return an error
-        if (existingUser) {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
-
-        // If the email doesn't exist, create a new user
-        const newUser = await prisma.user.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password,
-                phone: phone,
-                street: street,
-                city: city,
-                state: state,
-				regPromo: regPromo
-            },
-        });
-
-        // Create a new payment card
-        const newPaymentCard = await prisma.paymentCard.create({
-            data: {
-                cardName: cardName,
-                cardNum: cardNum,
-                cvv: cvv,
-                expirationDate: expirationDate,
-                billingAddress: billingAddress,
-                billCity: billCity,
-                billState: billState,
-                // Connect the payment card to the newly created user
-                user: { connect: { id: newUser.id } },
-            },
-        });
-        
-        res.json({ newUser, newPaymentCard });
-    } catch (error) {
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
