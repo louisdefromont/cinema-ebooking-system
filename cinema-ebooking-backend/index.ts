@@ -382,7 +382,7 @@ app.get('/promotions', async (req: Request, res: Response) => {
         const promotions = await prisma.promotion.findMany();
 
         // Return success response with the list of promotions
-        res.status(200).json({ promotions });
+        res.status(200).json(promotions);
     } catch (error) {
         console.error('Error fetching promotions:', error);
         res.status(500).json({ error: 'Internal server error' });
