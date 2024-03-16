@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField } from '@mui/material';
 
-function TableManager({ rows, setRows, rowHeaders }) {
+function TableManager({ rows, setRows, rowHeaders, submitCreate, submitUpdate, submitDelete}) {
+	const [dbRows, setDbRows] = useState(rows);
 	const handleAddRow = () => {
 		const newRow = {
 			...Object.fromEntries(rowHeaders.map(
 				function (header) {
 					if (header === "id") {			// If the header is "id", then the value is the length of the rows array plus 1
-						return [header, rows.length + 1];
+						return [header, -1];
 					} else { 						// Otherwise, the value is an empty string
 						return [header, ""];
 					}
@@ -32,6 +33,24 @@ function TableManager({ rows, setRows, rowHeaders }) {
 		setRows(updatedRows);
 	};
 
+	function handleSubmitChanges() {
+		const newRows = rows.filter(row => row.id === -1);
+		const updatedRows = rows.filter(row => row.id !== -1);
+		setRows(updatedRows);
+		newRows.forEach(row => {
+			submitCreate(row);
+		});
+		updatedRows.forEach(row => {
+			submitUpdate(row);
+		});
+		dbRows.forEach(row => {
+			if (!rows.some(r => r.id === row.id)) {
+				submitDelete(row);
+			}
+		});
+		setDbRows(rows);
+	}
+
 	return (
 		<TableContainer component={Paper}>
 			<Table>
@@ -39,7 +58,7 @@ function TableManager({ rows, setRows, rowHeaders }) {
 					<TableRow>
 						{rowHeaders.map(
 							function (header) {
-								if (header != "id") {
+								if (header !== "id") {
 									return <TableCell key={header}>{header}</TableCell>
 								}
 							}
@@ -52,7 +71,7 @@ function TableManager({ rows, setRows, rowHeaders }) {
 						<TableRow key={row.id}>
 							{rowHeaders.map(
 								function (header) {
-									if (header == "id") {
+									if (header === "id") {
 										return null;
 									}
 									return <TableCell>
@@ -71,6 +90,7 @@ function TableManager({ rows, setRows, rowHeaders }) {
 				</TableBody>
 			</Table>
 			<Button onClick={handleAddRow}>Add Row</Button>
+			<Button onClick={handleSubmitChanges}>Submit Changes</Button>
 		</TableContainer>
 	);
 };
