@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
@@ -19,6 +19,13 @@ import PasswordReset from './pages/PasswordReset';
 
 
 function App() {
+  const [email, setEmail] = useState(''); // State variable to hold email
+
+  const handleForgotPassword = (enteredEmail) => {
+    setEmail(enteredEmail); // Update email state with the entered email
+    console.log('Entered email:', enteredEmail);
+  };
+
   const orderDetails = [
     {
       seatNumber: 'A1',
@@ -54,8 +61,15 @@ function App() {
           <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
-          <Route path='/forgot-password' element={<ForgotPassword />} />
-          <Route path='/password-reset' element={<PasswordReset />} />          
+
+         <Route
+            path='/forgot-password'
+            element={<ForgotPassword onEmailEntered={handleForgotPassword} />} // Pass a callback to handle entered email
+          />
+          <Route
+            path='/password-reset'
+            element={<PasswordReset email={email} />} // Pass email as a prop
+          />                   
         </Routes>
       </div>
     </Router>

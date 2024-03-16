@@ -3,13 +3,14 @@ import './ForgotPassword.css'
 import NavBar from '../components/NavBar';
 import axios from 'axios'; 
 
-const ForgotPassword = () => {
+
+const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a prop
     const [email, setEmail] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
     };
-
    
    const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,6 +23,7 @@ const ForgotPassword = () => {
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful login (e.g., redirect to another page)
         //        window.location.href = 'http://example.com/reset-password'; // Replace 'http://example.com/reset-password' with your desired URL
+        onEmailEntered(email);
 
     } catch (error) {
         console.error('Error checking email:', error);
@@ -47,7 +49,8 @@ const ForgotPassword = () => {
 				<form class="login-form" onSubmit={handleSubmit}>
                     <p className='prompt'> Enter the email address associated with your account and we will send you a link to reset your password</p>
 					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}  />
-					<button className="ripple">Continue</button>
+                    <button className="ripple">Continue</button>
+                    <a href="/password-reset">next page</a>                    
 				</form>
 			</div>
         </>
