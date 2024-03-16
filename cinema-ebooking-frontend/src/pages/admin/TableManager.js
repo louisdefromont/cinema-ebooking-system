@@ -1,8 +1,15 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField } from '@mui/material';
 
-function TableManager({ rows, setRows, rowHeaders, submitCreate, submitUpdate, submitDelete}) {
-	const [dbRows, setDbRows] = useState(rows);
+function TableManager({ rowHeaders, createCallback, readCallback, updateCallback, deleteCallback }) {
+	const [rows, setRows] = useState([]);
+	const [dbRows, setDbRows] = useState([]);
+	useEffect(() => {
+		readCallback().then((response) => {
+			setRows(response.data);
+			setDbRows(response.data);
+		});
+	}, []);
 	const handleAddRow = () => {
 		const newRow = {
 			...Object.fromEntries(rowHeaders.map(
@@ -34,13 +41,47 @@ function TableManager({ rows, setRows, rowHeaders, submitCreate, submitUpdate, s
 	};
 
 	function handleSubmitChanges() {
-		const newRows = rows.filter(row => row.id > dbRows.length);
-		const updatedRows = rows.filter(row => row.id <= dbRows.length);
-		const deletedRows = dbRows.filter(row => !rows.some(r => r.id === row.id));
-		newRows.forEach(row => submitCreate(row));
-		updatedRows.forEach(row => submitUpdate(row));
-		deletedRows.forEach(row => submitDelete(row));
-		setDbRows(rows);
+		const newRows = rows.filter(
+			function (row) {
+				for (let i = 0; i < dbRows.length; i++) {
+					if (row.id === dbRows[i].id) {
+						return false;
+					}
+				}
+				return true;
+			}
+		);
+		const updatedRows = rows.filter(
+			function (row) {
+				for (let i = 0; i < dbRows.length; i++) {
+					if (row.id === dbRows[i].id) {
+						for (let j = 0; j < rowHeaders.length; j++) {
+							if (row[rowHeaders[j]] !== dbRows[i][rowHeaders[j]]) {
+								return true;
+							}
+						}
+						return false;
+					}
+				}
+				return false;
+			}
+		);
+		const deletedRows = dbRows.filter(
+			function (row) {
+				for (let i = 0; i < rows.length; i++) {
+					if (row.id === rows[i].id) {
+						return false;
+					}
+				}
+				return true;
+			}
+		);
+		newRows.forEach(row => createCallback(row));
+		updatedRows.forEach(row => updateCallback(row));
+		deletedRows.forEach(row => deleteCallback(row));
+		// Refresh the current page
+		window.location.reload();
+
 	}
 
 	return (
