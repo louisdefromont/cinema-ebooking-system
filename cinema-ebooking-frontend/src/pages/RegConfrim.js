@@ -6,7 +6,6 @@ import axios from 'axios';
 const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-    //const [errorMessage, setErrorMessage] = useState('');
    const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -46,13 +45,8 @@ const Login = () => {
 
 			<div class="form">
 				<form class="login-form" onSubmit={handleSubmit}>
-					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}/>
-					<input type="password" placeholder="password" value={password} onChange={handlePasswordChange}/>
-					<button className="ripple">login</button>
-                    <p class="message">
-                    <a href="/forgot-password">Forgot my password</a>
-                    </p>
-					<p class="message">Not registered? <a href="/register">Create an account</a></p>
+                <p className='mes1'> Your registration is complete. </p>
+                <p className='mes2'> A confrimation email has been sent. </p>
 				</form>
 			</div>
         </>

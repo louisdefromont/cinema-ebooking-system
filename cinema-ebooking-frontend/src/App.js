@@ -16,6 +16,7 @@ import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
 import ForgotPassword from './pages/ForgotPassword';
 import PasswordReset from './pages/PasswordReset';
+import RegConfrim from './pages/RegConfrim';
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
+          <Route path='/reg-confrimation' element={<RegConfrim />} />
 
          <Route
             path='/forgot-password'
