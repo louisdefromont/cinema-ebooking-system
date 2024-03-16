@@ -9,6 +9,9 @@ app.use(cors())
 app.use(express.json())
 
 
+
+
+
 /** 
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -340,6 +343,267 @@ app.get('/movies', async (req, res) => {
 		console.error('Error fetching movies:', error);
 		res.status(500).json({ error: 'Internal server error' });
 	}
+});
+
+
+
+
+// Endpoint to create a new promotion
+app.post('/promotions', async (req: Request, res: Response) => {
+    try {
+        const { expirationDate, discAmount, regExpression } = req.body; // Extract promotion details from request body
+
+        // Check if all required fields are provided
+        if (!expirationDate || !discAmount || !regExpression) {
+            return res.status(400).json({ error: 'Expiration date, discount amount, and regular expression are required' });
+        }
+
+        // Create the promotion in the database
+        const promotion = await prisma.promotion.create({
+            data: {
+                expirationDate,
+                discAmount,
+                regExpression
+            },
+        });
+
+        // Return success response with the created promotion
+        res.status(201).json({ message: 'Promotion created successfully', promotion });
+    } catch (error) {
+        console.error('Error creating promotion:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to get all promotions
+app.get('/promotions', async (req: Request, res: Response) => {
+    try {
+        // Retrieve all promotions from the database
+        const promotions = await prisma.promotion.findMany();
+
+        // Return success response with the list of promotions
+        res.status(200).json({ promotions });
+    } catch (error) {
+        console.error('Error fetching promotions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to update a promotion by ID
+app.put('/promotions/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract promotion ID from URL
+    const { expirationDate, discAmount, regExpression } = req.body; // Extract updated promotion details from request body
+
+    try {
+        // Update the promotion in the database
+        const updatedPromotion = await prisma.promotion.update({
+            where: { id },
+            data: { expirationDate, discAmount, regExpression },
+        });
+
+        // Return success response with the updated promotion
+        res.status(200).json({ message: 'Promotion updated successfully', updatedPromotion });
+    } catch (error) {
+        console.error('Error updating promotion:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to delete a promotion by ID
+app.delete('/promotions/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract promotion ID from URL
+
+    try {
+        // Delete the promotion from the database
+        await prisma.promotion.delete({
+            where: { id },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Promotion deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting promotion:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Create movie endpoint 
+app.post('/movies', async (req, res) => {
+    try {
+        const { title, trailerUrl, thumbnailUrl, releaseDate } = req.body;
+        const newMovie = await prisma.movie.create({
+            data: {
+                title: title,
+                trailerUrl: trailerUrl,
+                thumbnailUrl: thumbnailUrl,
+                releaseDate: releaseDate
+            }
+        });
+        res.status(201).json({ message: 'Movie created successfully', movie: newMovie });
+    } catch (error) {
+        console.error('Error creating movie:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+//Read movie endpoint
+app.get('/movies/:id', async (req, res) => {
+    try {
+        const movieId = parseInt(req.params.id);
+        const movie = await prisma.movie.findUnique({
+            where: {
+                id: movieId
+            }
+        });
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+        res.status(200).json({ movie });
+    } catch (error) {
+        console.error('Error reading movie:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update movie endpoint 
+app.put('/movies/:id', async (req, res) => {
+    try {
+        const movieId = parseInt(req.params.id);
+        const { title, trailerUrl, thumbnailUrl, releaseDate } = req.body;
+        const updatedMovie = await prisma.movie.update({
+            where: {
+                id: movieId
+            },
+            data: {
+                title: title,
+                trailerUrl: trailerUrl,
+                thumbnailUrl: thumbnailUrl,
+                releaseDate: releaseDate
+            }
+        });
+        res.status(200).json({ message: 'Movie updated successfully', movie: updatedMovie });
+    } catch (error) {
+        console.error('Error updating movie:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Delete movie endpoint 
+app.delete('/movies/:id', async (req, res) => {
+    try {
+        const movieId = parseInt(req.params.id);
+        await prisma.movie.delete({
+            where: {
+                id: movieId
+            }
+        });
+        res.status(200).json({ message: 'Movie deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting movie:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Create User endpoint
+app.post('/users', async (req, res) => {
+    try {
+        const { firstName, lastName, email, password, phone, street, city, state, status, regPromo } = req.body;
+        
+        // Create the user in the database
+        const newUser = await prisma.user.create({
+            data: {
+                firstName,
+                lastName,
+                email,
+                password,
+                phone,
+                street,
+                city,
+                state,
+                status,
+                regPromo
+            }
+        });
+
+        res.status(201).json({ message: 'User created successfully', user: newUser });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Read User endpoint
+app.get('/users/:id', async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+
+        // Find the user by ID
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User found', user });
+    } catch (error) {
+        console.error('Error reading user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update User endpoint
+app.put('/users/:id', async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const { firstName, lastName, email, password, phone, street, city, state, status, regPromo } = req.body;
+
+        // Update the user in the database
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                firstName,
+                lastName,
+                email,
+                password,
+                phone,
+                street,
+                city,
+                state,
+                status,
+                regPromo
+            }
+        });
+
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Delete User endpoint 
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const userId = parseInt(req.params.id);
+
+        // Delete the user from the database
+        await prisma.user.delete({
+            where: {
+                id: userId,
+            }
+        });
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.listen(PORT, () => {
