@@ -27,11 +27,10 @@ const ForgotPassword = () => {
         console.error('Error checking email:', error);
         if (error.response && error.response.status === 404) {
             console.error('Error 1');
-            setErrorMessage('There is no account associated with that email');
+            alert('There is no account associated with that email');
         } else {
-            setErrorMessage('Email check failed. Please try again later.');
+            alert('Email check failed. Please try again later.');
         }
-        alert(errorMessage);
     }
 };
 
