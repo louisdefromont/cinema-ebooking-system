@@ -8,7 +8,7 @@ function TableManager({ rows, setRows, rowHeaders, submitCreate, submitUpdate, s
 			...Object.fromEntries(rowHeaders.map(
 				function (header) {
 					if (header === "id") {			// If the header is "id", then the value is the length of the rows array plus 1
-						return [header, -1];
+						return [header, rows.length + 1];
 					} else { 						// Otherwise, the value is an empty string
 						return [header, ""];
 					}
@@ -34,20 +34,12 @@ function TableManager({ rows, setRows, rowHeaders, submitCreate, submitUpdate, s
 	};
 
 	function handleSubmitChanges() {
-		const newRows = rows.filter(row => row.id === -1);
-		const updatedRows = rows.filter(row => row.id !== -1);
-		setRows(updatedRows);
-		newRows.forEach(row => {
-			submitCreate(row);
-		});
-		updatedRows.forEach(row => {
-			submitUpdate(row);
-		});
-		dbRows.forEach(row => {
-			if (!rows.some(r => r.id === row.id)) {
-				submitDelete(row);
-			}
-		});
+		const newRows = rows.filter(row => row.id > dbRows.length);
+		const updatedRows = rows.filter(row => row.id <= dbRows.length);
+		const deletedRows = dbRows.filter(row => !rows.some(r => r.id === row.id));
+		newRows.forEach(row => submitCreate(row));
+		updatedRows.forEach(row => submitUpdate(row));
+		deletedRows.forEach(row => submitDelete(row));
 		setDbRows(rows);
 	}
 
