@@ -141,9 +141,6 @@ app.post('/password-reset', async (req: Request, res: Response) => {
     }
 });
 
-
-
-
   
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
