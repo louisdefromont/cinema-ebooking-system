@@ -259,6 +259,41 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
     }
 });
 
+// POST endpoint for validating passwords
+app.post('/users/validate-password', async (req, res) => {
+    try {
+        // Check if req.session.user is defined
+        if (!req.session.user || !req.session.user.id) {
+            return res.status(401).json({ error: 'User session not found' });
+        }
+
+        // Extract the current password from the request body
+        const { currentPassword } = req.body;
+        
+        // Extract the user ID from the session
+        const userId = req.session.user.id;
+
+        // Fetch the user from the database
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+
+        // Check if the user exists and if the current password matches the user's actual password
+        if (!user || currentPassword !== user.password) {
+            return res.status(401).json({ isValid: false });
+        }
+
+        // If the current password is correct, respond with a success message
+        res.status(200).json({ isValid: true });
+    } catch (error) {
+        console.error('Error validating password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 /** 
 
 // Check if Email Exists and Reset Password

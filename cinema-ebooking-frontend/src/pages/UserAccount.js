@@ -16,6 +16,7 @@ const UserAccount = () => {
         city: '',
         state: '',
         password: '',
+        currentPassword: '',
     });
 
     useEffect(() => {
@@ -43,6 +44,15 @@ const UserAccount = () => {
         });
     };
 
+    const handlePasswordEdit = () => {
+        setEditMode(true);
+        
+        setEditedUserData({
+            password: '',
+            currentPassword: '' 
+        });
+    }
+
     const handleSave = async () => {
         try {
             await axios.put('https://localhost:3000/users/me', editedUserData, { withCredentials: true });
@@ -54,6 +64,25 @@ const UserAccount = () => {
             console.error('Error updating user:', error);
         }
     };
+    const handlePasswordSave = async () => {
+        try {
+            const isValidPassword = await validatePassword(editedUserData.currentPassword);
+            if (!isValidPassword) {
+                window.alert('Current password is incorrect');
+                return;
+            }
+
+            await axios.put('https://localhost:3000/users/me', { password: editedUserData.password }, { withCredentials: true });
+            setEditMode(false);
+            
+            const response = await axios.get('https://localhost:3000/users/me', { withCredentials: true });
+            setUser(response.data.user);
+            window.alert('Password updated!')
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
+
 
     const handleCancel = () => {
         setEditMode(false);
@@ -69,13 +98,22 @@ const UserAccount = () => {
 
     const handleInputCheck = (e) => {
         const { name, value, type, checked } = e.target;
-        // For checkbox inputs, use checked property instead of value
         const inputValue = type === 'checkbox' ? checked : value;
         
         setEditedUserData(prevState => ({
             ...prevState,
             [name]: inputValue
         }));
+    };
+    const validatePassword = async (currentPassword) => {
+        try {
+            // Make a request to validate the password
+            const response = await axios.post('https://localhost:3000/users/validate-password', { currentPassword }, { withCredentials: true });
+            return response.data.isValid; // Assuming the response contains a boolean indicating whether the password is valid
+        } catch (error) {
+            console.error('Error validating password:', error);
+            return false; // Return false in case of error
+        }
     };
 
     return (
@@ -213,21 +251,33 @@ const UserAccount = () => {
                     <section>
                         {editMode ? (
                             <input
-                                type="text"
+                                type="password" // Use password type for current password input
+                                name="currentPassword"
+                                value={editedUserData.currentPassword}
+                                onChange={handleInputChange}
+                            />
+                        ) : (
+                            null // Don't display current password input in non-edit mode
+                        )}
+                    </section>
+                    <section>
+                        {editMode ? (
+                            <input
+                                type="password" // Use password type for new password input
                                 name="password"
                                 value={editedUserData.password}
                                 onChange={handleInputChange}
                             />
                         ) : (
-                            <p className='account_detail'>Password: {user && user.password}</p>
+                            <p className='account_detail'>Password: *********</p>
                         )}
                         {editMode ? (
                             <>
-                                <Button onClick={handleSave}> Save </Button>
+                                <Button onClick={handlePasswordSave}> Save </Button>
                                 <Button onClick={handleCancel}> Cancel </Button>
                             </>
                         ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
+                            <Button onClick={handlePasswordEdit}> Edit Password </Button>
                         )}
                     </section>
                     <section>
