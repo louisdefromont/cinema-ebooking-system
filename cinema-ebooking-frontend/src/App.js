@@ -92,9 +92,7 @@ useEffect(() => {
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/reg-confrimation' element={<RegConfrim />} />
-          <Route path='/register' element={<Register onEmailChange={handleEmailChange} />} />
-          <Route path='/payment2' element={<Payment2 email={email} />} />
-          <Route path='/payment3' element={<Payment3 email="2elainemaria@gmail.com" />} />
+          <Route path='/register' element={<Register />} />
 
          <Route
             path='/forgot-password'
