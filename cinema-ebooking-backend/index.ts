@@ -1,16 +1,27 @@
 import express, { Express, Request, Response } from 'express'
+import session from 'express-session';
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
+
+declare module 'express-session' {
+    export interface SessionData {
+        user: { id: number; };
+    }
+}
 
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 
-
-
+app.use(session({
+    secret: process.env.SECRET_KEY!,
+    resave: false,
+    saveUninitialized: false
+}));
 
 /** 
 app.post('/forgot-password', async (req: Request, res: Response) => {
@@ -117,7 +128,7 @@ app.post('/password-reset', async (req: Request, res: Response) => {
                 email: email,
             },
         });
- 
+
         // If the email doesn't exist, return an error
         if (!user) {
             return res.status(404).json({ error: 'There is no account associated with that email' });
@@ -141,7 +152,7 @@ app.post('/password-reset', async (req: Request, res: Response) => {
     }
 });
 
-  
+
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
@@ -215,7 +226,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
     }
 });
 
-*/ 
+*/
 
 
 
@@ -302,6 +313,7 @@ app.post('/login', async (req: Request, res: Response) => {
         }
 
         // If the user exists and the password matches, return success response
+        req.session.user = { id: user.id };
         res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
         console.error('Error logging in:', error);
@@ -311,34 +323,34 @@ app.post('/login', async (req: Request, res: Response) => {
 
 
 app.get('/movies', async (req, res) => {
-	try {
-		const { title } = req.query; // Assuming the query parameter for searching movies is 'title'
+    try {
+        const { title } = req.query; // Assuming the query parameter for searching movies is 'title'
 
-		let movies;
+        let movies;
 
-		// movies = [{"id":1,"title":"Dune","trailerUrl":"https://youtu.be/n9xhJrPXop4","thumbnailUrl":"https://m.media-amazon.com/images/I/61QbqeCVm0L.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
-		// 		{"id":2,"title":"Godzilla vs. Kong","trailerUrl":"https://youtu.be/odM92ap8_c0","thumbnailUrl":"https://m.media-amazon.com/images/M/MV5BZmYzMzU4NjctNDI0Mi00MGExLWI3ZDQtYzQzYThmYzc2ZmNjXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
-		// 		{"id":3,"title":"Kung Fu Panda 3","trailerUrl":"https://youtu.be/10r9ozshGVE","thumbnailUrl":"https://m.media-amazon.com/images/M/MV5BMTUyNzgxNjg2M15BMl5BanBnXkFtZTgwMTY1NDI1NjE@._V1_FMjpg_UX1000_.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
-		// 		{"id":4,"title":"Deadpool","trailerUrl":"https://youtu.be/ONHBaC-pfsk","thumbnailUrl":"https://upload.wikimedia.org/wikipedia/en/2/23/Deadpool_%282016_poster%29.png","releaseDate":"2024-02-18T05:19:03.000Z"}]
-		// res.json(movies);
+        // movies = [{"id":1,"title":"Dune","trailerUrl":"https://youtu.be/n9xhJrPXop4","thumbnailUrl":"https://m.media-amazon.com/images/I/61QbqeCVm0L.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
+        // 		{"id":2,"title":"Godzilla vs. Kong","trailerUrl":"https://youtu.be/odM92ap8_c0","thumbnailUrl":"https://m.media-amazon.com/images/M/MV5BZmYzMzU4NjctNDI0Mi00MGExLWI3ZDQtYzQzYThmYzc2ZmNjXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
+        // 		{"id":3,"title":"Kung Fu Panda 3","trailerUrl":"https://youtu.be/10r9ozshGVE","thumbnailUrl":"https://m.media-amazon.com/images/M/MV5BMTUyNzgxNjg2M15BMl5BanBnXkFtZTgwMTY1NDI1NjE@._V1_FMjpg_UX1000_.jpg","releaseDate":"2024-02-18T05:19:03.000Z"},
+        // 		{"id":4,"title":"Deadpool","trailerUrl":"https://youtu.be/ONHBaC-pfsk","thumbnailUrl":"https://upload.wikimedia.org/wikipedia/en/2/23/Deadpool_%282016_poster%29.png","releaseDate":"2024-02-18T05:19:03.000Z"}]
+        // res.json(movies);
 
-		if (title) {
-			const movies = await prisma.movie.findMany({
-				where: {
-					title: {
-						contains: title.toString() // Search for movies containing the specified title
-					},
-				},
-			});
-		} else {
-			movies = await prisma.movie.findMany(); // Fetch all movies if no search query is provided
-		}
+        if (title) {
+            const movies = await prisma.movie.findMany({
+                where: {
+                    title: {
+                        contains: title.toString() // Search for movies containing the specified title
+                    },
+                },
+            });
+        } else {
+            movies = await prisma.movie.findMany(); // Fetch all movies if no search query is provided
+        }
 
-		res.json(movies);
-	} catch (error) {
-		console.error('Error fetching movies:', error);
-		res.status(500).json({ error: 'Internal server error' });
-	}
+        res.json(movies);
+    } catch (error) {
+        console.error('Error fetching movies:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 
@@ -504,7 +516,7 @@ app.delete('/movies/:id', async (req, res) => {
 app.post('/users', async (req, res) => {
     try {
         const { firstName, lastName, email, password, phone, street, city, state, status, regPromo } = req.body;
-        
+
         // Create the user in the database
         const newUser = await prisma.user.create({
             data: {
@@ -524,6 +536,33 @@ app.post('/users', async (req, res) => {
         res.status(201).json({ message: 'User created successfully', user: newUser });
     } catch (error) {
         console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/users/me', async (req, res) => {
+    try {
+        if (req.session.user === undefined) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const userId = req.session.user.id;
+        console.log(userId);
+
+        // Find the user by ID
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User found', user });
+    } catch (error) {
+        console.error('Error reading user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -603,6 +642,6 @@ app.delete('/users/:id', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
 
