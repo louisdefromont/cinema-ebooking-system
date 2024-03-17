@@ -6,19 +6,39 @@ import axios from 'axios';
 const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-    //const [errorMessage, setErrorMessage] = useState('');
+
    const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+        /**
+        const adminCheckResponse = await axios.post('http://localhost:3000/checkAdmin', {
+            email: email,
+        });
+        
+*/
         // Send a POST request to the backend endpoint with the email and password
         const response = await axios.post('https://localhost:3000/login', {
             email: email,
             password: password,
         }, { withCredentials: true });
+        
+        /** 
+        if (adminCheckResponse.data.isAdmin) {
+            // Proceed with admin login
+            window.location.href = '/admin';
+            console.log('Admin login');
+            // Add logic for admin login
+        } else {
+            console.log('customer login');
+            window.location.href = '/';
 
+        }
+        */
+       
         console.log(response.data); // Log the response from the backend
         window.location.href = '/';
         // Add logic to handle successful login (e.g., redirect to another page)
+        
     } catch (error) {
         console.error('Error logging in:', error);
         // Add logic to handle login failure (e.g., display error message to the user)
