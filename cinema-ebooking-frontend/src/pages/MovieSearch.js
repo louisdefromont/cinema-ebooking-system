@@ -24,7 +24,7 @@ const MovieSearch = () => {
 
     // Connect and fetch movies from database
     useEffect(() => {
-    axios.get('http://localhost:3000/movies')
+    axios.get('https://localhost:3000/movies')
       .then(response => {
         const movies = response.data;
         const mappedItems = movies.map(movie => {

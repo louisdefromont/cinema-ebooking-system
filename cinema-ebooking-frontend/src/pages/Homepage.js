@@ -12,6 +12,7 @@ const Homepage = () => {
   //Carousel
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [user, setUser] = useState(null);
 
   const handleClickOnMovie = (movieTitle) => {
     for (let i = 0; i < items.length; i++) {
@@ -23,7 +24,7 @@ const Homepage = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:3000/movies')
+    axios.get('https://localhost:3000/movies')
       .then(response => {
         const movies = response.data;
         const mappedItems = movies.map(movie => {
@@ -41,6 +42,16 @@ const Homepage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    axios.get('https://localhost:3000/users/me', { withCredentials: true })
+      .then(response => {
+        setUser(response.data.user);
+      })
+      .catch(error => {
+        console.error('Error fetching user:', error);
+      });
+  }, []);
+
   for (let i = 0; i < items.length; i++) {
     items[i].onClick = () => handleClickOnMovie(items[i].title);
   }
@@ -48,6 +59,12 @@ const Homepage = () => {
   return (
     <>
       <NavBar />
+
+      <section>
+        {user && (
+          <h1 className='header_font'>Welcome {user.firstName}</h1>
+        )}
+      </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Now Showing</h2>

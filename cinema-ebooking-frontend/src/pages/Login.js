@@ -11,10 +11,10 @@ const Login = () => {
     event.preventDefault();
     try {
         // Send a POST request to the backend endpoint with the email and password
-        const response = await axios.post('http://localhost:3000/login', {
+        const response = await axios.post('https://localhost:3000/login', {
             email: email,
             password: password,
-        });
+        }, { withCredentials: true });
 
         console.log(response.data); // Log the response from the backend
         window.location.href = '/';

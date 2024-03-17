@@ -2,6 +2,8 @@ import express, { Express, Request, Response } from 'express'
 import session from 'express-session';
 import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
+import https from 'https';
+import fs from 'fs';
 
 declare module 'express-session' {
     export interface SessionData {
@@ -12,7 +14,12 @@ declare module 'express-session' {
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
-app.use(cors())
+app.use(cors(
+    {
+        origin: 'https://localhost:8080',
+        credentials: true
+    }
+));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,7 +27,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SECRET_KEY!,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        secure: true,
+        sameSite: 'none',
+    },
 }));
 
 /** 
@@ -641,7 +653,11 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const httpsOptions = {
+    key: fs.readFileSync('../ssl/server.key'),
+    cert: fs.readFileSync('../ssl/server.cert')
+};
 
+https.createServer(httpsOptions, app).listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

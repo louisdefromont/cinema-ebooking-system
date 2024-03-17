@@ -16,7 +16,7 @@ const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a 
     event.preventDefault();
     try {
         // Send a POST request to the backend endpoint with the email and password
-        const response = await axios.post('http://localhost:3000/forgot-password', {
+        const response = await axios.post('https://localhost:3000/forgot-password', {
             email: email,
         });
 

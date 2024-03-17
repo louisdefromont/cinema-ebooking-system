@@ -38,7 +38,7 @@ const Register = () => {
     event.preventDefault();
     try {
         // Send a POST request to your backend endpoint with the email and password
-        const response = await axios.post('http://localhost:3000/register', {
+        const response = await axios.post('https://localhost:3000/register', {
             email: email,
             password: password,
             firstName: fName, 

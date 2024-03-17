@@ -4,16 +4,16 @@ import Axios from 'axios';
 
 const Movies = () => {
     function createCallback(row) {
-        return Axios.post('http://localhost:3000/movies', row);
+        return Axios.post('https://localhost:3000/movies', row);
     }
     function readCallback() {
-        return Axios.get('http://localhost:3000/movies');
+        return Axios.get('https://localhost:3000/movies');
     }
     function updateCallback(row) {
-        return Axios.put(`http://localhost:3000/movies/${row.id}`, row);
+        return Axios.put(`https://localhost:3000/movies/${row.id}`, row);
     }
     function deleteCallback(row) {
-        return Axios.delete(`http://localhost:3000/movies/${row.id}`);
+        return Axios.delete(`https://localhost:3000/movies/${row.id}`);
     }
 
     return (

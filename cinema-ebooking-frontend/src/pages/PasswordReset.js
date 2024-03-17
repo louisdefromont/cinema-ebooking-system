@@ -16,7 +16,7 @@ const PasswordReset = ({ email }) => {
         event.preventDefault();
         try {
             // Send a POST request to the new endpoint (/change-password) with the email and password
-            const response = await axios.post('http://localhost:3000//password-reset', {
+            const response = await axios.post('https://localhost:3000//password-reset', {
                 email: email, // Use the email received as a prop
                 password: password,
             });
