@@ -172,11 +172,6 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
     }
 });
 
-
-
-
-
-
 /** 
 
 // Check if Email Exists and Reset Password
@@ -221,6 +216,10 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
 });
 
 */ 
+
+
+
+
 
 // Register and Create New User with Payment Card
 app.post('/register', async (req: Request, res: Response) => {
