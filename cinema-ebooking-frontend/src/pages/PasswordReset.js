@@ -7,9 +7,7 @@ import { useLocation } from 'react-router-dom';
 const PasswordReset = () => {
     const [password, setPassword] = useState('');
     const location = useLocation();
-    const email = "smitha2bobby@gmail.com";
-
-   //const email = new URLSearchParams(location.search).get('email');
+    const email = new URLSearchParams(location.search).get('email');
     console.log("resetEmail =" + email);
 
     const handleSubmit = async (event) => {
