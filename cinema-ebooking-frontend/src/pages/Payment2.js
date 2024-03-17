@@ -7,11 +7,20 @@ import axios from 'axios';
 
 
 const Payment2 = ({ email }) => {
-
+    useEffect(() => {
+        if (email === null) {
+            console.log('Email prop is null in Payment2 component');
+        } else if (email === '') {
+            console.log('Email prop is an empty string in Payment2 component');
+        } else {
+            console.log('Email received in Payment2 component:', email);
+        }
+    }, [email]);
+    /** 
     useEffect(() => {
         console.log('Email received in Payment2 component:', email);
       }, [email]);
-
+*/
    // Define state variables for input fields 
     const [cardName, setCardName] = useState('');
     const [cardNo, setCardNo] = useState('');
@@ -37,8 +46,8 @@ const Payment2 = ({ email }) => {
     
             // Send a POST request to the new endpoint for adding payment cards
             const response = await axios.post('http://localhost:3000/paymentcards', {
-                //email: email,
-                userId: 15,
+                email: email,
+                //userId: 15,
                 cardName: cardName,
                 cardNum: cardNo,
                 cvv: cvv,
@@ -52,9 +61,9 @@ const Payment2 = ({ email }) => {
     
             // Redirect based on button clicked
             if (buttonClicked === 'register') {
-                window.location.href = '/reg-confrimation';
+              //  window.location.href = '/reg-confrimation';
             } else if (buttonClicked === 'add') {
-                window.location.href = '/payment3';
+             //   window.location.href = '/payment3';
             } 
     
         } catch (error) {

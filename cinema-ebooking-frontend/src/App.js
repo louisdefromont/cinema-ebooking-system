@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
@@ -26,13 +26,31 @@ function App() {
 
   const [email, setEmail] = useState('');
 
+// Function to receive the email from the Register component
+const handleEmailChange = (newEmail) => {
+  setEmail(newEmail);
+  console.log('Email received in App component:', newEmail);
+};
+
+useEffect(() => {
+  console.log('Email prop after state update:', email);
+}, [email]); // This useEffect will run whenever 'email' state changes
+
+
+  /** 
   // Function to receive the email from the Register component
   const handleEmailChange = (newEmail) => {
-      setEmail(newEmail);
-      console.log('Email received in App component:', newEmail); // Add this line to log the email
+        //setEmail('wassupp');
 
+      setEmail(newEmail);
+      console.log('Email received in App component:', newEmail); 
+      if (email === newEmail) {
+        console.log('Email prop has been set correctly:', email);
+    } else {
+        console.log('Email prop has not been set correctly. Expected:', newEmail, 'but received:', email);
+    }
   };
- 
+ */
 
   const handleForgotPassword = (enteredEmail) => {
     setEmail(enteredEmail); // Update email state with the entered email
@@ -74,9 +92,9 @@ function App() {
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/reg-confrimation' element={<RegConfrim />} />
-          <Route path='/payment2' element={<Payment2 email="2elainemaria@gmail.com" />} />
-          <Route path='/payment3' element={<Payment3 email="2elainemaria@gmail.com" />} />
           <Route path='/register' element={<Register onEmailChange={handleEmailChange} />} />
+          <Route path='/payment2' element={<Payment2 email={email} />} />
+          <Route path='/payment3' element={<Payment3 email="2elainemaria@gmail.com" />} />
 
          <Route
             path='/forgot-password'

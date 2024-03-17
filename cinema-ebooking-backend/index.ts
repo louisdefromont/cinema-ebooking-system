@@ -43,7 +43,8 @@ app.post('/paymentcards', async (req, res) => {
         // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
-                email: email,
+                email: "2elainemaria@gmail.com",
+                //email: email,
             },
         });
 

@@ -73,9 +73,9 @@ const Register = ({ onEmailChange }) => {
         console.log(response.data); // Log the response from the backend
         onEmailChange(email);
         if (buttonClicked === 'register') {
-           window.location.href = '/reg-confrimation';
+         //  window.location.href = '/reg-confrimation';
         } else if (buttonClicked === 'add') {
-          window.location.href = '/payment2';
+        //  window.location.href = '/payment2';
             console.log("add");
         } 
 
