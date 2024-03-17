@@ -3,6 +3,7 @@ import axios from 'axios';
 import './UserAccount.css';
 import NavBar from "../components/NavBar";
 import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const UserAccount = () => {
 
@@ -113,6 +114,19 @@ const UserAccount = () => {
         } catch (error) {
             console.error('Error validating password:', error);
             return false; // Return false in case of error
+        }
+    };
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('https://localhost:3000/logout', {}, { withCredentials: true });
+            // Clear user session and reset user state
+            setUser(null);
+            navigate('/')
+            window.alert('Successfully Logged Out!')
+        } catch (error) {
+            console.error('Error logging out:', error);
         }
     };
 
@@ -302,9 +316,18 @@ const UserAccount = () => {
                             <Button onClick={handleEdit}> Edit </Button>
                         )}
                     </section>
+
+                    <section>
+                        {user != null ? (
+                            <Button onClick={handleLogout} variant="contained">Log Out</Button>
+                        ) : (
+                            null
+                        )}
+                    </section>
                     
                 </fieldset>
                 <a href="/"><Button> Return Home </Button></a>
+
             </form>
         </>
     )

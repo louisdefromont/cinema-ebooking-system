@@ -432,6 +432,18 @@ app.post('/login', async (req: Request, res: Response) => {
     }
 });
 
+app.post('/logout', (req, res) => {
+    // Clear the session to invalidate the user's session
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            res.status(500).json({ error: 'Internal server error' });
+        } else {
+            res.status(200).json({ message: 'Logged out successfully' });
+        }
+    });
+});
+
 
 app.get('/movies', async (req, res) => {
     try {
