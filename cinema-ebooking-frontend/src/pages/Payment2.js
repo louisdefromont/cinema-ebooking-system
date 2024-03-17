@@ -16,6 +16,7 @@ const Payment2 = ({ email }) => {
             console.log('Email received in Payment2 component:', email);
         }
     }, [email]);
+    
     /** 
     useEffect(() => {
         console.log('Email received in Payment2 component:', email);
