@@ -96,11 +96,11 @@ useEffect(() => {
 
          <Route
             path='/forgot-password'
-            element={<ForgotPassword onEmailEntered={handleForgotPassword} />} // Pass a callback to handle entered email
+            element={<ForgotPassword />} // Pass a callback to handle entered email
           />
           <Route
             path='/password-reset'
-            element={<PasswordReset email={email} />} // Pass email as a prop
+            element={<PasswordReset />} // Pass email as a prop
           />                   
         </Routes>
       </div>

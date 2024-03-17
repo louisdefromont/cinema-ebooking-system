@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './PasswordReset.css'
 import NavBar from '../components/NavBar';
 import axios from 'axios'; 
+import { useLocation } from 'react-router-dom';
 
-const PasswordReset = ({ email }) => {
+const PasswordReset = () => {
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const location = useLocation();
+    const email = "smitha2bobby@gmail.com";
 
-    useEffect(() => {
-        console.log('Email prop received:', email);
-    }, [email]); // Log the email prop when it changes
-
+   //const email = new URLSearchParams(location.search).get('email');
+    console.log("resetEmail =" + email);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,7 +20,7 @@ const PasswordReset = ({ email }) => {
                 email: email, // Use the email received as a prop
                 password: password,
             });
-    
+            
             console.log(response.data); // Log the response from the backend
             // Add logic to handle successful password change
         } catch (error) {

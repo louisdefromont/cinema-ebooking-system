@@ -49,8 +49,7 @@ const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a 
 				<form class="login-form" onSubmit={handleSubmit}>
                     <p className='prompt'> Enter the email address associated with your account and we will send you a link to reset your password</p>
 					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}  />
-                    <button className="ripple">Continue</button>
-                    <a href="/password-reset">next page</a>                    
+                    <button className="ripple" to={"/password-reset?email=" + (email)}>Continue</button>                    <a href="/password-reset">next page</a>                    
 				</form>
 			</div>
         </>
