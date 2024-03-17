@@ -61,7 +61,8 @@ const Register = () => {
         
 
         console.log(response.data); // Log the response from the backend
-        window.location.href = '/reg-confirmation'
+        window.location.href = '/reg-confrimation';
+
 
     } catch (error) {
          if (error.response && error.response.status === 400) {

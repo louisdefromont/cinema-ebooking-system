@@ -14,13 +14,16 @@ const PasswordReset = () => {
         event.preventDefault();
         try {
             // Send a POST request to the new endpoint (/change-password) with the email and password
-            const response = await axios.post('https://localhost:3000//password-reset', {
+            const response = await axios.post('https://localhost:3000/password-reset', {
                 email: email, // Use the email received as a prop
                 password: password,
             });
             
             console.log(response.data); // Log the response from the backend
             // Add logic to handle successful password change
+            alert('Succesfully changed password');
+            window.location.href = '/login';
+
         } catch (error) {
             console.error('Error resetting password:', error);
             // Add logic to handle password reset failure (e.g., display error message to the user)

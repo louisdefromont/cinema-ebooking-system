@@ -145,48 +145,8 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
 });
 */
 
-/** 
-// Check if Email Exists and Reset Password
-app.post('/forgot-password', async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body; // Extract email and password from request body
+ 
 
-        // Check if the email and password are provided
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        // Find the user by email to retrieve their id
-        const user = await prisma.user.findFirst({
-            where: {
-                email: "2elainemaria@gmail.com"
-                //email: email,
-            },
-        });
-
-        // If the email doesn't exist, return an error
-        if (!user) {
-            return res.status(404).json({ error: 'There is no account associated with that email' });
-        }
-
-        // Update the user's password using their id
-        await prisma.user.update({
-            where: {
-                id: user.id, // Use the id obtained from the user object
-            },
-            data: {
-                password: password,
-            },
-        });
-
-        // Return success response
-        res.status(200).json({ message: 'Password reset successfully for email: ' + email });
-    } catch (error) {
-        console.error('Error resetting password:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
 
 // Endpoint to reset password based on email
 app.post('/password-reset', async (req: Request, res: Response) => {
@@ -229,18 +189,19 @@ app.post('/password-reset', async (req: Request, res: Response) => {
 });
 
 
+
 /** 
-// Endpoint to change password based on email
-app.post('/password-reset', async (req: Request, res: Response) => {
+// Check if Email Exists and Reset Password
+app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body; // Extract email and password from request body
-        
+
         // Check if the email and password are provided
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        // Find the user by email
+        // Find the user by email to retrieve their id
         const user = await prisma.user.findFirst({
             where: {
                 email: email,
@@ -249,13 +210,13 @@ app.post('/password-reset', async (req: Request, res: Response) => {
 
         // If the email doesn't exist, return an error
         if (!user) {
-            return res.status(404).json({ error: 'There is no account associated with that email'});
+            return res.status(404).json({ error: 'There is no account associated with that email' });
         }
 
         // Update the user's password using their id
         await prisma.user.update({
             where: {
-              id: user.id, // Use the id obtained from the user object
+                id: user.id, // Use the id obtained from the user object
             },
             data: {
                 password: password,

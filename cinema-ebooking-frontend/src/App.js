@@ -93,15 +93,8 @@ useEffect(() => {
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/reg-confrimation' element={<RegConfrim />} />
           <Route path='/register' element={<Register />} />
-
-         <Route
-            path='/forgot-password'
-            element={<ForgotPassword />} // Pass a callback to handle entered email
-          />
-          <Route
-            path='/password-reset'
-            element={<PasswordReset />} // Pass email as a prop
-          />                   
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/password-reset' element={<PasswordReset />} />                   
         </Routes>
       </div>
 

@@ -4,9 +4,8 @@ import NavBar from '../components/NavBar';
 import axios from 'axios'; 
 
 
-const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a prop
+const ForgotPassword = () => { // Receive onEmailEntered as a prop
     const [email, setEmail] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -22,14 +21,15 @@ const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a 
 
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful login (e.g., redirect to another page)
-        //        window.location.href = 'http://example.com/reset-password'; // Replace 'http://example.com/reset-password' with your desired URL
-        onEmailEntered(email);
-
+        window.location.href = '/reg-confrimation';
     } catch (error) {
         console.error('Error checking email:', error);
         if (error.response && error.response.status === 404) {
             console.error('Error 1');
             alert('There is no account associated with that email');
+        } else if (error.response && error.response.status === 404) {
+            console.error('Error 2');
+            alert('Enter an email');
         } else {
             alert('Email check failed. Please try again later.');
         }
@@ -49,7 +49,7 @@ const ForgotPassword = ({ onEmailEntered }) => { // Receive onEmailEntered as a 
 				<form class="login-form" onSubmit={handleSubmit}>
                     <p className='prompt'> Enter the email address associated with your account and we will send you a link to reset your password</p>
 					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}  />
-                    <button className="ripple" to={"/password-reset?email=" + (email)}>Continue</button>                    <a href="/password-reset">next page</a>                    
+                    <button className="ripple" to={"/password-reset?email=" + (email)}>Continue</button>                    
 				</form>
 			</div>
         </>
