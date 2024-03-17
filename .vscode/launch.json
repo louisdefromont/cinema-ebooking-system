@@ -10,6 +10,26 @@
 			"name": "Launch Chrome against localhost",
 			"url": "http://localhost:8080",
 			"webRoot": "${workspaceFolder}/cinema-ebooking-frontend"
+		},
+		{
+			"name": "Launch ts-node",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "node",
+			"runtimeArgs": [
+				"--nolazy",
+				"-r",
+				"ts-node/register/transpile-only"
+			],
+			"args": [
+				"index.ts"
+			],
+			"cwd": "${workspaceRoot}/cinema-ebooking-backend/",
+			"internalConsoleOptions": "openOnSessionStart",
+			"skipFiles": [
+				"<node_internals>/**",
+				"node_modules/**"
+			]
 		}
 	]
 }
