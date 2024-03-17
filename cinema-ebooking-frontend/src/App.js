@@ -17,10 +17,20 @@ import Confirmation from './pages/Confirmation';
 import ForgotPassword from './pages/ForgotPassword';
 import PasswordReset from './pages/PasswordReset';
 import RegConfrim from './pages/RegConfrim';
+import Payment2 from './pages/Payment2';
 
 
 function App() {
-  const [email, setEmail] = useState(''); // State variable to hold email
+
+  const [email, setEmail] = useState('');
+
+  // Function to receive the email from the Register component
+  const handleEmailChange = (newEmail) => {
+      setEmail(newEmail);
+      console.log('Email received in App component:', newEmail); // Add this line to log the email
+
+  };
+ 
 
   const handleForgotPassword = (enteredEmail) => {
     setEmail(enteredEmail); // Update email state with the entered email
@@ -51,7 +61,6 @@ function App() {
           <Route exact path='/' element={<Homepage />} />
           <Route path='/movie-search' element={<MovieSearch />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
           <Route path='/account' element={<UserAccount />} />
           <Route path='/admin' element={<AdminControl />} />
           <Route path='/admin/promotions' element={<AdminPromotions />} />
@@ -63,6 +72,8 @@ function App() {
           <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/reg-confrimation' element={<RegConfrim />} />
+          <Route path='/payment2' element={<Payment2 email="2elainemaria@gmail.com" />} />
+          <Route path='/register' element={<Register onEmailChange={handleEmailChange} />} />
 
          <Route
             path='/forgot-password'
@@ -74,6 +85,7 @@ function App() {
           />                   
         </Routes>
       </div>
+
     </Router>
   );
 

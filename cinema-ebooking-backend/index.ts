@@ -9,7 +9,44 @@ app.use(cors())
 app.use(express.json())
 
 
+// Endpoint to add a new payment card
+app.post('/paymentcards', async (req, res) => {
+    try {
+        const { email, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
+        
+        // Find the user by email
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+            },
+        });
 
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userId = user.id;
+
+        // Create the payment card in the database
+        const newPaymentCard = await prisma.paymentCard.create({
+            data: {
+                user: { connect: { id: userId } },
+                cardName,
+                cardNum,
+                cvv,
+                expirationDate,
+                billingAddress,
+                billCity,
+                billState
+            }
+        });
+
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard: newPaymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 /** 

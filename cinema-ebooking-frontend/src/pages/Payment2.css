@@ -172,7 +172,6 @@ form.register input[type=password]
     margin:10px;
     transform: translateX(-50px);
 }
-
 form.register input[type=text].year
 {
     border: 1px solid #E1E1E1;

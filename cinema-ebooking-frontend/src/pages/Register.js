@@ -5,8 +5,7 @@ import Button from '@mui/material/Button';
 import axios from 'axios'; 
 
 
-
-const Register = () => {
+const Register = ({ onEmailChange }) => {
 
 
    // Define state variables for input fields
@@ -37,6 +36,16 @@ const Register = () => {
    const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+        const buttonClicked = event.target.type === 'submit' ? event.target.name : null;
+        if (buttonClicked === 'add') {
+            if (!cardName || !cardNo || !cvv || !cardExpDate || !billAdd || !billCity || !billState) {
+                window.alert("Some payment information is missing");
+                throw new Error("Pay info missing");
+                // Handle the case where some payment information is missing
+            }
+            console.log("add");
+        }
+
         // Send a POST request to your backend endpoint with the email and password
         const response = await axios.post('http://localhost:3000/register', {
             email: email,
@@ -58,8 +67,18 @@ const Register = () => {
             billState: billState
         
         });
+
+        
+
         console.log(response.data); // Log the response from the backend
-        window.location.href = '/reg-confrimation';
+        onEmailChange(email);
+        if (buttonClicked === 'register') {
+           window.location.href = '/reg-confrimation';
+        } else if (buttonClicked === 'add') {
+          window.location.href = '/payment2';
+            console.log("add");
+        } 
+
     } catch (error) {
          if (error.response && error.response.status === 400) {
             console.log("err 1");
@@ -411,10 +430,11 @@ const Register = () => {
                </fieldset>
 
 
-               <div><Button className='button' type="submit" variant="contained" >Register</Button></div>
-               <div><Button className='button' type="submit" variant="contained" >Add Another Payment Method </Button></div>
+               <div ><Button className='button' type="submit" variant="contained" name="register" onClick={handleSubmit}>Register</Button></div>
+               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}><Button className='button' type="submit" variant="contained" name="add" onClick={handleSubmit}>Add more payment methods</Button></div>
 
            </form>
+
        </>
    )
 };
