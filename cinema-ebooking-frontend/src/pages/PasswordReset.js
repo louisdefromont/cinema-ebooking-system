@@ -20,10 +20,9 @@ const PasswordReset = () => {
             });
             
             console.log(response.data); // Log the response from the backend
-            // Add logic to handle successful password change
             alert('Succesfully changed password');
             window.location.href = '/login';
-
+            
         } catch (error) {
             console.error('Error resetting password:', error);
             // Add logic to handle password reset failure (e.g., display error message to the user)
@@ -41,37 +40,6 @@ const PasswordReset = () => {
         setPassword(event.target.value);
     };
 
-    /** 
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            // Send a POST request to the backend endpoint with the email and password
-            const response = await axios.post('http://localhost:3000/forgot-password', {
-                password: password,
-            });
-    
-            console.log(response.data); // Log the response from the backend
-            // Add logic to handle successful login (e.g., redirect to another page)
-        } catch (error) {
-            console.error('Error resetting password:', error);
-            // Add logic to handle password reset failure (e.g., display error message to the user)
-            if (error.response && error.response.status === 404) {
-                alert('There is no account associated with that email');
-            } else {
-                console.log("YOOOO IM IN HERE");
-                alert('Password reset failed. Please try again later.');
-            }
-        }
-    };
-    
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
- 
-*/
     return(
         <>
             <NavBar />

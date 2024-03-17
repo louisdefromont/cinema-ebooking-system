@@ -17,46 +17,11 @@ import Confirmation from './pages/Confirmation';
 import ForgotPassword from './pages/ForgotPassword';
 import PasswordReset from './pages/PasswordReset';
 import RegConfrim from './pages/RegConfrim';
-import Payment2 from './pages/Payment2';
-import Payment3 from './pages/Payment3';
+import PRConfrim from './pages/PRConfirm';
 
 
 
 function App() {
-
-  const [email, setEmail] = useState('');
-
-// Function to receive the email from the Register component
-const handleEmailChange = (newEmail) => {
-  setEmail(newEmail);
-  console.log('Email received in App component:', newEmail);
-};
-
-useEffect(() => {
-  console.log('Email prop after state update:', email);
-}, [email]); // This useEffect will run whenever 'email' state changes
-
-
-  /** 
-  // Function to receive the email from the Register component
-  const handleEmailChange = (newEmail) => {
-        //setEmail('wassupp');
-
-      setEmail(newEmail);
-      console.log('Email received in App component:', newEmail); 
-      if (email === newEmail) {
-        console.log('Email prop has been set correctly:', email);
-    } else {
-        console.log('Email prop has not been set correctly. Expected:', newEmail, 'but received:', email);
-    }
-  };
- */
-
-  const handleForgotPassword = (enteredEmail) => {
-    setEmail(enteredEmail); // Update email state with the entered email
-    console.log('Entered email:', enteredEmail);
-  };
-
   const orderDetails = [
     {
       seatNumber: 'A1',
@@ -94,7 +59,9 @@ useEffect(() => {
           <Route path='/reg-confrimation' element={<RegConfrim />} />
           <Route path='/register' element={<Register />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
-          <Route path='/password-reset' element={<PasswordReset />} />                   
+          <Route path='/password-reset' element={<PasswordReset />} />  
+          <Route path='/pr-confirmation' element={<PRConfrim />} />                   
+                 
         </Routes>
       </div>
 

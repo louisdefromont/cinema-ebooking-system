@@ -21,7 +21,7 @@ const ForgotPassword = () => { // Receive onEmailEntered as a prop
 
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful login (e.g., redirect to another page)
-        window.location.href = '/reg-confrimation';
+        window.location.href = '/pr-confirmation';
     } catch (error) {
         console.error('Error checking email:', error);
         if (error.response && error.response.status === 404) {

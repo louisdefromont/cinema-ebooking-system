@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './RegConfrim.css'
 import NavBar from '../components/NavBar';
 
-const RegConfrim = () => {
+const PRConfrim = () => {
   
 
     return(
@@ -11,12 +11,12 @@ const RegConfrim = () => {
 
 			<div class="form">
 				<form class="login-form">
-                <p className='mes1'> Your registration is complete. </p>
-                <p className='mes2'> A confrimation email has been sent. </p>
+                <p className='mes1'> Password reset  has been sent. </p>
+                <p className='mes2'> Check your email for a link to change your password. </p>
 				</form>
 			</div>
         </>
     )
 };
 
-export default RegConfrim;
+export default PRConfrim;
