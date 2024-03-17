@@ -2,27 +2,28 @@ import React, { useState, useEffect } from 'react';
 import './PasswordReset.css'
 import NavBar from '../components/NavBar';
 import axios from 'axios'; 
+import { useLocation } from 'react-router-dom';
 
-const PasswordReset = ({ email }) => {
+const PasswordReset = () => {
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-
-    useEffect(() => {
-        console.log('Email prop received:', email);
-    }, [email]); // Log the email prop when it changes
-
+    const location = useLocation();
+    const email = new URLSearchParams(location.search).get('email');
+    console.log("resetEmail =" + email);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             // Send a POST request to the new endpoint (/change-password) with the email and password
-            const response = await axios.post('https://localhost:3000//password-reset', {
+            const response = await axios.post('https://localhost:3000/password-reset', {
                 email: email, // Use the email received as a prop
                 password: password,
             });
-    
+            
             console.log(response.data); // Log the response from the backend
             // Add logic to handle successful password change
+            alert('Succesfully changed password');
+            window.location.href = '/login';
+
         } catch (error) {
             console.error('Error resetting password:', error);
             // Add logic to handle password reset failure (e.g., display error message to the user)

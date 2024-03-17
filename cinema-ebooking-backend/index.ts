@@ -145,9 +145,11 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
 });
 */
 
-/** 
-// Check if Email Exists and Reset Password
-app.post('/forgot-password', async (req: Request, res: Response) => {
+ 
+
+
+// Endpoint to reset password based on email
+app.post('/password-reset', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body; // Extract email and password from request body
 
@@ -156,11 +158,10 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        // Find the user by email to retrieve their id
+        // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
-                email: "2elainemaria@gmail.com"
-                //email: email,
+                email: email,
             },
         });
 
@@ -172,7 +173,7 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         // Update the user's password using their id
         await prisma.user.update({
             where: {
-                id: user.id, // Use the id obtained from the user object
+                id: user.id,
             },
             data: {
                 password: password,
@@ -186,10 +187,12 @@ app.post('/forgot-password', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-*/
 
-// Endpoint to change password based on email
-app.post('/password-reset', async (req: Request, res: Response) => {
+
+
+/** 
+// Check if Email Exists and Reset Password
+app.post('/forgot-password', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body; // Extract email and password from request body
 
@@ -198,7 +201,7 @@ app.post('/password-reset', async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        // Find the user by email
+        // Find the user by email to retrieve their id
         const user = await prisma.user.findFirst({
             where: {
                 email: email,
@@ -227,7 +230,7 @@ app.post('/password-reset', async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+*/
 
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
