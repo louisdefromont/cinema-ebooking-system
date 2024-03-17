@@ -39,7 +39,8 @@ model User {
 
 model PaymentCard {
   id             Int      @id @default(autoincrement())
-  user           User     @relation(fields: [id], references: [id])
+  userId         Int      @db.Int
+  user           User     @relation(fields: [userId], references: [id])
   cardName      String    @db.VarChar(255)
   cardNum       String    @db.VarChar(255) 
   cvv           String    @db.VarChar(255) 
