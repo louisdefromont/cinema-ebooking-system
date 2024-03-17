@@ -610,7 +610,7 @@ app.put('/users/me', async (req, res) => {
         }
 
         const userId = req.session.user.id;
-        const { firstName, lastName, email, phone, street, city, state, password } = req.body;
+        const { firstName, lastName, email, phone, street, city, state, password, regPromo } = req.body;
 
         // Update the user in the database
         const updatedUser = await prisma.user.update({
@@ -626,6 +626,7 @@ app.put('/users/me', async (req, res) => {
                 city,
                 state,
                 password,
+                regPromo
             },
         });
 

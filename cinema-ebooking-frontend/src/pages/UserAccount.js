@@ -14,7 +14,8 @@ const UserAccount = () => {
         phone: '',
         street: '',
         city: '',
-        state: ''
+        state: '',
+        password: '',
     });
 
     useEffect(() => {
@@ -37,7 +38,8 @@ const UserAccount = () => {
             street: user.street,
             city: user.city,
             state: user.state,
-            password: user.password
+            password: user.password,
+            regPromo: user.regPromo
         });
     };
 
@@ -62,6 +64,17 @@ const UserAccount = () => {
         setEditedUserData(prevState => ({
             ...prevState,
             [name]: value
+        }));
+    };
+
+    const handleInputCheck = (e) => {
+        const { name, value, type, checked } = e.target;
+        // For checkbox inputs, use checked property instead of value
+        const inputValue = type === 'checkbox' ? checked : value;
+        
+        setEditedUserData(prevState => ({
+            ...prevState,
+            [name]: inputValue
         }));
     };
 
@@ -217,6 +230,29 @@ const UserAccount = () => {
                             <Button onClick={handleEdit}> Edit </Button>
                         )}
                     </section>
+                    <section>
+                        {editMode ? (
+                            <input
+                                type="checkbox"
+                                name="regPromo"
+                                checked={editedUserData.regPromo}
+                                onChange={handleInputCheck}
+                            />
+                        ) : (
+                            <p className='account_detail'>
+                                Promotions: {user && user.regPromo ? 'Subscribed' : 'Not Subscribed'}
+                            </p>
+                        )}
+                        {editMode ? (
+                            <>
+                                <Button onClick={handleSave}> Save </Button>
+                                <Button onClick={handleCancel}> Cancel </Button>
+                            </>
+                        ) : (
+                            <Button onClick={handleEdit}> Edit </Button>
+                        )}
+                    </section>
+                    
                 </fieldset>
                 <a href="/"><Button> Return Home </Button></a>
             </form>
