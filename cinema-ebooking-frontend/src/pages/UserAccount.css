@@ -33,7 +33,7 @@ form > h4 {
 form.register{
     width:800px;
     margin: 20px auto 0px auto;
-    height:530px;
+    height:650px;
     background-color:#fff;
     font-size: 70%;
     padding:5px;
@@ -206,4 +206,11 @@ p.agreement label{
     width:390px;
     text-align:left;
     margin-top:3px;
+}
+.account_detail {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-style: normal;
+    color:black;
+    font-size: larger;
 }

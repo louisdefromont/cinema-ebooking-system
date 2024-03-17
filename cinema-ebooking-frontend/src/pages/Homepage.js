@@ -58,7 +58,7 @@ const Homepage = () => {
 
   return (
     <>
-      <NavBar />
+    <NavBar />
 
       <section>
         {user && (

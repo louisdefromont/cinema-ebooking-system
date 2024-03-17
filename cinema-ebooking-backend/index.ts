@@ -360,11 +360,11 @@ app.post('/register', async (req: Request, res: Response) => {
         });
 
         res.json(newUser);
-    } catch (error) {
+    }catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-});
+}); 
 
 // Login 
 app.post('/login', async (req: Request, res: Response) => {
@@ -667,10 +667,14 @@ app.get('/users/:id', async (req, res) => {
 });
 
 // Update User endpoint
-app.put('/users/:id', async (req, res) => {
+app.put('/users/me', async (req, res) => {
     try {
-        const userId = parseInt(req.params.id);
-        const { firstName, lastName, email, password, phone, street, city, state, status, regPromo } = req.body;
+        if (req.session.user === undefined) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const userId = req.session.user.id;
+        const { firstName, lastName, email, phone, street, city, state, password, regPromo } = req.body;
 
         // Update the user in the database
         const updatedUser = await prisma.user.update({
@@ -681,14 +685,13 @@ app.put('/users/:id', async (req, res) => {
                 firstName,
                 lastName,
                 email,
-                password,
                 phone,
                 street,
                 city,
                 state,
-                status,
+                password,
                 regPromo
-            }
+            },
         });
 
         res.status(200).json({ message: 'User updated successfully', user: updatedUser });
