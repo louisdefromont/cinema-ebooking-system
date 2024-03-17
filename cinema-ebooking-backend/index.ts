@@ -8,6 +8,32 @@ const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
+// Endpoint to check if the email belongs to an admin
+app.post('/checkAdmin', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Query the database to find if the email belongs to an admin
+        const admin = await prisma.admin.findFirst({
+            where: {
+                user: {
+                    email: email
+                }
+            }
+        });
+
+        if (admin) {
+            res.status(200).json({ isAdmin: true });
+        } else {
+            res.status(200).json({ isAdmin: false });
+        }
+    } catch (error) {
+        console.error('Error checking admin:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 // Endpoint to add a new payment card
 app.post('/paymentcards', async (req, res) => {
