@@ -22,8 +22,72 @@ app.use(cors(
 ));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+// Endpoint to check if the email belongs to an admin
+app.post('/checkAdmin', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        // Query the database to find if the email belongs to an admin
+        const admin = await prisma.admin.findFirst({
+            where: {
+                user: {
+                    email: email
+                }
+            }
+        });
+
+        if (admin) {
+            res.status(200).json({ isAdmin: true });
+        } else {
+            res.status(200).json({ isAdmin: false });
+        }
+    } catch (error) {
+        console.error('Error checking admin:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
+
+// Endpoint to add a new payment card
+app.post('/paymentcards', async (req, res) => {
+    try {
+        const { email, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
+        
+        // Find the user by email
+        const user = await prisma.user.findFirst({
+            where: {
+                email: "2elainemaria@gmail.com",
+                //email: email,
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userId = user.id;
+
+        // Create the payment card in the database
+        const newPaymentCard = await prisma.paymentCard.create({
+            data: {
+                user: { connect: { id: userId } },
+                cardName,
+                cardNum,
+                cvv,
+                expirationDate,
+                billingAddress,
+                billCity,
+                billState
+            }
+        });
+
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard: newPaymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 app.use(session({
     secret: process.env.SECRET_KEY!,
     resave: false,

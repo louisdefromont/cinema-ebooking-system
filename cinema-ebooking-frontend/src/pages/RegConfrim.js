@@ -10,7 +10,7 @@ const Login = () => {
     event.preventDefault();
     try {
         // Send a POST request to the backend endpoint with the email and password
-        const response = await axios.post('https://localhost:3000/login', {
+        const response = await axios.post('http://localhost:3000/login', {
             email: email,
             password: password,
         });
@@ -44,7 +44,7 @@ const Login = () => {
             <NavBar />
 
 			<div class="form">
-				<form class="login-form" onSubmit={handleSubmit}>
+				<form class="login-form">
                 <p className='mes1'> Your registration is complete. </p>
                 <p className='mes2'> A confrimation email has been sent. </p>
 				</form>

@@ -23,7 +23,7 @@ model User {
   id          Int           @id @default(autoincrement())
   firstName   String?        @db.VarChar(255)
   lastName    String?        @db.VarChar(255)
-  email       String?        @db.VarChar(255)
+  email       String?        @db.VarChar(255)@unique
   password    String?        @db.VarChar(255)
   phone       String?        @db.VarChar(255)@default("a")
   street      String        @db.VarChar(255)@default("a")
@@ -39,7 +39,8 @@ model User {
 
 model PaymentCard {
   id             Int      @id @default(autoincrement())
-  user           User     @relation(fields: [id], references: [id])
+  userId         Int      @db.Int
+  user           User     @relation(fields: [userId], references: [id])
   cardName      String    @db.VarChar(255)
   cardNum       String    @db.VarChar(255) 
   cvv           String    @db.VarChar(255) 
@@ -52,6 +53,7 @@ model PaymentCard {
 
 model Admin {
   id   Int  @id @default(autoincrement())
+  email       String        @db.VarChar(255)@unique@default("a")
   user User @relation(fields: [id], references: [id])
 }
 

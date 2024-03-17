@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import axios from 'axios'; 
 
 
-
 const Register = () => {
 
 
@@ -58,8 +57,12 @@ const Register = () => {
             billState: billState
         
         });
+
+        
+
         console.log(response.data); // Log the response from the backend
-        window.location.href = '/reg-confrimation';
+        window.location.href = '/reg-confirmation'
+
     } catch (error) {
          if (error.response && error.response.status === 400) {
             console.log("err 1");
@@ -411,10 +414,10 @@ const Register = () => {
                </fieldset>
 
 
-               <div><Button className='button' type="submit" variant="contained" >Register</Button></div>
-               <div><Button className='button' type="submit" variant="contained" >Add Another Payment Method </Button></div>
+               <div ><Button className='button' type="submit" variant="contained" name="register" onClick={handleSubmit}>Register</Button></div>
 
            </form>
+
        </>
    )
 };
