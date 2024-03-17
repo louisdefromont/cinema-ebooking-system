@@ -4,7 +4,7 @@ import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
 import Register from './pages/Register';
-import UserAccount from './UserAccount';
+import UserAccount from './pages/UserAccount';
 import AdminControl from './pages/admin/AdminControl';
 import AdminPromotions from './pages/admin/Promotions';
 import AdminUsers from './pages/admin/Users';
