@@ -18,6 +18,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import PasswordReset from './pages/PasswordReset';
 import RegConfrim from './pages/RegConfrim';
 import Payment2 from './pages/Payment2';
+import Payment3 from './pages/Payment3';
+
 
 
 function App() {
@@ -73,6 +75,7 @@ function App() {
           <Route path='/confirmation' element={<Confirmation />} />
           <Route path='/reg-confrimation' element={<RegConfrim />} />
           <Route path='/payment2' element={<Payment2 email="2elainemaria@gmail.com" />} />
+          <Route path='/payment3' element={<Payment3 email="2elainemaria@gmail.com" />} />
           <Route path='/register' element={<Register onEmailChange={handleEmailChange} />} />
 
          <Route
