@@ -11,6 +11,8 @@ declare module 'express-session' {
     }
 }
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
@@ -36,6 +38,15 @@ app.use(session({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+ 
+// Function to encrypt data
+function encryptData(data: string) {
+    const cipher = crypto.createCipher('aes-256-cbc', 'secretKey');
+    let encryptedData = cipher.update(data, 'utf8', 'hex');
+    encryptedData += cipher.final('hex');
+    return encryptedData;
+}
+
 // Endpoint to check if the email belongs to an admin
 app.post('/checkAdmin', async (req, res) => {
     try {
@@ -238,7 +249,18 @@ app.post('/register', async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
-
+        /** 
+        // Encrypt paymentInfo
+        const encryptedPaymentInfo = encryptData(JSON.stringify({
+            cardName: cardName,
+            cardNum: cardNum,
+            cvv: cvv,
+            expirationDate: expirationDate,
+            billingAddress: billingAddress,
+            billCity: billCity,
+            billState: billState,
+        }));
+*/
         // Create a new user with associated payment card
         const newUser = await prisma.user.create({
             data: {
@@ -251,6 +273,8 @@ app.post('/register', async (req: Request, res: Response) => {
                 city: city,
                 state: state,
                 regPromo: regPromo,
+                //paymentInfo: encryptedPaymentInfo, // Store encrypted paymentInfo
+                 
                 paymentInfo: { // Add paymentInfo directly to the user creation
                     create: {
                         cardName: cardName,
@@ -262,6 +286,7 @@ app.post('/register', async (req: Request, res: Response) => {
                         billState: billState,
                     }
                 }
+                
             },
             include: { // Include the paymentInfo association in the response
                 paymentInfo: true
