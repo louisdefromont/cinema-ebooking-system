@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const UserAccount = () => {
 
     const [user, setUser] = useState(null);
+    const [paymentCards, setPaymentCards] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editedUserData, setEditedUserData] = useState({
         firstName: '',
@@ -18,6 +19,14 @@ const UserAccount = () => {
         state: '',
         password: '',
         currentPassword: '',
+
+    });
+    const [editedPaymentCardData, setEditedPaymentCardData] = useState({
+        userID: '',
+        cardName: '',
+        cardNum: '',
+        cvv: '',
+        expirationDate: '',
     });
 
     useEffect(() => {
@@ -28,7 +37,60 @@ const UserAccount = () => {
           .catch(error => {
             console.error('Error fetching user:', error);
           });
+        axios.get('https://localhost:3000/paymentcards', { withCredentials: true })
+          .then(response => {
+            setPaymentCards(response.data.paymentCards);
+          })
+          .catch(error => {
+            console.error('Error fetching payment cards:', error);
+          });
     }, []);
+
+    const handleEditPaymentCard = (cardId) => {
+        setEditMode(true);
+        const selectedCard = paymentCards.find(card => card.id === cardId);
+        setEditedUserData({
+            userId: selectedCard.userID,
+            cardName: selectedCard.cardName,
+            cardNum: selectedCard.cardNum,
+            cvv: selectedCard.cvv,
+            expirationDate: selectedCard.expirationDate,
+        });
+    };
+
+    const handleSavePaymentCard = async () => {
+        try {
+            await axios.put('https://localhost:3000/paymentcards', editedPaymentCardData, { withCredentials: true });
+            setEditMode(false);
+            const response = await axios.get('https://localhost:3000/paymentcards', { withCredentials: true });
+            setPaymentCards(response.data.paymentCards);
+        } catch (error) {
+            console.error('Error updating payment card:', error);
+        }
+    };
+
+    const handleAddPaymentCard = () => {
+        setEditMode(true);
+        setEditedUserData({
+            userID: '',
+            cardName: '',
+            cardNum: '',
+            cvv: '',
+            expirationDate: '',
+        });
+    };
+
+    const handleCancelPaymentCard = () => {
+        setEditMode(false);
+        setEditedUserData({
+            userID: '',
+            cardName: '',
+            cardNum: '',
+            cvv: '',
+            expirationDate: '',
+        });
+    };
+
 
     const handleEdit = () => {
         setEditMode(true);
@@ -41,8 +103,23 @@ const UserAccount = () => {
             city: user.city,
             state: user.state,
             password: user.password,
-            regPromo: user.regPromo
+            regPromo: user.regPromo,
         });
+    };
+
+    const handleInputChange = (e, isPaymentCard = false) => {
+        const { name, value } = e.target;
+        if (isPaymentCard) {
+            setEditedPaymentCardData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        } else {
+            setEditedUserData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
     };
 
     const handlePasswordEdit = () => {
@@ -65,6 +142,7 @@ const UserAccount = () => {
             console.error('Error updating user:', error);
         }
     };
+
     const handlePasswordSave = async () => {
         try {
             const isValidPassword = await validatePassword(editedUserData.currentPassword);
@@ -89,13 +167,6 @@ const UserAccount = () => {
         setEditMode(false);
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEditedUserData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
 
     const handleInputCheck = (e) => {
         const { name, value, type, checked } = e.target;
@@ -317,6 +388,50 @@ const UserAccount = () => {
                         )}
                     </section>
 
+                    
+                    <section>
+                        <h2>Payment Cards:</h2>
+                            {paymentCards.map(card => (
+                                <div key={card.id}>
+                                    <input
+                                type="text"
+                                name="cardName"
+                                value={editedUserData.cardName}
+                                onChange={handleInputChange}
+                            />
+                            <input
+                                type="text"
+                                name="cardNum"
+                                value={editedUserData.cardNum}
+                                onChange={handleInputChange}
+                            />
+                            <input
+                                type="text"
+                                name="cvv"
+                                value={editedUserData.cvv}
+                                onChange={handleInputChange}
+                            />
+                            <input
+                                type="text"
+                                name="expirationDate"
+                                value={editedUserData.expirationDate}
+                                onChange={handleInputChange}
+                            />
+                            {editMode ? (
+                                <Button onClick={() => handleSavePaymentCard(card.id)}>Save</Button>
+                            ) : (
+                                <Button onClick={() => handleEditPaymentCard(card.id)}>Edit</Button>
+                            )}
+                        </div>
+                        ))}
+                        {editMode ? (
+                            <>
+                                <Button onClick={handleAddPaymentCard}>Add New Payment Card</Button>
+                                <Button onClick={handleCancelPaymentCard}>Cancel</Button>
+                            </>
+                        ) : null}
+                    </section>
+
                     <section>
                         {user != null ? (
                             <Button onClick={handleLogout} variant="contained">Log Out</Button>
@@ -324,6 +439,7 @@ const UserAccount = () => {
                             null
                         )}
                     </section>
+
                     
                 </fieldset>
             </form>

@@ -62,15 +62,14 @@ const Register = () => {
         
         });
 
-        const sendMail = () => {
-            let parms = {
-               to_email : email,
-               }
-       
-               emailjs.send("gmailkey", "confirmationemail", parms)
-               .then(alert('Email has been sent!'))
-               .catch((error) => console.error('Error sending email:', error));
-           }
+        let parms = {
+           to_email : 'dev7712@gmail.com',
+        }
+               
+    
+        emailjs.send("gmailkey", "confirmationemail", parms)
+        .then(alert('Email has been sent!'))
+        .catch((error) => console.error('Error sending email:', error));
        
 
         
