@@ -58,12 +58,14 @@ const Homepage = () => {
 
   return (
     <>
-    <NavBar />
+      <NavBar />
 
-      <section>
-        {user && (
-          <h1 className='header_font'>Welcome {user.firstName}</h1>
-        )}
+      <section style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '10vh' }}>
+        <div style={{ maxWidth: '600px', textAlign: 'center' }}>
+          {user && (
+            <h1 className='header_font'>Welcome {user.firstName && user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1).toLowerCase()}</h1>
+          )}
+        </div>
       </section>
 
       <section className='playing_carousel'>
