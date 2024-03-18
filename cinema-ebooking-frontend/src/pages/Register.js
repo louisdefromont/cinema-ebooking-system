@@ -3,6 +3,10 @@ import './Register.css';
 import NavBar from '../components/NavBar';
 import Button from '@mui/material/Button';
 import axios from 'axios'; 
+import emailjs from 'emailjs-com';
+
+
+emailjs.init("9xrg1u7JrddOMAJz7")
 
 
 const Register = () => {
@@ -57,6 +61,17 @@ const Register = () => {
             billState: billState
         
         });
+
+        const sendMail = () => {
+            let parms = {
+               to_email : email,
+               }
+       
+               emailjs.send("gmailkey", "confirmationemail", parms)
+               .then(alert('Email has been sent!'))
+               .catch((error) => console.error('Error sending email:', error));
+           }
+       
 
         
 

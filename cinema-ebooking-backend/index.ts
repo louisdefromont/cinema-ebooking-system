@@ -22,6 +22,7 @@ app.use(cors(
 ));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
 // Endpoint to check if the email belongs to an admin
 app.post('/checkAdmin', async (req, res) => {
     try {
@@ -46,7 +47,6 @@ app.post('/checkAdmin', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 
 
 // Endpoint to add a new payment card

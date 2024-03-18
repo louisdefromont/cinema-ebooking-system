@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import './ForgotPassword.css'
 import NavBar from '../components/NavBar';
 import axios from 'axios'; 
+import emailjs from 'emailjs-com';
+
+emailjs.init("9xrg1u7JrddOMAJz7")
 
 
 const ForgotPassword = () => { // Receive onEmailEntered as a prop
@@ -21,7 +24,7 @@ const ForgotPassword = () => { // Receive onEmailEntered as a prop
 
         console.log(response.data); // Log the response from the backend
         // Add logic to handle successful login (e.g., redirect to another page)
-        window.location.href = '/pr-confirmation';
+        window.location.href = '/reg-confrimation';
     } catch (error) {
         console.error('Error checking email:', error);
         if (error.response && error.response.status === 404) {
@@ -36,7 +39,16 @@ const ForgotPassword = () => { // Receive onEmailEntered as a prop
     }
 };
 
-	
+
+    const sendMail = () => {
+     let parms = {
+        to_email : email,
+        }
+
+        emailjs.send("gmailkey", "passwordresettemp", parms)
+        .then(alert('Email has been sent!'))
+        .catch((error) => console.error('Error sending email:', error));
+    }
 
 
 
@@ -48,8 +60,8 @@ const ForgotPassword = () => { // Receive onEmailEntered as a prop
 			<div class="form">
 				<form class="login-form" onSubmit={handleSubmit}>
                     <p className='prompt'> Enter the email address associated with your account and we will send you a link to reset your password</p>
-					<input type="text" placeholder="email" value={email} onChange={handleEmailChange}  />
-                    <button className="ripple" to={"/password-reset?email=" + (email)}>Continue</button>                    
+					<input id="email" type="text" placeholder="email" value={email} onChange={handleEmailChange} />
+                    <button className="ripple" onClick={sendMail}>Continue</button>                    
 				</form>
 			</div>
         </>
