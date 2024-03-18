@@ -39,13 +39,11 @@ app.use(session({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
  
-// Function to encrypt data
-function encryptData(data: string) {
-    const cipher = crypto.createCipher('aes-256-cbc', 'secretKey');
-    let encryptedData = cipher.update(data, 'utf8', 'hex');
-    encryptedData += cipher.final('hex');
-    return encryptedData;
-}
+// Function to encrypt sensitive data
+const encryptData = async (data: string) => {
+    // Use bcrypt hash function to encrypt data
+    return await bcrypt.hash(data, 10); // Adjust the saltRounds as needed
+};
 
 // Endpoint to check if the email belongs to an admin
 app.post('/checkAdmin', async (req, res) => {
@@ -92,18 +90,25 @@ app.post('/paymentcards', async (req, res) => {
         }
 
         const userId = user.id;
-
+        // Encrypt sensitive payment card data
+        const encryptedCardName = await bcrypt.hash(cardName, 10);
+        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
+        const encryptedCvv = await bcrypt.hash(cvv, 10);
+        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
+        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
+        const encryptedBillCity = await bcrypt.hash(billCity, 10);
+        const encryptedBillState = await bcrypt.hash(billState, 10);
         // Create the payment card in the database
         const newPaymentCard = await prisma.paymentCard.create({
             data: {
                 user: { connect: { id: userId } },
-                cardName,
-                cardNum,
-                cvv,
-                expirationDate,
-                billingAddress,
-                billCity,
-                billState
+                cardName: encryptedCardName,
+                cardNum: encryptedCardNum,
+                cvv: encryptedCvv,
+                expirationDate: encryptedExpirationDate,
+                billingAddress: encryptedBillingAddress,
+                billCity: encryptedBillCity,
+                billState: encryptedBillState,
             }
         });
 
@@ -249,18 +254,14 @@ app.post('/register', async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
-        /** 
-        // Encrypt paymentInfo
-        const encryptedPaymentInfo = encryptData(JSON.stringify({
-            cardName: cardName,
-            cardNum: cardNum,
-            cvv: cvv,
-            expirationDate: expirationDate,
-            billingAddress: billingAddress,
-            billCity: billCity,
-            billState: billState,
-        }));
-*/
+        // Encrypt sensitive payment card data
+        const encryptedCardName = await bcrypt.hash(cardName, 10);
+        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
+        const encryptedCvv = await bcrypt.hash(cvv, 10);
+        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
+        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
+        const encryptedBillCity = await bcrypt.hash(billCity, 10);
+        const encryptedBillState = await bcrypt.hash(billState, 10);
         // Create a new user with associated payment card
         const newUser = await prisma.user.create({
             data: {
@@ -273,17 +274,16 @@ app.post('/register', async (req: Request, res: Response) => {
                 city: city,
                 state: state,
                 regPromo: regPromo,
-                //paymentInfo: encryptedPaymentInfo, // Store encrypted paymentInfo
                  
                 paymentInfo: { // Add paymentInfo directly to the user creation
                     create: {
-                        cardName: cardName,
-                        cardNum: cardNum,
-                        cvv: cvv,
-                        expirationDate: expirationDate,
-                        billingAddress: billingAddress,
-                        billCity: billCity,
-                        billState: billState,
+                        cardName: encryptedCardName,
+                        cardNum: encryptedCardNum,
+                        cvv: encryptedCvv,
+                        expirationDate: encryptedExpirationDate,
+                        billingAddress: encryptedBillingAddress,
+                        billCity: encryptedBillCity,
+                        billState: encryptedBillState,
                     }
                 }
                 
