@@ -62,16 +62,18 @@ const Register = () => {
         
         });
 
-        let parms = {
-           to_email : 'dev7712@gmail.com',
+        const sendMail = () => {
+            let parms = {
+               to_email : email,
+               }
+        
+               emailjs.send("gmailkey", "confirmationemail", parms)
+               .then(alert('Email has been sent!'))
+               .catch((error) => console.error('Error sending email:', error));
         }
-               
-    
-        emailjs.send("gmailkey", "confirmationemail", parms)
-        .then(alert('Email has been sent!'))
-        .catch((error) => console.error('Error sending email:', error));
-       
+
         sendMail();
+       
 
         console.log(response.data); // Log the response from the backend
         window.location.href = '/reg-confrimation';
@@ -94,6 +96,7 @@ const Register = () => {
         }
     }
 };
+
 
    const handleEmailChange = (event) => {
        setEmail(event.target.value);
