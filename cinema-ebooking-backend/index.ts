@@ -39,6 +39,47 @@ app.use(session({
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
+// Endpoint to reset password based on email
+app.post('/activate', async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body; // Extract email and password from request body
+
+        // Check if the email and password are provided
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        // Find the user by email
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+            },
+        });
+
+        // If the email doesn't exist, return an error
+        if (!user) {
+            return res.status(404).json({ error: 'There is no account associated with that email' });
+        }
+
+
+        // Update the user's password using their id
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                status: false,
+            },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Activate successfully for email: ' + email });
+    } catch (error) {
+        console.error('Error activating:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Endpoint to check if the email belongs to an admin
 app.post('/checkAdmin', async (req, res) => {
     try {

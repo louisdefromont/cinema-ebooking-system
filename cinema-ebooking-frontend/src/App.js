@@ -18,6 +18,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import PasswordReset from './pages/PasswordReset';
 import RegConfrim from './pages/RegConfrim';
 import PRConfrim from './pages/PRConfirm';
+import Activate from './pages/Activate';
+
 
 
 
@@ -60,8 +62,10 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/password-reset' element={<PasswordReset />} />  
-          <Route path='/pr-confirmation' element={<PRConfrim />} />                   
-                 
+          <Route path='/pr-confirmation' element={<PRConfrim />} /> 
+          <Route path='/activate' element={<Activate />} />                   
+                  
+          
         </Routes>
       </div>
 
