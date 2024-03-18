@@ -72,8 +72,7 @@ const Register = () => {
                .catch((error) => console.error('Error sending email:', error));
            }
        
-
-        
+        sendMail();
 
         console.log(response.data); // Log the response from the backend
         window.location.href = '/reg-confrimation';
