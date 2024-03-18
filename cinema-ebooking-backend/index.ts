@@ -10,16 +10,32 @@ declare module 'express-session' {
         user: { id: number; };
     }
 }
+const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
+
 app.use(cors(
     {
         origin: 'https://localhost:8080',
         credentials: true
     }
 ));
+
+
+app.use(session({
+    secret: process.env.SECRET_KEY!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        secure: true,
+        sameSite: 'none',
+    },
+}));
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
@@ -67,18 +83,25 @@ app.post('/paymentcards', async (req, res) => {
         }
 
         const userId = user.id;
-
+        // Encrypt sensitive payment card data
+        const encryptedCardName = await bcrypt.hash(cardName, 10);
+        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
+        const encryptedCvv = await bcrypt.hash(cvv, 10);
+        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
+        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
+        const encryptedBillCity = await bcrypt.hash(billCity, 10);
+        const encryptedBillState = await bcrypt.hash(billState, 10);
         // Create the payment card in the database
         const newPaymentCard = await prisma.paymentCard.create({
             data: {
                 user: { connect: { id: userId } },
-                cardName,
-                cardNum,
-                cvv,
-                expirationDate,
-                billingAddress,
-                billCity,
-                billState
+                cardName: encryptedCardName,
+                cardNum: encryptedCardNum,
+                cvv: encryptedCvv,
+                expirationDate: encryptedExpirationDate,
+                billingAddress: encryptedBillingAddress,
+                billCity: encryptedBillCity,
+                billState: encryptedBillState,
             }
         });
 
@@ -88,64 +111,6 @@ app.post('/paymentcards', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-app.use(session({
-    secret: process.env.SECRET_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-        secure: true,
-        sameSite: 'none',
-    },
-}));
-
-/** 
-app.post('/forgot-password', async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body; // Extract email and password from request body
-
-
-        // Check if the email is provided
-        if (!email) {
-            return res.status(400).json({ error: 'Email is required' });
-        }
-
-        // Check if the email exists in the database
-        const user = await prisma.user.findFirst({
-            where: {
-                email: "2elainemaria@gmail.com",
-                //email: email,
-            },
-        });
-
-        // If the email doesn't exist, return an error
-        if (!user) {
-            return res.status(404).json({ error: 'There is no account associated with that email' });
-        }
-
-                // Update the user's password using their id
-                await prisma.user.update({
-                    where: {
-                        id: user.id, // Use the id obtained from the user object
-                    },
-                    data: {
-                        password: password,
-                    },
-                });
-
-        // If the email exists, return success response
-        //res.status(200).json({ message: 'Email found', user });
-
-        // Return success response
-        res.status(200).json({ message: 'Password reset successfully for email: ' + email });
-    } catch (error) {
-        console.error('Error resetting password:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
-
- 
 
 
 // Endpoint to reset password based on email
@@ -170,13 +135,15 @@ app.post('/password-reset', async (req: Request, res: Response) => {
             return res.status(404).json({ error: 'There is no account associated with that email' });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         // Update the user's password using their id
         await prisma.user.update({
             where: {
                 id: user.id,
             },
             data: {
-                password: password,
+                password: hashedPassword,
             },
         });
 
@@ -189,48 +156,6 @@ app.post('/password-reset', async (req: Request, res: Response) => {
 });
 
 
-
-/** 
-// Check if Email Exists and Reset Password
-app.post('/forgot-password', async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body; // Extract email and password from request body
-
-        // Check if the email and password are provided
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        // Find the user by email to retrieve their id
-        const user = await prisma.user.findFirst({
-            where: {
-                email: email,
-            },
-        });
-
-        // If the email doesn't exist, return an error
-        if (!user) {
-            return res.status(404).json({ error: 'There is no account associated with that email' });
-        }
-
-        // Update the user's password using their id
-        await prisma.user.update({
-            where: {
-                id: user.id, // Use the id obtained from the user object
-            },
-            data: {
-                password: password,
-            },
-        });
-
-        // Return success response
-        res.status(200).json({ message: 'Password reset successfully for email: ' + email });
-    } catch (error) {
-        console.error('Error resetting password:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
 
 // Check if Email Exists
 app.post('/forgot-password', async (req: Request, res: Response) => {
@@ -297,52 +222,6 @@ app.post('/users/validate-password', async (req, res) => {
 });
 
 
-/** 
-
-// Check if Email Exists and Reset Password
-app.post('/forgot-password', async (req: Request, res: Response) => {
-    try {
-        const { email, newPassword } = req.body; // Extract email and new password from request body
-
-        // Check if the email and new password are provided
-        if (!email || !newPassword) {
-            return res.status(400).json({ error: 'Email and new password are required' });
-        }
-
-        // Check if the email exists in the database
-        const user = await prisma.user.findFirst({
-            where: {
-                email: "2elainemaria@gmail.com"
-             //   email: email,
-            },
-        });
-
-        // If the email doesn't exist, return an error
-        if (!user) {
-            return res.status(404).json({ error: 'There is no account associated with that email' });
-        }
-
-        // If the email exists, update the user's password
-        await prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                password: newPassword,
-            },
-        });
-
-        // Return success response
-        res.status(200).json({ message: 'Password reset successful' });
-    } catch (error) {
-        console.error('Error resetting password:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-*/
-
-
 
 
 
@@ -367,30 +246,40 @@ app.post('/register', async (req: Request, res: Response) => {
         if (existingUser) {
             return res.status(400).json({ error: 'Email already exists' });
         }
-
+        const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
+        // Encrypt sensitive payment card data
+        const encryptedCardName = await bcrypt.hash(cardName, 10);
+        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
+        const encryptedCvv = await bcrypt.hash(cvv, 10);
+        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
+        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
+        const encryptedBillCity = await bcrypt.hash(billCity, 10);
+        const encryptedBillState = await bcrypt.hash(billState, 10);
         // Create a new user with associated payment card
         const newUser = await prisma.user.create({
             data: {
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
-                password: password,
+                password: hashedPassword,
                 phone: phone,
                 street: street,
                 city: city,
                 state: state,
                 regPromo: regPromo,
+                 
                 paymentInfo: { // Add paymentInfo directly to the user creation
                     create: {
-                        cardName: cardName,
-                        cardNum: cardNum,
-                        cvv: cvv,
-                        expirationDate: expirationDate,
-                        billingAddress: billingAddress,
-                        billCity: billCity,
-                        billState: billState,
+                        cardName: encryptedCardName,
+                        cardNum: encryptedCardNum,
+                        cvv: encryptedCvv,
+                        expirationDate: encryptedExpirationDate,
+                        billingAddress: encryptedBillingAddress,
+                        billCity: encryptedBillCity,
+                        billState: encryptedBillState,
                     }
                 }
+                
             },
             include: { // Include the paymentInfo association in the response
                 paymentInfo: true
@@ -414,18 +303,19 @@ app.post('/login', async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        // Check if the email and password combination exists in the database
+        // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
                 email: email,
-                password: password,
             },
         });
 
-        if (!user) {
+        // If the user doesn't exist, or the passwords don't match, return error
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
+       
         // If the user exists and the password matches, return success response
         req.session.user = { id: user.id };
         res.status(200).json({ message: 'Login successful', user });
@@ -642,6 +532,7 @@ app.delete('/movies/:id', async (req, res) => {
 app.post('/users', async (req, res) => {
     try {
         const { firstName, lastName, email, password, phone, street, city, state, status, regPromo } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the user in the database
         const newUser = await prisma.user.create({
@@ -649,7 +540,7 @@ app.post('/users', async (req, res) => {
                 firstName,
                 lastName,
                 email,
-                password,
+                password: hashedPassword,
                 phone,
                 street,
                 city,
@@ -726,6 +617,12 @@ app.put('/users/me', async (req, res) => {
         const userId = req.session.user.id;
         const { firstName, lastName, email, phone, street, city, state, password, regPromo } = req.body;
 
+        // Hash the password if provided
+        let hashedPassword;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10);
+        }
+
         // Update the user in the database
         const updatedUser = await prisma.user.update({
             where: {
@@ -739,7 +636,7 @@ app.put('/users/me', async (req, res) => {
                 street,
                 city,
                 state,
-                password,
+                password: hashedPassword,
                 regPromo
             },
         });
