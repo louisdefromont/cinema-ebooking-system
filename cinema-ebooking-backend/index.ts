@@ -564,7 +564,6 @@ app.get('/users/me', async (req, res) => {
         }
 
         const userId = req.session.user.id;
-        console.log(userId);
 
         // Find the user by ID
         const user = await prisma.user.findUnique({
