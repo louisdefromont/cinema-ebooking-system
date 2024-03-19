@@ -51,7 +51,6 @@ const Register = () => {
             city: city,
             state: state,
             regPromo: regPromo,
-            status: false,
             
             cardName: cardName,
             cardNum: cardNo,

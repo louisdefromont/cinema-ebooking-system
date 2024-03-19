@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 
-const Login = () => {
+const Activate = () => {
     const location = useLocation();
 	const email = new URLSearchParams(location.search).get('email');
 
@@ -17,7 +17,7 @@ const Login = () => {
                 email: email,
             });
             console.log(response.data); // Log the response from the backend
-           // window.location.href = '/';
+            window.location.href = '/activate-confirmation';
             // Add logic to handle successful login (e.g., redirect to another page)
             
         } catch (error) {
@@ -47,4 +47,4 @@ const Login = () => {
     )
 };
 
-export default Login;
+export default Activate;
