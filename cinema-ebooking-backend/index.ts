@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client'
 import cors from 'cors'
 import https from 'https';
 import fs from 'fs';
+import CryptoJS from 'crypto-js';
 
 declare module 'express-session' {
     export interface SessionData {
@@ -16,6 +17,7 @@ const crypto = require('crypto');
 const prisma = new PrismaClient()
 const app: Express = express()
 const PORT = 3000
+const SECRET_KEY = process.env.SECRET_KEY!
 
 app.use(cors(
     {
@@ -26,7 +28,7 @@ app.use(cors(
 
 
 app.use(session({
-    secret: process.env.SECRET_KEY!,
+    secret: SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -38,6 +40,42 @@ app.use(session({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
+async function aesEncrypt(data: string): Promise<string> {
+    const encryptedData = CryptoJS.AES.encrypt(data, SECRET_KEY).toString();
+    return encryptedData;
+}
+
+async function aesDecrypt(data: string): Promise<string> {
+    const decryptedData = CryptoJS.AES.decrypt(data, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+    return decryptedData;
+}
+
+async function encryptBillingInfo(billingInfo: any): Promise<any> {
+    const encryptedBillingInfo = {
+        cardName: await aesEncrypt(billingInfo.cardName),
+        cardNum: await aesEncrypt(billingInfo.cardNum),
+        cvv: await aesEncrypt(billingInfo.cvv),
+        expirationDate: await aesEncrypt(billingInfo.expirationDate),
+        billingAddress: await aesEncrypt(billingInfo.billingAddress),
+        billCity: await aesEncrypt(billingInfo.billCity),
+        billState: await aesEncrypt(billingInfo.billState)
+    };
+    return encryptedBillingInfo;
+}
+
+async function decryptBillingInfo(encryptedBillingInfo: any): Promise<any> {
+    const decryptedBillingInfo = {
+        cardName: await aesDecrypt(encryptedBillingInfo.cardName),
+        cardNum: await aesDecrypt(encryptedBillingInfo.cardNum),
+        cvv: await aesDecrypt(encryptedBillingInfo.cvv),
+        expirationDate: await aesDecrypt(encryptedBillingInfo.expirationDate),
+        billingAddress: await aesDecrypt(encryptedBillingInfo.billingAddress),
+        billCity: await aesDecrypt(encryptedBillingInfo.billCity),
+        billState: await aesDecrypt(encryptedBillingInfo.billState)
+    };
+    return decryptedBillingInfo;
+}
 
 // Endpoint to reset password based on email
 app.post('/activate', async (req: Request, res: Response) => {
@@ -104,6 +142,43 @@ app.post('/checkAdmin', async (req, res) => {
     }
 });
 
+app.get('/paymentcards', async (req, res) => {
+    try {
+        // Check if req.session.user is defined
+        if (!req.session.user || !req.session.user.id) {
+            return res.status(401).json({ error: 'User session not found' });
+        }
+
+        // Extract the user ID from the session
+        const userId = req.session.user.id;
+
+        // Fetch all payment cards associated with the user
+        const paymentCards = await prisma.paymentCard.findMany({
+            where: {
+                userId: userId,
+            },
+        });
+
+        // Decrypt the sensitive payment card data
+        const decryptedPaymentCards = await Promise.all(paymentCards.map(async (card) => {
+            return {
+                id: card.id,
+                cardName: await aesDecrypt(card.cardName),
+                cardNum: await aesDecrypt(card.cardNum),
+                cvv: await aesDecrypt(card.cvv),
+                expirationDate: await aesDecrypt(card.expirationDate),
+                billingAddress: await aesDecrypt(card.billingAddress),
+                billCity: await aesDecrypt(card.billCity),
+                billState: await aesDecrypt(card.billState)
+            };
+        }));
+
+        res.status(200).json(decryptedPaymentCards);
+    } catch (error) {
+        console.error('Error fetching payment cards:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 // Endpoint to add a new payment card
 app.post('/paymentcards', async (req, res) => {
@@ -124,24 +199,27 @@ app.post('/paymentcards', async (req, res) => {
 
         const userId = user.id;
         // Encrypt sensitive payment card data
-        const encryptedCardName = await bcrypt.hash(cardName, 10);
-        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
-        const encryptedCvv = await bcrypt.hash(cvv, 10);
-        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
-        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
-        const encryptedBillCity = await bcrypt.hash(billCity, 10);
-        const encryptedBillState = await bcrypt.hash(billState, 10);
+        const paymentCardData = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState
+        };
+        const encryptedPaymentCardData = await encryptBillingInfo(paymentCardData);
         // Create the payment card in the database
         const newPaymentCard = await prisma.paymentCard.create({
             data: {
                 user: { connect: { id: userId } },
-                cardName: encryptedCardName,
-                cardNum: encryptedCardNum,
-                cvv: encryptedCvv,
-                expirationDate: encryptedExpirationDate,
-                billingAddress: encryptedBillingAddress,
-                billCity: encryptedBillCity,
-                billState: encryptedBillState,
+                cardName: encryptedPaymentCardData.cardName,
+                cardNum: encryptedPaymentCardData.cardNum,
+                cvv: encryptedPaymentCardData.cvv,
+                expirationDate: encryptedPaymentCardData.expirationDate,
+                billingAddress: encryptedPaymentCardData.billingAddress,
+                billCity: encryptedPaymentCardData.billCity,
+                billState: encryptedPaymentCardData.billState
             }
         });
 
@@ -288,13 +366,16 @@ app.post('/register', async (req: Request, res: Response) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
         // Encrypt sensitive payment card data
-        const encryptedCardName = await bcrypt.hash(cardName, 10);
-        const encryptedCardNum = await bcrypt.hash(cardNum, 10);
-        const encryptedCvv = await bcrypt.hash(cvv, 10);
-        const encryptedExpirationDate = await bcrypt.hash(expirationDate, 10);
-        const encryptedBillingAddress = await bcrypt.hash(billingAddress, 10);
-        const encryptedBillCity = await bcrypt.hash(billCity, 10);
-        const encryptedBillState = await bcrypt.hash(billState, 10);
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState
+        };
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
         // Create a new user with associated payment card
         const newUser = await prisma.user.create({
             data: {
@@ -311,13 +392,13 @@ app.post('/register', async (req: Request, res: Response) => {
                  
                 paymentInfo: { // Add paymentInfo directly to the user creation
                     create: {
-                        cardName: encryptedCardName,
-                        cardNum: encryptedCardNum,
-                        cvv: encryptedCvv,
-                        expirationDate: encryptedExpirationDate,
-                        billingAddress: encryptedBillingAddress,
-                        billCity: encryptedBillCity,
-                        billState: encryptedBillState,
+                        cardName: encryptedBillingInfo.cardName,
+                        cardNum: encryptedBillingInfo.cardNum,
+                        cvv: encryptedBillingInfo.cvv,
+                        expirationDate: encryptedBillingInfo.expirationDate,
+                        billingAddress: encryptedBillingInfo.billingAddress,
+                        billCity: encryptedBillingInfo.billCity,
+                        billState: encryptedBillingInfo.billState
                     }
                 }
                 

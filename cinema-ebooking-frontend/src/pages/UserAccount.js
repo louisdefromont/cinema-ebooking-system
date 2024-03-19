@@ -39,7 +39,7 @@ const UserAccount = () => {
             });
         axios.get('https://localhost:3000/paymentcards', { withCredentials: true })
             .then(response => {
-                setPaymentCards(response.data.paymentCards);
+                setPaymentCards(response.data);
             })
             .catch(error => {
                 console.error('Error fetching payment cards:', error);
@@ -425,25 +425,25 @@ const UserAccount = () => {
                                 <input
                                     type="text"
                                     name="cardName"
-                                    value={editedUserData.cardName}
+                                    value={card.cardName}
                                     onChange={handleInputChange}
                                 />
                                 <input
                                     type="text"
                                     name="cardNum"
-                                    value={editedUserData.cardNum}
+                                    value={card.cardNum}
                                     onChange={handleInputChange}
                                 />
                                 <input
                                     type="text"
                                     name="cvv"
-                                    value={editedUserData.cvv}
+                                    value={card.cvv}
                                     onChange={handleInputChange}
                                 />
                                 <input
                                     type="text"
                                     name="expirationDate"
-                                    value={editedUserData.expirationDate}
+                                    value={card.expirationDate}
                                     onChange={handleInputChange}
                                 />
                                 {editMode ? (
