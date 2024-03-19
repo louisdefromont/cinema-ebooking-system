@@ -217,12 +217,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="firstName"
-                                value={editedUserData.firstName}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>First Name: </p>
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    value={editedUserData.firstName}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>First Name: {user && user.firstName}</p>
                         )}
@@ -237,12 +240,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={editedUserData.lastName}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>Last Name: </p>
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    value={editedUserData.lastName}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>Last Name: {user && user.lastName}</p>
                         )}
@@ -257,12 +263,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="phone"
-                                value={editedUserData.phone}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>Phone Number: </p>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    value={editedUserData.phone}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>Phone Number: {user && user.phone}</p>
                         )}
@@ -277,12 +286,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="street"
-                                value={editedUserData.street}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>Street Address: </p>
+                                <input
+                                    type="text"
+                                    name="street"
+                                    value={editedUserData.street}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>Street Address: {user && user.street}</p>
                         )}
@@ -297,12 +309,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="city"
-                                value={editedUserData.city}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>City: </p>
+                                <input
+                                    type="text"
+                                    name="city"
+                                    value={editedUserData.city}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>City: {user && user.city}</p>
                         )}
@@ -317,12 +332,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="text"
-                                name="state"
-                                value={editedUserData.state}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>State: </p>
+                                <input
+                                    type="text"
+                                    name="state"
+                                    value={editedUserData.state}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>State: {user && user.state}</p>
                         )}
@@ -337,24 +355,30 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="password" // Use password type for current password input
-                                name="currentPassword"
-                                value={editedUserData.currentPassword}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>Current Password: </p>
+                                <input
+                                    type="password" // Use password type for current password input
+                                    name="currentPassword"
+                                    value={editedUserData.currentPassword}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             null // Don't display current password input in non-edit mode
                         )}
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="password" // Use password type for new password input
-                                name="password"
-                                value={editedUserData.password}
-                                onChange={handleInputChange}
-                            />
+                            <div>
+                                <p className='account_detail'>New Password: </p>
+                                <input
+                                    type="password" // Use password type for new password input
+                                    name="password"
+                                    value={editedUserData.password}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>Password: *********</p>
                         )}
@@ -369,12 +393,15 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <input
-                                type="checkbox"
-                                name="regPromo"
-                                checked={editedUserData.regPromo}
-                                onChange={handleInputCheck}
-                            />
+                            <div>
+                                <p className='account_detail'>Enable Promotions</p>
+                                <input
+                                    type="checkbox"
+                                    name="regPromo"
+                                    checked={editedUserData.regPromo}
+                                    onChange={handleInputCheck}
+                                />
+                            </div>
                         ) : (
                             <p className='account_detail'>
                                 Promotions: {user && user.regPromo ? 'Subscribed' : 'Not Subscribed'}
