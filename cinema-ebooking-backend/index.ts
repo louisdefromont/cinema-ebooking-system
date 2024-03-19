@@ -43,7 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/activate', async (req: Request, res: Response) => {
     try {
         const { email } = req.body; // Extract email and password from request body
-
         // Check if the email and password are provided
         if (!email) {
             return res.status(400).json({ error: 'Email is required' });
@@ -68,7 +67,7 @@ app.post('/activate', async (req: Request, res: Response) => {
                 id: user.id,
             },
             data: {
-                status: false,
+                status: true,
             },
         });
 
@@ -308,6 +307,7 @@ app.post('/register', async (req: Request, res: Response) => {
                 city: city,
                 state: state,
                 regPromo: regPromo,
+                status: false,
                  
                 paymentInfo: { // Add paymentInfo directly to the user creation
                     create: {

@@ -51,6 +51,7 @@ const Register = () => {
             city: city,
             state: state,
             regPromo: regPromo,
+            status: false,
             
             cardName: cardName,
             cardNum: cardNo,
@@ -431,7 +432,11 @@ const Register = () => {
                </fieldset>
 
 
-               <div ><Button className='button' type="submit" variant="contained" name="register" onClick={handleSubmit}>Register</Button></div>
+               <div ><Button className='button' type="submit" variant="contained" 
+               to={"/activate?email=" + (email)}
+               name="register" 
+               onClick={handleSubmit}
+               >Register</Button></div>
 
            </form>
 
