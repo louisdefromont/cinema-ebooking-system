@@ -31,19 +31,19 @@ const UserAccount = () => {
 
     useEffect(() => {
         axios.get('https://localhost:3000/users/me', { withCredentials: true })
-          .then(response => {
-            setUser(response.data.user);
-          })
-          .catch(error => {
-            console.error('Error fetching user:', error);
-          });
+            .then(response => {
+                setUser(response.data.user);
+            })
+            .catch(error => {
+                console.error('Error fetching user:', error);
+            });
         axios.get('https://localhost:3000/paymentcards', { withCredentials: true })
-          .then(response => {
-            setPaymentCards(response.data.paymentCards);
-          })
-          .catch(error => {
-            console.error('Error fetching payment cards:', error);
-          });
+            .then(response => {
+                setPaymentCards(response.data.paymentCards);
+            })
+            .catch(error => {
+                console.error('Error fetching payment cards:', error);
+            });
     }, []);
 
     const handleEditPaymentCard = (cardId) => {
@@ -94,7 +94,7 @@ const UserAccount = () => {
 
     const handleEdit = () => {
         setEditMode(true);
-        
+
         setEditedUserData({
             firstName: user.firstName,
             lastName: user.lastName,
@@ -124,10 +124,10 @@ const UserAccount = () => {
 
     const handlePasswordEdit = () => {
         setEditMode(true);
-        
+
         setEditedUserData({
             password: '',
-            currentPassword: '' 
+            currentPassword: ''
         });
     }
 
@@ -135,7 +135,7 @@ const UserAccount = () => {
         try {
             await axios.put('https://localhost:3000/users/me', editedUserData, { withCredentials: true });
             setEditMode(false);
-            
+
             const response = await axios.get('https://localhost:3000/users/me', { withCredentials: true });
             setUser(response.data.user);
         } catch (error) {
@@ -153,7 +153,7 @@ const UserAccount = () => {
 
             await axios.put('https://localhost:3000/users/me', { password: editedUserData.password }, { withCredentials: true });
             setEditMode(false);
-            
+
             const response = await axios.get('https://localhost:3000/users/me', { withCredentials: true });
             setUser(response.data.user);
             window.alert('Password updated!')
@@ -171,12 +171,13 @@ const UserAccount = () => {
     const handleInputCheck = (e) => {
         const { name, value, type, checked } = e.target;
         const inputValue = type === 'checkbox' ? checked : value;
-        
+
         setEditedUserData(prevState => ({
             ...prevState,
             [name]: inputValue
         }));
     };
+
     const validatePassword = async (currentPassword) => {
         try {
             // Make a request to validate the password
@@ -187,6 +188,7 @@ const UserAccount = () => {
             return false; // Return false in case of error
         }
     };
+
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -388,41 +390,41 @@ const UserAccount = () => {
                         )}
                     </section>
 
-                    
+
                     <section>
                         <h2>Payment Cards:</h2>
-                            {paymentCards.map(card => (
-                                <div key={card.id}>
-                                    <input
-                                type="text"
-                                name="cardName"
-                                value={editedUserData.cardName}
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="text"
-                                name="cardNum"
-                                value={editedUserData.cardNum}
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="text"
-                                name="cvv"
-                                value={editedUserData.cvv}
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="text"
-                                name="expirationDate"
-                                value={editedUserData.expirationDate}
-                                onChange={handleInputChange}
-                            />
-                            {editMode ? (
-                                <Button onClick={() => handleSavePaymentCard(card.id)}>Save</Button>
-                            ) : (
-                                <Button onClick={() => handleEditPaymentCard(card.id)}>Edit</Button>
-                            )}
-                        </div>
+                        {paymentCards.map(card => (
+                            <div key={card.id}>
+                                <input
+                                    type="text"
+                                    name="cardName"
+                                    value={editedUserData.cardName}
+                                    onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="cardNum"
+                                    value={editedUserData.cardNum}
+                                    onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="cvv"
+                                    value={editedUserData.cvv}
+                                    onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="expirationDate"
+                                    value={editedUserData.expirationDate}
+                                    onChange={handleInputChange}
+                                />
+                                {editMode ? (
+                                    <Button onClick={() => handleSavePaymentCard(card.id)}>Save</Button>
+                                ) : (
+                                    <Button onClick={() => handleEditPaymentCard(card.id)}>Edit</Button>
+                                )}
+                            </div>
                         ))}
                         {editMode ? (
                             <>
@@ -440,7 +442,7 @@ const UserAccount = () => {
                         )}
                     </section>
 
-                    
+
                 </fieldset>
             </form>
         </>

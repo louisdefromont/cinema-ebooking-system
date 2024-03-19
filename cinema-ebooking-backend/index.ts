@@ -237,7 +237,7 @@ app.post('/users/validate-password', async (req, res) => {
 
         // Extract the current password from the request body
         const { currentPassword } = req.body;
-        
+
         // Extract the user ID from the session
         const userId = req.session.user.id;
 
@@ -249,7 +249,7 @@ app.post('/users/validate-password', async (req, res) => {
         });
 
         // Check if the user exists and if the current password matches the user's actual password
-        if (!user || currentPassword !== user.password) {
+        if (!user || await bcrypt.compare(currentPassword, user.password) === false) {
             return res.status(401).json({ isValid: false });
         }
 
