@@ -62,17 +62,6 @@ const UserAccount = () => {
         });
     };
 
-    const handleCancelPaymentCard = () => {
-        setEditMode(false);
-        setEditedUserData({
-            userID: '',
-            cardName: '',
-            cardNum: '',
-            cvv: '',
-            expirationDate: '',
-        });
-    };
-
 
     const handleEdit = () => {
         setEditMode(true);
@@ -96,15 +85,6 @@ const UserAccount = () => {
             [name]: value
         }));
     };
-
-    const handlePasswordEdit = () => {
-        setEditMode(true);
-
-        setEditedUserData({
-            password: '',
-            currentPassword: ''
-        });
-    }
 
     const handleSave = async () => {
         try {
@@ -183,7 +163,7 @@ const UserAccount = () => {
         <>
             <NavBar />
 
-            <form className="register">
+            <form className="register" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1> Account Details </h1>
                 <fieldset className="row1">
                     <section>
@@ -313,8 +293,8 @@ const UserAccount = () => {
                     </section>
                     <section>
                         {editMode ? (
-                            <div>
-                                <span className='account_detail'>Enable Promotions: </span>
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <p className='account_detail'>Enable Promotions: </p>
                                 <input
                                     type="checkbox"
                                     name="regPromo"
@@ -330,10 +310,10 @@ const UserAccount = () => {
                     </section>
 
 
-                    <section>
+                    <section style={{ display: 'flex', flexDirection: 'column' }}>
                         <h2>Payment Cards:</h2>
                         {paymentCards.map(card => (
-                            <div key={card.id}>
+                            <div key={card.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 {editMode && currentlyEditingCard && currentlyEditingCard.id === card.id ? (
                                     <div>
                                         <input
@@ -362,12 +342,12 @@ const UserAccount = () => {
                                         />
                                     </div>
                                 ) : (
-                                    <section>
+                                    <div>
                                         <span>{card.cardName}, </span>
                                         <span>{card.cardNum}, </span>
                                         <span>{card.cvv}, </span>
                                         <span>{card.expirationDate}</span>
-                                    </section>
+                                    </div>
                                 )}
 
                                 {editMode && (
@@ -389,26 +369,28 @@ const UserAccount = () => {
                         ) : null}
                     </section>
 
-                    {editMode ? (
-                        <section>
-                            <Button onClick={handleSave} variant="contained">Save</Button>
-                            <Button onClick={handleCancel} variant="contained">Cancel</Button>
-                        </section>
-                    ) :
-                        (
-                            <section>
-                                <Button onClick={handleEdit} variant="contained">Edit</Button>
-                            </section>
-                        )
-                    }
+                    <section style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                        {editMode ? (
+                            <div>
+                                <Button onClick={handleSave} variant="contained">Save</Button>
+                                <Button onClick={handleCancel} variant="contained">Cancel</Button>
+                            </div>
+                        ) :
+                            (
+                                <div>
+                                    <Button onClick={handleEdit} variant="contained">Edit</Button>
+                                </div>
+                            )
+                        }
 
-                    <section>
-                        {user != null ? (
-                            <Button onClick={handleLogout} variant="contained">Log Out</Button>
-                        ) : (
-                            null
-                        )}
+                        <div>
+                            {user != null ? (
+                                <Button onClick={handleLogout} variant="contained">Log Out</Button>
+                            ) : (
+                                null
+                            )}
 
+                        </div>
                     </section>
 
 
