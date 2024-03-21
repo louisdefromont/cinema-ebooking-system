@@ -180,6 +180,44 @@ app.get('/paymentcards', async (req, res) => {
     }
 });
 
+app.put('/paymentcards/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
+
+        // Encrypt sensitive payment card data
+        const paymentCardData = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState
+        };
+        const encryptedPaymentCardData = await encryptBillingInfo(paymentCardData);
+
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: encryptedPaymentCardData.cardName,
+                cardNum: encryptedPaymentCardData.cardNum,
+                cvv: encryptedPaymentCardData.cvv,
+                expirationDate: encryptedPaymentCardData.expirationDate,
+                billingAddress: encryptedPaymentCardData.billingAddress,
+                billCity: encryptedPaymentCardData.billCity,
+                billState: encryptedPaymentCardData.billState
+            },
+        });
+
+        res.status(200).json({ message: 'Payment card updated successfully', paymentCard: updatedPaymentCard });
+    } catch (error) {
+        console.error('Error updating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Endpoint to add a new payment card
 app.post('/paymentcards', async (req, res) => {
     try {

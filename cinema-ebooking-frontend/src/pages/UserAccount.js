@@ -42,10 +42,10 @@ const UserAccount = () => {
 
     const handleSavePaymentCard = async () => {
         try {
-            await axios.put('https://localhost:3000/paymentcards', currentlyEditingCard, { withCredentials: true });
-            setEditMode(false);
+            await axios.put('https://localhost:3000/paymentcards/' + currentlyEditingCard.id, currentlyEditingCard, { withCredentials: true });
             const response = await axios.get('https://localhost:3000/paymentcards', { withCredentials: true });
-            setPaymentCards(response.data.paymentCards);
+            setPaymentCards(response.data);
+            setCurrentlyEditingCard(null);
         } catch (error) {
             console.error('Error updating payment card:', error);
         }
@@ -353,7 +353,7 @@ const UserAccount = () => {
                                 {editMode && (
                                     currentlyEditingCard && currentlyEditingCard.id === card.id ? (
                                         <div>
-                                            <Button onClick={() => handleSave()}>Save</Button>
+                                            <Button onClick={handleSavePaymentCard}>Save</Button>
                                             <Button onClick={() => setCurrentlyEditingCard(null)}>Cancel</Button>
                                         </div>
                                     ) : (
