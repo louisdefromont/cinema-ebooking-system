@@ -21,13 +21,7 @@ const UserAccount = () => {
         currentPassword: '',
 
     });
-    const [editedPaymentCardData, setEditedPaymentCardData] = useState({
-        userID: '',
-        cardName: '',
-        cardNum: '',
-        cvv: '',
-        expirationDate: '',
-    });
+    const [currentlyEditingCard, setCurrentlyEditingCard] = useState(null);
 
     useEffect(() => {
         axios.get('https://localhost:3000/users/me', { withCredentials: true })
@@ -46,21 +40,9 @@ const UserAccount = () => {
             });
     }, []);
 
-    const handleEditPaymentCard = (cardId) => {
-        setEditMode(true);
-        const selectedCard = paymentCards.find(card => card.id === cardId);
-        setEditedUserData({
-            userId: selectedCard.userID,
-            cardName: selectedCard.cardName,
-            cardNum: selectedCard.cardNum,
-            cvv: selectedCard.cvv,
-            expirationDate: selectedCard.expirationDate,
-        });
-    };
-
     const handleSavePaymentCard = async () => {
         try {
-            await axios.put('https://localhost:3000/paymentcards', editedPaymentCardData, { withCredentials: true });
+            await axios.put('https://localhost:3000/paymentcards', currentlyEditingCard, { withCredentials: true });
             setEditMode(false);
             const response = await axios.get('https://localhost:3000/paymentcards', { withCredentials: true });
             setPaymentCards(response.data.paymentCards);
@@ -107,19 +89,12 @@ const UserAccount = () => {
         });
     };
 
-    const handleInputChange = (e, isPaymentCard = false) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (isPaymentCard) {
-            setEditedPaymentCardData(prevState => ({
-                ...prevState,
-                [name]: value
-            }));
-        } else {
-            setEditedUserData(prevState => ({
-                ...prevState,
-                [name]: value
-            }));
-        }
+        setEditedUserData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
     const handlePasswordEdit = () => {
@@ -165,6 +140,7 @@ const UserAccount = () => {
 
     const handleCancel = () => {
         setEditMode(false);
+        setCurrentlyEditingCard(null);
     };
 
 
@@ -229,14 +205,6 @@ const UserAccount = () => {
                         ) : (
                             <p className='account_detail'>First Name: {user && user.firstName}</p>
                         )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
-                        )}
                     </section>
                     <section>
                         {editMode ? (
@@ -251,14 +219,6 @@ const UserAccount = () => {
                             </div>
                         ) : (
                             <p className='account_detail'>Last Name: {user && user.lastName}</p>
-                        )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
                         )}
                     </section>
                     <section>
@@ -275,14 +235,6 @@ const UserAccount = () => {
                         ) : (
                             <p className='account_detail'>Phone Number: {user && user.phone}</p>
                         )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
-                        )}
                     </section>
                     <section>
                         {editMode ? (
@@ -297,14 +249,6 @@ const UserAccount = () => {
                             </div>
                         ) : (
                             <p className='account_detail'>Street Address: {user && user.street}</p>
-                        )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
                         )}
                     </section>
                     <section>
@@ -321,14 +265,6 @@ const UserAccount = () => {
                         ) : (
                             <p className='account_detail'>City: {user && user.city}</p>
                         )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
-                        )}
                     </section>
                     <section>
                         {editMode ? (
@@ -343,14 +279,6 @@ const UserAccount = () => {
                             </div>
                         ) : (
                             <p className='account_detail'>State: {user && user.state}</p>
-                        )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
                         )}
                     </section>
                     <section>
@@ -382,19 +310,11 @@ const UserAccount = () => {
                         ) : (
                             <p className='account_detail'>Password: *********</p>
                         )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handlePasswordSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handlePasswordEdit}> Edit Password </Button>
-                        )}
                     </section>
                     <section>
                         {editMode ? (
                             <div>
-                                <p className='account_detail'>Enable Promotions</p>
+                                <span className='account_detail'>Enable Promotions: </span>
                                 <input
                                     type="checkbox"
                                     name="regPromo"
@@ -407,14 +327,6 @@ const UserAccount = () => {
                                 Promotions: {user && user.regPromo ? 'Subscribed' : 'Not Subscribed'}
                             </p>
                         )}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleSave}> Save </Button>
-                                <Button onClick={handleCancel}> Cancel </Button>
-                            </>
-                        ) : (
-                            <Button onClick={handleEdit}> Edit </Button>
-                        )}
                     </section>
 
 
@@ -422,44 +334,73 @@ const UserAccount = () => {
                         <h2>Payment Cards:</h2>
                         {paymentCards.map(card => (
                             <div key={card.id}>
-                                <input
-                                    type="text"
-                                    name="cardName"
-                                    value={card.cardName}
-                                    onChange={handleInputChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="cardNum"
-                                    value={card.cardNum}
-                                    onChange={handleInputChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="cvv"
-                                    value={card.cvv}
-                                    onChange={handleInputChange}
-                                />
-                                <input
-                                    type="text"
-                                    name="expirationDate"
-                                    value={card.expirationDate}
-                                    onChange={handleInputChange}
-                                />
-                                {editMode ? (
-                                    <Button onClick={() => handleSavePaymentCard(card.id)}>Save</Button>
+                                {editMode && currentlyEditingCard && currentlyEditingCard.id === card.id ? (
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="cardName"
+                                            value={currentlyEditingCard.cardName}
+                                            onChange={(e) => setCurrentlyEditingCard({ ...currentlyEditingCard, cardName: e.target.value })}
+                                        />
+                                        <input
+                                            type="text"
+                                            name="cardNum"
+                                            value={currentlyEditingCard.cardNum}
+                                            onChange={(e) => setCurrentlyEditingCard({ ...currentlyEditingCard, cardNum: e.target.value })}
+                                        />
+                                        <input
+                                            type="text"
+                                            name="cvv"
+                                            value={currentlyEditingCard.cvv}
+                                            onChange={(e) => setCurrentlyEditingCard({ ...currentlyEditingCard, cvv: e.target.value })}
+                                        />
+                                        <input
+                                            type="text"
+                                            name="expirationDate"
+                                            value={currentlyEditingCard.expirationDate}
+                                            onChange={(e) => setCurrentlyEditingCard({ ...currentlyEditingCard, expirationDate: e.target.value })}
+                                        />
+                                    </div>
                                 ) : (
-                                    <Button onClick={() => handleEditPaymentCard(card.id)}>Edit</Button>
+                                    <section>
+                                        <span>{card.cardName}, </span>
+                                        <span>{card.cardNum}, </span>
+                                        <span>{card.cvv}, </span>
+                                        <span>{card.expirationDate}</span>
+                                    </section>
+                                )}
+
+                                {editMode && (
+                                    currentlyEditingCard && currentlyEditingCard.id === card.id ? (
+                                        <div>
+                                            <Button onClick={() => handleSave()}>Save</Button>
+                                            <Button onClick={() => setCurrentlyEditingCard(null)}>Cancel</Button>
+                                        </div>
+                                    ) : (
+                                        <Button onClick={() => setCurrentlyEditingCard(card)}>Edit</Button>
+                                    )
                                 )}
                             </div>
                         ))}
                         {editMode ? (
                             <>
                                 <Button onClick={handleAddPaymentCard}>Add New Payment Card</Button>
-                                <Button onClick={handleCancelPaymentCard}>Cancel</Button>
                             </>
                         ) : null}
                     </section>
+
+                    {editMode ? (
+                        <section>
+                            <Button onClick={handleSave} variant="contained">Save</Button>
+                            <Button onClick={handleCancel} variant="contained">Cancel</Button>
+                        </section>
+                    ) :
+                        (
+                            <section>
+                                <Button onClick={handleEdit} variant="contained">Edit</Button>
+                            </section>
+                        )
+                    }
 
                     <section>
                         {user != null ? (
@@ -467,6 +408,7 @@ const UserAccount = () => {
                         ) : (
                             null
                         )}
+
                     </section>
 
 
