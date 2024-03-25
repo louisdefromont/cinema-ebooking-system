@@ -39,62 +39,64 @@ const Register = () => {
     
    const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-        // Send a POST request to your backend endpoint with the email and password
-        const response = await axios.post('https://localhost:3000/register', {
-            email: email,
-            password: password,
-            firstName: fName, 
-            lastName: lName,
-            phone: phone ,
-            street: street,
-            city: city,
-            state: state,
-            regPromo: regPromo,
+
+    if (email !== repeatEmail || password !== repeatPassword) {
+        // Strings are the same for both email and password
+        window.alert("Emails or passwords don't match");
+    } else {
+        try {
+            // Send a POST request to your backend endpoint with the email and password
+            const response = await axios.post('https://localhost:3000/register', {
+                email: email,
+                password: password,
+                firstName: fName, 
+                lastName: lName,
+                phone: phone ,
+                street: street,
+                city: city,
+                state: state,
+                regPromo: regPromo,
+                
+                cardName: cardName,
+                cardNum: cardNo,
+                cvv: cvv,
+                expirationDate: cardExpDate,
+                billingAddress: billAdd,
+                billCity: billCity,
+                billState: billState           
+            });
+            const sendMail = () => {
+                let parms = {
+                to_email : email,
+                }
             
-            cardName: cardName,
-            cardNum: cardNo,
-            cvv: cvv,
-            expirationDate: cardExpDate,
-            billingAddress: billAdd,
-            billCity: billCity,
-            billState: billState
-        
-        });
-
-        const sendMail = () => {
-            let parms = {
-               to_email : email,
-               }
-        
-               emailjs.send("gmailkey", "confirmationemail", parms)
-               .then(alert('Email has been sent!'))
-               .catch((error) => console.error('Error sending email:', error));
-        }
-
-        sendMail();
-       
-
-        console.log(response.data); // Log the response from the backend
-        window.location.href = '/reg-confrimation';
-
-
-    } catch (error) {
-         if (error.response && error.response.status === 400) {
-            console.log("err 1");
-            if (error.response.data.error === 'Email already exists') {
-                window.alert('An account with the email already exists');
-           // } else if (error.response.data.error === 'Required fields are missing') {
-           //     window.alert('Please fill out all required fields');
-           } else {
-                window.alert('Please fill out all required fields');
+                emailjs.send("gmailkey", "confirmationemail", parms)
+                .then(alert('Email has been sent!'))
+                .catch((error) => console.error('Error sending email:', error));
             }
-        } else {
-            console.log("err 2");
-            console.error('Error registering user:', error);
-            window.alert('Registration failed. Please try again later.');
-        }
-    }
+
+            sendMail();
+        
+
+            console.log(response.data); // Log the response from the backend
+            window.location.href = '/reg-confrimation';
+
+
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                if (error.response.data.error === 'Email already exists') {
+                    window.alert('An account with the email already exists');   
+                } else if (error.response.data.error === 'Payment Info is incomplete') {
+                    window.alert('Payment Card info is incomplete');
+                } else {
+                    window.alert('Please fill out all required fields');
+                }   
+            } else {
+                console.error('Error registering user:', error);
+                window.alert('Registration failed. Please try again later.');
+            } // if
+        } // try 
+    } // if
 };
 
 

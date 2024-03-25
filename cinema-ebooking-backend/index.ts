@@ -378,16 +378,25 @@ app.post('/users/validate-password', async (req, res) => {
 });
 
 
-
-
-
 // Register and Create New User with Payment Card
 app.post('/register', async (req: Request, res: Response) => {
+    let pcNull = false;
     const { email, password, firstName, lastName, phone, street, city, state, regPromo, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
 
     // Check if any of the required fields are null
     if (!email || !password || !firstName || !lastName || !phone) {
         return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Check if any paymentInfo fields are null
+    if (!cardName && !cardNum && !cvv && !expirationDate && !billingAddress && !billCity && !billState) {
+        pcNull = true;
+        // return res.status(400).json({ error: 'Missing paymentInfo fields' });
+    } 
+
+    // Additional check if pcNull is false but one of the fields from cardName...billState is not null
+    if (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState)) {
+        return res.status(400).json({ error: 'Payment Info is incomplete' });    
     }
 
     try {
@@ -402,6 +411,8 @@ app.post('/register', async (req: Request, res: Response) => {
         if (existingUser) {
             return res.status(400).json({ error: 'Email already exists' });
         }
+
+
         const hashedPassword = await bcrypt.hash(password, 10); // Adjust the saltRounds as needed
         // Encrypt sensitive payment card data
         const billingInfo = {
@@ -415,38 +426,53 @@ app.post('/register', async (req: Request, res: Response) => {
         };
         const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
         // Create a new user with associated payment card
-        const newUser = await prisma.user.create({
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: hashedPassword,
-                phone: phone,
-                street: street,
-                city: city,
-                state: state,
-                regPromo: regPromo,
-                status: false,
-                 
-                paymentInfo: { // Add paymentInfo directly to the user creation
-                    create: {
-                        cardName: encryptedBillingInfo.cardName,
-                        cardNum: encryptedBillingInfo.cardNum,
-                        cvv: encryptedBillingInfo.cvv,
-                        expirationDate: encryptedBillingInfo.expirationDate,
-                        billingAddress: encryptedBillingInfo.billingAddress,
-                        billCity: encryptedBillingInfo.billCity,
-                        billState: encryptedBillingInfo.billState
-                    }
+        if (pcNull) { // no paymentcard
+             const newUser = await prisma.user.create({
+                data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: hashedPassword,
+                    phone: phone,
+                    street: street,
+                    city: city,
+                    state: state,
+                    regPromo: regPromo,
+                    status: false,
+                } // data 
+            });
+            res.json(newUser);
+        } else {        
+             const newUser = await prisma.user.create({
+                data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: hashedPassword,
+                    phone: phone,
+                    street: street,
+                    city: city,
+                    state: state,
+                    regPromo: regPromo,
+                    status: false,
+                    paymentInfo: { // Add paymentInfo directly to the user creation
+                        create: {
+                            cardName: encryptedBillingInfo.cardName,
+                            cardNum: encryptedBillingInfo.cardNum,
+                            cvv: encryptedBillingInfo.cvv,
+                            expirationDate: encryptedBillingInfo.expirationDate,
+                            billingAddress: encryptedBillingInfo.billingAddress,
+                            billCity: encryptedBillingInfo.billCity,
+                            billState: encryptedBillingInfo.billState
+                        } // create 
+                    } // paymentInfo       
+                },
+                include: { // Include the paymentInfo association in the response
+                    paymentInfo: true
                 }
-                
-            },
-            include: { // Include the paymentInfo association in the response
-                paymentInfo: true
-            }
-        });
-
-        res.json(newUser);
+            }); // newUser
+            res.json(newUser);
+        } // if
     }catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ error: 'Internal server error' });
