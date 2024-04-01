@@ -16,10 +16,10 @@ model Movie {
   trailerUrl   String    @db.VarChar(255)
   thumbnailUrl String    @db.VarChar(255)
   releaseDate  DateTime  @db.DateTime
-  Showing      Showing[]
+  showings      Showing[]
   genres        String?  @db.VarChar(255)
   description  String?    @db.Text
-  durationMinutes Int?       @db.Int
+  durationMinutes Int       @db.Int
 }
 
 model User {
@@ -80,8 +80,9 @@ enum CustomerStateEnum {
 model Showing {
   id              Int       @id @default(autoincrement())
   dateTime        DateTime  @db.DateTime
-  movie           Movie     @relation(fields: [id], references: [id])
-  Showroom        Showroom? @relation(fields: [showroomId], references: [id])
+  movie           Movie     @relation(fields: [movieId], references: [id])
+  movieId         Int
+  showroom        Showroom? @relation(fields: [showroomId], references: [id])
   showroomId      Int?
   bookedSeats     ShowingSeat[]
 }
