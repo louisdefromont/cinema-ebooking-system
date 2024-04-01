@@ -4,7 +4,8 @@ import './Homepage.css'
 import Carousel from '../components/Carousel';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
 
 
 const Homepage = () => {
@@ -13,6 +14,7 @@ const Homepage = () => {
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
+  const [isAddingShowing, setIsAddingShowing] = useState(false);
 
   const handleClickOnMovie = (movieTitle) => {
     for (let i = 0; i < items.length; i++) {
@@ -104,9 +106,35 @@ const Homepage = () => {
                   Buy Tickets
                 </Button>
               </li>
-              {/* Add more showtimes as needed */}
+              <li>
+                <Button variant="contained" onClick={() => setIsAddingShowing(true)} color="primary">
+                  Add showing
+                </Button>
+              </li>
             </ul>
           </div>
+          <Dialog open={isAddingShowing} onClose={() => setIsAddingShowing(false)}>
+            <DialogTitle>Add showing</DialogTitle>
+            <DialogContent>
+              <form>
+                <label htmlFor="showtime">Showtime:</label>
+                <DateTimePicker
+                  renderInput={(props) => <input {...props} />}
+                  id="showtime"
+                  name="showtime"
+                  disablePast
+                />
+                <Button type="submit" color="primary">
+                  Add showing
+                </Button>
+              </form>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setIsAddingShowing(false)} color="primary">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">

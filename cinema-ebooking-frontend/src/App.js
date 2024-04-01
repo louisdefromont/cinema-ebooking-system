@@ -20,6 +20,8 @@ import RegConfrim from './pages/RegConfrim';
 import PRConfrim from './pages/PRConfirm';
 import Activate from './pages/Activate';
 import ActivateConfirm from './pages/ActivateConfirm';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 
@@ -43,33 +45,35 @@ function App() {
   ];
 
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route exact path='/' element={<Homepage />} />
-          <Route path='/movie-search' element={<MovieSearch />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/account' element={<UserAccount />} />
-          <Route path='/admin' element={<AdminControl />} />
-          <Route path='/admin/promotions' element={<AdminPromotions />} />
-          <Route path='/admin/users' element={<AdminUsers />} />
-          <Route path='/admin/movies' element={<AdminMovies />} />
-          <Route path='/select-age' element={<SelectAge />} />
-          <Route path='/select-seats' element={<SelectSeats />} />
-          <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
-          <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
-          <Route path='/confirmation' element={<Confirmation />} />
-          <Route path='/reg-confrimation' element={<RegConfrim />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/forgot-password' element={<ForgotPassword />} />
-          <Route path='/password-reset' element={<PasswordReset />} />  
-          <Route path='/pr-confirmation' element={<PRConfrim />} /> 
-          <Route path='/activate' element={<Activate />} />                   
-          <Route path='/activate-confirmation' element={<ActivateConfirm />} />                           
-        </Routes>
-      </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Router>
+        <div>
+          <Routes>
+            <Route exact path='/' element={<Homepage />} />
+            <Route path='/movie-search' element={<MovieSearch />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/account' element={<UserAccount />} />
+            <Route path='/admin' element={<AdminControl />} />
+            <Route path='/admin/promotions' element={<AdminPromotions />} />
+            <Route path='/admin/users' element={<AdminUsers />} />
+            <Route path='/admin/movies' element={<AdminMovies />} />
+            <Route path='/select-age' element={<SelectAge />} />
+            <Route path='/select-seats' element={<SelectSeats />} />
+            <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
+            <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
+            <Route path='/confirmation' element={<Confirmation />} />
+            <Route path='/reg-confrimation' element={<RegConfrim />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/password-reset' element={<PasswordReset />} />
+            <Route path='/pr-confirmation' element={<PRConfrim />} />
+            <Route path='/activate' element={<Activate />} />
+            <Route path='/activate-confirmation' element={<ActivateConfirm />} />
+          </Routes>
+        </div>
 
-    </Router>
+      </Router>
+    </LocalizationProvider>
   );
 
 }
