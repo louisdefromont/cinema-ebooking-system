@@ -543,9 +543,16 @@ app.get('/movies', async (req, res) => {
                         contains: title.toString() // Search for movies containing the specified title
                     },
                 },
+                include: {
+                    showings: true
+                }
             });
         } else {
-            movies = await prisma.movie.findMany(); // Fetch all movies if no search query is provided
+            movies = await prisma.movie.findMany({
+                include: {
+                    showings: true
+                }
+            }); // Fetch all movies if no search query is provided
         }
 
         res.json(movies);

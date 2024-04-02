@@ -32,13 +32,15 @@ const Homepage = () => {
         const movies = response.data;
         const mappedItems = movies.map(movie => {
           return {
+            id: movie.id,
             imageUrl: movie.thumbnailUrl,
             title: movie.title,
             trailerUrl: movie.trailerUrl,
             date: movie.releaseDate,
             genres: movie.genres,
             description: movie.description,
-            duration: movie.durationMinutes
+            duration: movie.durationMinutes,
+            showings: movie.showings
           };
         });
         setItems(mappedItems);
@@ -101,18 +103,14 @@ const Homepage = () => {
             <h2>{selectedMovie?.genres}</h2>
             <h3>Showtimes:</h3>
             <ul>
-              <li>
-                <span>Showtime 1: 3:00 PM</span>
-                <Button color="primary" component="a" href="/select-age">
-                  Buy Tickets
-                </Button>
-              </li>
-              <li>
-                <span>Showtime 2: 6:00 PM</span>
-                <Button color="primary" component="a" href="/select-age">
-                  Buy Tickets
-                </Button>
-              </li>
+              {selectedMovie?.showings.map(showing => (
+                <li key={showing.id}>
+                  <span>{new Date(showing.dateTime).toLocaleString()}</span>
+                  <Button color="primary" component="a" href="/select-age">
+                    Buy Tickets
+                  </Button>
+                </li>
+              ))}
               <li>
                 <Button variant="contained" onClick={() => setIsAddingShowing(true)} color="primary">
                   Add showing
@@ -120,7 +118,7 @@ const Homepage = () => {
               </li>
             </ul>
           </div>
-          <AddShowing isAddingShowing={isAddingShowing} setIsAddingShowing={setIsAddingShowing} />
+          <AddShowing isAddingShowing={isAddingShowing} setIsAddingShowing={setIsAddingShowing} movie={selectedMovie} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">
