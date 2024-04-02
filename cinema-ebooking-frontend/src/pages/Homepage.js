@@ -33,7 +33,11 @@ const Homepage = () => {
           return {
             imageUrl: movie.thumbnailUrl,
             title: movie.title,
-            trailerUrl: movie.trailerUrl
+            trailerUrl: movie.trailerUrl,
+            date: movie.releaseDate,
+            genres: movie.genres,
+            description: movie.description,
+            duration: movie.durationMinutes
           };
         });
         setItems(mappedItems);
@@ -92,6 +96,7 @@ const Homepage = () => {
             allowFullScreen
           ></iframe>
           <div>
+            <h2>{selectedMovie?.genres}</h2>
             <h3>Showtimes:</h3>
             <ul>
               <li>
