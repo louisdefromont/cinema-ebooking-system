@@ -6,6 +6,7 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
+import AddShowing from '../components/AddShowing';
 
 
 const Homepage = () => {
@@ -53,6 +54,7 @@ const Homepage = () => {
         console.error('Error fetching user:', error);
       });
   }, []);
+
 
   for (let i = 0; i < items.length; i++) {
     items[i].onClick = () => handleClickOnMovie(items[i].title);
@@ -113,28 +115,7 @@ const Homepage = () => {
               </li>
             </ul>
           </div>
-          <Dialog open={isAddingShowing} onClose={() => setIsAddingShowing(false)}>
-            <DialogTitle>Add showing</DialogTitle>
-            <DialogContent>
-              <form>
-                <label htmlFor="showtime">Showtime:</label>
-                <DateTimePicker
-                  renderInput={(props) => <input {...props} />}
-                  id="showtime"
-                  name="showtime"
-                  disablePast
-                />
-                <Button type="submit" color="primary">
-                  Add showing
-                </Button>
-              </form>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setIsAddingShowing(false)} color="primary">
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <AddShowing isAddingShowing={isAddingShowing} setIsAddingShowing={setIsAddingShowing} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">
