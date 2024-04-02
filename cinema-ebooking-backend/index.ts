@@ -852,6 +852,63 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
+app.get('/showrooms', async (req, res) => {
+    try {
+        const showrooms = await prisma.showroom.findMany();
+        res.status(200).json(showrooms);
+    } catch (error) {
+        console.error('Error fetching showrooms:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/showings:movieId', async (req, res) => {
+    try {
+        const movieId = parseInt(req.params.movieId);
+        const showings = await prisma.showing.findMany({
+            where: {
+                movieId: movieId
+            }
+        });
+        res.status(200).json(showings);
+    } catch (error) {
+        console.error('Error fetching showings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.put('/showings/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { dateTime, showroomId } = req.body;
+        const updatedShowing = await prisma.showing.update({
+            where: { id },
+            data: { dateTime, showroomId }
+        });
+        res.status(200).json({ message: 'Showing updated successfully', showing: updatedShowing });
+    } catch (error) {
+        console.error('Error updating showing:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/showings', async (req, res) => {
+    try {
+        const { dateTime, movieId, showroomId } = req.body;
+        const newShowing = await prisma.showing.create({
+            data: {
+                dateTime,
+                movieId,
+                showroomId
+            }
+        });
+        res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
+    } catch (error) {
+        console.error('Error creating showing:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
     cert: fs.readFileSync('../ssl/server.cert')
