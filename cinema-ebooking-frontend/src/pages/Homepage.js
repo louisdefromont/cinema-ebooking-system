@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import AddShowing from '../components/AddShowing';
+import EditShowing from '../components/EditShowing';
 
 
 const Homepage = () => {
@@ -16,6 +17,7 @@ const Homepage = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
   const [isAddingShowing, setIsAddingShowing] = useState(false);
+  const [editShowing, setEditShowing] = useState(false);
 
   const handleClickOnMovie = (movieTitle) => {
     for (let i = 0; i < items.length; i++) {
@@ -86,7 +88,11 @@ const Homepage = () => {
         <Carousel items={items} />
       </section>
       <Dialog open={selectedMovie !== null} onClose={() => setSelectedMovie(null)}>
-        <DialogTitle>{selectedMovie?.title}</DialogTitle>
+        <div className='display_top'>
+          <DialogTitle>{selectedMovie?.title}</DialogTitle>
+          <Button> Edit </Button>
+          <EditShowing />
+        </div>
         <DialogContent>
           <iframe
             width="560"
@@ -98,7 +104,10 @@ const Homepage = () => {
             allowFullScreen
           ></iframe>
           <div>
-            <h2>{selectedMovie?.genres}</h2>
+            <h3>{selectedMovie?.genres}</h3>
+            <span>{selectedMovie?.description}</span>
+            <br></br>
+            <br></br>
             <h3>Showtimes:</h3>
             <ul>
               <li>
