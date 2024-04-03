@@ -9,20 +9,33 @@ export default function SelectAge() {
   const [adultTickets, setAdultTickets] = useState(0);
   const [childTickets, setChildTickets] = useState(0);
   const [seniorTickets, setSeniorTickets] = useState(0);
-  const [movie, setMovie] = useState(null);
+  const [movie, setMovie] = useState(sessionStorage.getItem('selectedMovie'));
   const showing = JSON.parse(sessionStorage.getItem('selectedShowing'));
 
   useEffect(() => {
     const movieId = showing?.movieId;
-    if (movieId) {
+    if (movieId && movieId !== movie?.id) {
       fetch(`https://localhost:3000/movies/${movieId}`)
         .then(response => response.json())
-        .then(data => setMovie(data.movie))
+        .then(data => {
+          setMovie(data.movie);
+          sessionStorage.setItem('selectedMovie', JSON.stringify(data.movie));
+        }
+        )
         .catch(error => console.error('Error fetching movie:', error));
-    }
 
-    console.log(movie);
+    }
   }, []);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    sessionStorage.setItem('selectedTickets', JSON.stringify({
+      adultTickets,
+      childTickets,
+      seniorTickets,
+    }));
+    window.location.href = '/select-seats';
+  }
 
   return (
     <Box display="flex" flexDirection="row" p={2} justifyContent="center">
@@ -63,8 +76,7 @@ export default function SelectAge() {
         <Button
           variant="contained"
           color="primary"
-          to={"/select-seats?ticketcount=" + (adultTickets + childTickets + seniorTickets)}
-          component={Link}
+          onClick={handleSubmit}
         >Select Seats</Button>
       </Box>
     </Box>

@@ -1,7 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
@@ -36,12 +35,16 @@ function createSeats() {
 	return seats;
 }
 
-export default function SelectSeats() {
-	const location = useLocation();
-	const ticketCount = new URLSearchParams(location.search).get('ticketcount');
+function getSeatsRemaining() {
+	const selectedTickets = JSON.parse(sessionStorage.getItem('selectedTickets'));
+	return selectedTickets.adultTickets + selectedTickets.childTickets + selectedTickets.seniorTickets;
+}
 
+export default function SelectSeats() {
 	const [seats, setSeats] = React.useState(createSeats());
-	const [seatsRemaining, setSeatsRemaining] = React.useState(ticketCount);
+	const [seatsRemaining, setSeatsRemaining] = React.useState(getSeatsRemaining());
+	const [selectedSeats, setSelectedSeats] = React.useState([]);
+
 	function onSeatClick(seatNumber) {
 		const newSeats = seats.map((seat) => {
 			if (seat.number === seatNumber) {
@@ -50,9 +53,13 @@ export default function SelectSeats() {
 						return seat;
 					}
 					setSeatsRemaining((prevSeatsRemaining) => prevSeatsRemaining - 1);
+					setSelectedSeats((prevSelectedSeats) => [...prevSelectedSeats, seatNumber]);
 					return { ...seat, status: 'selected' };
 				} else if (seat.status === 'selected') {
 					setSeatsRemaining((prevSeatsRemaining) => prevSeatsRemaining + 1);
+					setSelectedSeats((prevSelectedSeats) =>
+						prevSelectedSeats.filter((selectedSeat) => selectedSeat !== seatNumber)
+					);
 					return { ...seat, status: 'available' };
 				}
 			}
@@ -60,6 +67,12 @@ export default function SelectSeats() {
 		});
 		setSeats(newSeats);
 	}
+
+	function onSubmit() {
+		sessionStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+		window.location.href = '/order-summary';
+	}
+
 	// 2d array of seats
 	const seatRows = [];
 	for (let i = 0; i < seats.length; i += 6) {
@@ -87,8 +100,7 @@ export default function SelectSeats() {
 			<Button
 				variant="contained"
 				color="primary"
-				to="/order-summary"
-				component={Link}
+				onClick={onSubmit}
 				disabled={seatsRemaining > 0}
 			>
 				Checkout

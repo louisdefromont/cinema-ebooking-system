@@ -3,30 +3,26 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 
-const OrderSummary = ({ orderDetails }) => {
+const OrderSummary = () => {
 	// Calculate total cost
-	const totalCost = orderDetails.reduce((acc, cur) => acc + cur.cost, 0);
+	const selectedShowing = JSON.parse(sessionStorage.getItem('selectedShowing'));
+	const selectedTickets = JSON.parse(sessionStorage.getItem('selectedTickets'));
+	const selectedMovie = JSON.parse(sessionStorage.getItem('selectedMovie'));
+	const selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
 
 	return (
 		<Paper>
 			<Typography variant="h6" gutterBottom>
 				Order Summary
 			</Typography>
-			{orderDetails.map((ticket, index) => (
-				<div key={index}>
-					<Typography variant="body1">
-						Seat: {ticket.seatNumber} - Type: {ticket.type} - Cost: ${ticket.cost}
-					</Typography>
-				</div>
-			))}
 			<Typography variant="body1">
-				Movie: {orderDetails[0].movie}
+				Movie: {selectedMovie.title}
 			</Typography>
 			<Typography variant="body1">
-				Showtime: {orderDetails[0].showtime}
+				Showtime: {new Date(selectedShowing.dateTime).toLocaleString()}
 			</Typography>
 			<Typography variant="h6" gutterBottom>
-				Total Cost: ${totalCost}
+				Total Cost: ${selectedTickets.adultTickets * 12 + selectedTickets.childTickets * 6 + selectedTickets.seniorTickets * 6}
 			</Typography>
 			<div>
 				<Button variant="contained" color="primary" component='a' href='/select-seats'>

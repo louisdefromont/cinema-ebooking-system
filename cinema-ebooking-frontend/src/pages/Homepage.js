@@ -16,6 +16,7 @@ const Homepage = () => {
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
+  const [editShowing, setEditShowing] = useState(false);
 
 
   const handleClickOnMovie = (movieTitle) => {
@@ -128,7 +129,6 @@ const Homepage = () => {
               </li>
             </ul>
           </div>
-          <AddShowing isAddingShowing={isAddingShowing} setIsAddingShowing={setIsAddingShowing} movie={selectedMovie} />
           <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie}/>
         </DialogContent>
         <DialogActions>

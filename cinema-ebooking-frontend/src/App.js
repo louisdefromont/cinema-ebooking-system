@@ -27,22 +27,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 function App() {
-  const orderDetails = [
-    {
-      seatNumber: 'A1',
-      type: 'adult',
-      cost: 12,
-      movie: 'Dune',
-      showtime: '6:00 PM',
-    },
-    {
-      seatNumber: 'B3',
-      type: 'child',
-      cost: 6,
-      movie: 'Dune',
-      showtime: '6:00 PM',
-    },
-  ];
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -59,8 +43,8 @@ function App() {
             <Route path='/admin/movies' element={<AdminMovies />} />
             <Route path='/select-age' element={<SelectAge />} />
             <Route path='/select-seats' element={<SelectSeats />} />
-            <Route path='/order-summary' element={<OrderSummary orderDetails={orderDetails} />} />
-            <Route path='/checkout' element={<Checkout orderDetails={orderDetails} />} />
+            <Route path='/order-summary' element={<OrderSummary/>} />
+            <Route path='/checkout' element={<Checkout/>} />
             <Route path='/confirmation' element={<Confirmation />} />
             <Route path='/reg-confrimation' element={<RegConfrim />} />
             <Route path='/register' element={<Register />} />
