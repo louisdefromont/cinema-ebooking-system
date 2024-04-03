@@ -4,7 +4,7 @@ import './Homepage.css'
 import Carousel from '../components/Carousel';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import AddShowing from '../components/AddShowing';
 import EditShowing from '../components/EditShowing';
@@ -16,8 +16,7 @@ const Homepage = () => {
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
-  const [isAddingShowing, setIsAddingShowing] = useState(false);
-  const [editShowing, setEditShowing] = useState(false);
+
 
   const handleClickOnMovie = (movieTitle) => {
     for (let i = 0; i < items.length; i++) {
@@ -120,9 +119,7 @@ const Homepage = () => {
                 </li>
               ))}
               <li>
-                <Button variant="contained" onClick={() => setIsAddingShowing(true)} color="primary">
-                  Add showing
-                </Button>
+                <AddShowing movie={selectedMovie} />
               </li>
             </ul>
           </div>
