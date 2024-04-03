@@ -96,8 +96,7 @@ const Homepage = () => {
       <Dialog open={selectedMovie !== null} onClose={() => setSelectedMovie(null)}>
         <div className='display_top'>
           <DialogTitle>{selectedMovie?.title}</DialogTitle>
-          <Button> Edit </Button>
-          <EditShowing />
+          <Button color="primary" onClick={() => setEditShowing(true)}> Edit </Button>
         </div>
         <DialogContent>
           <iframe
@@ -129,6 +128,8 @@ const Homepage = () => {
               </li>
             </ul>
           </div>
+          <AddShowing isAddingShowing={isAddingShowing} setIsAddingShowing={setIsAddingShowing} movie={selectedMovie} />
+          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">

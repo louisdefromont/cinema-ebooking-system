@@ -1,0 +1,9 @@
+.form {
+    display: grid;
+    grid-template-rows: 1fr, 1fr, 1fr, 1fr;
+    margin-bottom: 20px
+}
+
+.content {
+    height: fit-content;
+}
