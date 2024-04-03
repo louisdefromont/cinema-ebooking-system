@@ -15,6 +15,7 @@
 	overflow-x: auto;
 	scroll-behavior: smooth;
 	overflow: hidden;
+	overflow-x: hidden;
 }
 
 .carousel-item {
@@ -43,7 +44,7 @@
   }
 
 .carousel-item img {
-	width: 100%;
+	width: 200px;
 	border-radius: 5px;
 }
 
@@ -61,10 +62,12 @@
 
 .carousel-btn.prev {
 	left: 0;
+	z-index: 999;
 }
 
 .carousel-btn.next {
 	right: 0;
+	z-index: 999;
 }
 
 
