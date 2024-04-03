@@ -62,6 +62,11 @@ const Homepage = () => {
       });
   }, []);
 
+  function handleSelectShowing(showing) {
+    sessionStorage.setItem('selectedShowing', JSON.stringify(showing));
+    window.location.href = '/select-age';
+  }
+
 
   for (let i = 0; i < items.length; i++) {
     items[i].onClick = () => handleClickOnMovie(items[i].title);
@@ -114,7 +119,7 @@ const Homepage = () => {
               {selectedMovie?.showings.map(showing => (
                 <li key={showing.id}>
                   <span>{new Date(showing.dateTime).toLocaleString()}</span>
-                  <Button color="primary" component="a" href="/select-age">
+                  <Button onClick={() => handleSelectShowing(showing)} color="primary">
                     Buy Tickets
                   </Button>
                 </li>
