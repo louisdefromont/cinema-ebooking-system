@@ -11,15 +11,15 @@ datasource db {
 }
 
 model Movie {
-  id           Int       @id @default(autoincrement())
-  title        String    @db.VarChar(255)
-  trailerUrl   String    @db.VarChar(255)
-  thumbnailUrl String    @db.VarChar(255)
-  releaseDate  DateTime  @db.DateTime
-  showings      Showing[]
-  genres        String?  @db.VarChar(255)
-  description  String?    @db.Text
-  durationMinutes Int       @db.Int @default(0)
+  id              Int       @id @default(autoincrement())
+  title           String    @db.VarChar(255)
+  trailerUrl      String    @db.VarChar(255)
+  thumbnailUrl    String    @db.VarChar(255)
+  releaseDate     DateTime  @db.DateTime
+  showings        Showing[]
+  genres          String?   @db.VarChar(255)
+  description     String?   @db.Text
+  durationMinutes Int       @default(0) @db.Int
 }
 
 model User {
@@ -78,13 +78,14 @@ enum CustomerStateEnum {
 }
 
 model Showing {
-  id              Int       @id @default(autoincrement())
-  dateTime        DateTime  @db.DateTime
-  movie           Movie     @relation(fields: [movieId], references: [id])
-  movieId         Int
-  showroom        Showroom? @relation(fields: [showroomId], references: [id])
-  showroomId      Int?
-  bookedSeats     ShowingSeat[]
+  id          Int           @id @default(autoincrement())
+  dateTime    DateTime      @db.DateTime
+  movie       Movie         @relation(fields: [movieId], references: [id])
+  movieId     Int
+  showroom    Showroom?     @relation(fields: [showroomId], references: [id])
+  showroomId  Int?
+  bookedSeats ShowingSeat[]
+  BookingInfo BookingInfo[]
 }
 
 model Showroom {
@@ -94,18 +95,20 @@ model Showroom {
 }
 
 model Seat {
-  seatId     String   @id @db.VarChar(255)
-  showroom   Showroom @relation(fields: [showroomId], references: [id])
+  seatId     Int           @id @default(autoincrement())
+  name       String        @db.VarChar(255)
+  showroom   Showroom      @relation(fields: [showroomId], references: [id])
   showroomId Int
   showing    ShowingSeat[]
+  Ticket     Ticket[]
 }
 
 model ShowingSeat {
-  id       Int    @id @default(autoincrement())
-  showing Showing @relation(fields: [showingId], references: [id])
+  id        Int     @id @default(autoincrement())
+  showing   Showing @relation(fields: [showingId], references: [id])
   showingId Int
-  seat    Seat   @relation(fields: [seatId], references: [seatId])
-  seatId  String
+  seat      Seat    @relation(fields: [seatId], references: [seatId])
+  seatId    Int
 
   @@unique([showingId, seatId])
 }
@@ -118,22 +121,23 @@ model Promotion {
 }
 
 model BookingInfo {
-  bookingNum    Int          @id @default(autoincrement())
-  movieTitle    String
-  showDate      String
-  showTime      String
+  bookingNum    Int      @id @default(autoincrement())
+  showing       Showing  @relation(fields: [showingId], references: [id])
+  showingId     Int
   creditCardNum Int
   promotion     String
-  tickets       TicketType[]
-  User          User?        @relation(fields: [userId], references: [id])
+  tickets       Ticket[]
+  User          User?    @relation(fields: [userId], references: [id])
   userId        Int?
 }
 
-model TicketType {
-  id                    Int            @id @default(autoincrement())
-  ticket                TicketTypeEnum
-  booking               BookingInfo    @relation(fields: [bookingInfoBookingNum], references: [bookingNum])
-  bookingInfoBookingNum Int
+model Ticket {
+  id         Int            @id @default(autoincrement())
+  ticket     TicketTypeEnum
+  booking    BookingInfo    @relation(fields: [bookingNum], references: [bookingNum])
+  bookingNum Int
+  seat       Seat           @relation(fields: [seatId], references: [seatId])
+  seatId     Int
 }
 
 enum TicketTypeEnum {
@@ -143,8 +147,7 @@ enum TicketTypeEnum {
 }
 
 model TicketPrices {
-  id          Int   @id @default(autoincrement())
-  adultPrice  Float
-  childPrice  Float
-  seniorPrice Float
+  id         Int            @id @default(autoincrement())
+  ticketType TicketTypeEnum
+  price      Float          @db.Float
 }

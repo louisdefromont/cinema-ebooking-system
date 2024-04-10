@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-function Seat({ number, status, onSeatClick }) {
+function Seat({ name, status, onSeatClick }) {
 	return (
 		<Box
 			sx={{
@@ -15,24 +15,13 @@ function Seat({ number, status, onSeatClick }) {
 				alignItems: 'center',
 				justifyContent: 'center',
 				margin: 1.8,
-				bgcolor: status === 'available' ? 'white' : 'gray',
+				bgcolor: status === 'available' ? 'white' : status === 'selected' ? '#b49ccc' : 'gray',
 			}}
-			onClick={() => onSeatClick(number)}
+			onClick={() => onSeatClick(name)}
 		>
-			{number}
+			{name}
 		</Box>
 	);
-}
-
-function createSeats() {
-	const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
-	const seats = [];
-	for (let row of rows) {
-		for (let i = 1; i <= 6; i++) {
-			seats.push({ number: `${row}${i}`, status: 'available' });
-		}
-	}
-	return seats;
 }
 
 function getSeatsRemaining() {
@@ -41,31 +30,52 @@ function getSeatsRemaining() {
 }
 
 export default function SelectSeats() {
-	const [seats, setSeats] = React.useState(createSeats());
-	const [seatsRemaining, setSeatsRemaining] = React.useState(getSeatsRemaining());
+	const [allSeats, setAllSeats] = React.useState([]);
+	const [seatsRemainingCount, setSeatsRemainingCount] = React.useState(getSeatsRemaining());
 	const [selectedSeats, setSelectedSeats] = React.useState([]);
 
-	function onSeatClick(seatNumber) {
-		const newSeats = seats.map((seat) => {
-			if (seat.number === seatNumber) {
+	React.useEffect(() => {
+		const selectedShowing = JSON.parse(sessionStorage.getItem('selectedShowing'));
+		const showroomId = selectedShowing.showroomId;
+		axios.get(`https://localhost:3000/showrooms/${showroomId}`)
+			.then((response) => {
+				const seats = response.data.seats.map((seat) => {
+					return {
+						seatId: seat.seatId,
+						name: seat.name,
+						status: selectedShowing.bookedSeats.includes(seat.seatId) ? 'booked' : 'available',
+					};
+				});
+				setAllSeats(seats);
+			})
+			.catch((error) => {
+				console.error('Error fetching showroom:', error);
+			});
+	}, []);
+
+
+
+	function onSeatClick(seatName) {
+		const newSeats = allSeats.map((seat) => {
+			if (seat.name === seatName) {
 				if (seat.status === 'available') {
-					if (seatsRemaining === 0) {
+					if (seatsRemainingCount === 0) {
 						return seat;
 					}
-					setSeatsRemaining((prevSeatsRemaining) => prevSeatsRemaining - 1);
-					setSelectedSeats((prevSelectedSeats) => [...prevSelectedSeats, seatNumber]);
+					setSeatsRemainingCount((prevSeatsRemaining) => prevSeatsRemaining - 1);
+					setSelectedSeats((prevSelectedSeats) => [...prevSelectedSeats, seatName]);
 					return { ...seat, status: 'selected' };
 				} else if (seat.status === 'selected') {
-					setSeatsRemaining((prevSeatsRemaining) => prevSeatsRemaining + 1);
+					setSeatsRemainingCount((prevSeatsRemaining) => prevSeatsRemaining + 1);
 					setSelectedSeats((prevSelectedSeats) =>
-						prevSelectedSeats.filter((selectedSeat) => selectedSeat !== seatNumber)
+						prevSelectedSeats.filter((selectedSeat) => selectedSeat !== seatName)
 					);
 					return { ...seat, status: 'available' };
 				}
 			}
 			return seat;
 		});
-		setSeats(newSeats);
+		setAllSeats(newSeats);
 	}
 
 	function onSubmit() {
@@ -75,8 +85,17 @@ export default function SelectSeats() {
 
 	// 2d array of seats
 	const seatRows = [];
-	for (let i = 0; i < seats.length; i += 6) {
-		seatRows.push(seats.slice(i, i + 6));
+	if (allSeats.length > 0) {
+		var currentLetter = allSeats[0].name.charAt(0);
+		var startOfRow = 0;
+		for (var i = 0; i < allSeats.length; i++) {
+			if (allSeats[i].name.charAt(0) !== currentLetter) {
+				seatRows.push(allSeats.slice(startOfRow, i));
+				startOfRow = i;
+				currentLetter = allSeats[i].name.charAt(0);
+			}
+		}
+		seatRows.push(allSeats.slice(startOfRow));
 	}
 	// const checkoutButton
 	return (
@@ -88,7 +107,7 @@ export default function SelectSeats() {
 						{row.map((seat, index) => (
 							<Seat
 								key={index}
-								number={seat.number}
+								name={seat.name}
 								status={seat.status}
 								onSeatClick={onSeatClick}
 							/>
@@ -96,12 +115,12 @@ export default function SelectSeats() {
 					</div>
 				))}
 			</div>
-			<Typography variant="h5" bgcolor={'white'}>Seats Remaining: {seatsRemaining}</Typography>
+			<Typography variant="h5" bgcolor={'white'}>Seats Remaining: {seatsRemainingCount}</Typography>
 			<Button
 				variant="contained"
 				color="primary"
 				onClick={onSubmit}
-				disabled={seatsRemaining > 0}
+				disabled={seatsRemainingCount > 0}
 			>
 				Checkout
 			</Button>

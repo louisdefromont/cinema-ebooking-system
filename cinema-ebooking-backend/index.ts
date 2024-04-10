@@ -121,7 +121,7 @@ app.post('/activate', async (req: Request, res: Response) => {
 app.post('/checkAdmin', async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         // Query the database to find if the email belongs to an admin
         const admin = await prisma.admin.findFirst({
             where: {
@@ -140,6 +140,11 @@ app.post('/checkAdmin', async (req, res) => {
         console.error('Error checking admin:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+// TODO: Implement this endpoint
+app.post('/checkAdmin/me', async (req, res) => {
+    res.status(200).json({ isAdmin: false });
 });
 
 app.get('/paymentcards', async (req, res) => {
@@ -222,7 +227,7 @@ app.put('/paymentcards/:id', async (req, res) => {
 app.post('/paymentcards', async (req, res) => {
     try {
         const { email, cardName, cardNum, cvv, expirationDate, billingAddress, billCity, billState } = req.body;
-        
+
         // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
@@ -387,16 +392,16 @@ app.post('/register', async (req: Request, res: Response) => {
     if (!email || !password || !firstName || !lastName || !phone) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
-    
+
     // Check if any paymentInfo fields are null
     if (!cardName && !cardNum && !cvv && !expirationDate && !billingAddress && !billCity && !billState) {
         pcNull = true;
         // return res.status(400).json({ error: 'Missing paymentInfo fields' });
-    } 
+    }
 
     // Additional check if pcNull is false but one of the fields from cardName...billState is not null
     if (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState)) {
-        return res.status(400).json({ error: 'Payment Info is incomplete' });    
+        return res.status(400).json({ error: 'Payment Info is incomplete' });
     }
 
     try {
@@ -427,7 +432,7 @@ app.post('/register', async (req: Request, res: Response) => {
         const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
         // Create a new user with associated payment card
         if (pcNull) { // no paymentcard
-             const newUser = await prisma.user.create({
+            const newUser = await prisma.user.create({
                 data: {
                     firstName: firstName,
                     lastName: lastName,
@@ -442,8 +447,8 @@ app.post('/register', async (req: Request, res: Response) => {
                 } // data 
             });
             res.json(newUser);
-        } else {        
-             const newUser = await prisma.user.create({
+        } else {
+            const newUser = await prisma.user.create({
                 data: {
                     firstName: firstName,
                     lastName: lastName,
@@ -473,11 +478,11 @@ app.post('/register', async (req: Request, res: Response) => {
             }); // newUser
             res.json(newUser);
         } // if
-    }catch (error) {
+    } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}); 
+});
 
 // Login 
 app.post('/login', async (req: Request, res: Response) => {
@@ -501,7 +506,7 @@ app.post('/login', async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-       
+
         // If the user exists and the password matches, return success response
         req.session.user = { id: user.id };
         res.status(200).json({ message: 'Login successful', user });
@@ -544,13 +549,21 @@ app.get('/movies', async (req, res) => {
                     },
                 },
                 include: {
-                    showings: true
+                    showings: {
+                        include: {
+                            bookedSeats: true
+                        }
+                    }
                 }
             });
         } else {
             movies = await prisma.movie.findMany({
                 include: {
-                    showings: true
+                    showings: {
+                        include: {
+                            bookedSeats: true
+                        }
+                    }
                 }
             }); // Fetch all movies if no search query is provided
         }
@@ -869,12 +882,34 @@ app.get('/showrooms', async (req, res) => {
     }
 });
 
-app.get('/showings:movieId', async (req, res) => {
+app.get('/showrooms/:id', async (req, res) => {
+    try {
+        const showroomId = parseInt(req.params.id);
+        const showroom = await prisma.showroom.findUnique({
+            where: {
+                id: showroomId
+            },
+            include: {
+                seats: true
+            }
+        });
+        res.status(200).json(showroom);
+    } catch (error) {
+        console.error('Error fetching showroom:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/showings/:movieId', async (req, res) => {
     try {
         const movieId = parseInt(req.params.movieId);
+        // include booked seats
         const showings = await prisma.showing.findMany({
             where: {
                 movieId: movieId
+            },
+            include: {
+                bookedSeats: true
             }
         });
         res.status(200).json(showings);

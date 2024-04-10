@@ -129,7 +129,7 @@ const Homepage = () => {
               </li>
             </ul>
           </div>
-          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie}/>
+          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">
