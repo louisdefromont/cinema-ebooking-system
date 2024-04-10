@@ -4,10 +4,7 @@ import './Homepage.css'
 import Carousel from '../components/Carousel';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
-import AddShowing from '../components/AddShowing';
-import EditShowing from '../components/EditShowing';
+import Modal from '../components/Modal';
 
 
 const Homepage = () => {
@@ -16,7 +13,6 @@ const Homepage = () => {
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
-  const [editShowing, setEditShowing] = useState(false);
 
 
   const handleClickOnMovie = (movieTitle) => {
@@ -94,6 +90,7 @@ const Homepage = () => {
         <h2 className='header_font'>Coming Soon</h2>
         <Carousel items={items} />
       </section>
+<<<<<<< Updated upstream
       <Dialog open={selectedMovie !== null} onClose={() => setSelectedMovie(null)}>
         <div className='display_top'>
           <DialogTitle>{selectedMovie?.title}</DialogTitle>
@@ -137,6 +134,10 @@ const Homepage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+=======
+
+      <Modal selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} handleSelectShowing={handleSelectShowing} />
+>>>>>>> Stashed changes
     </>
   )
 }

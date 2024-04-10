@@ -3,12 +3,60 @@ import { useState, useEffect } from 'react';
 import './MovieSearch.css';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
+import Modal from '../components/Modal';
+import ReactPlayer from 'react-player';
 
 
 const MovieSearch = () => {
     const [items, setItems] = useState([]);
     const [filteredMovies, setFilteredMovies] = useState([])
     const [searchItem, setSearchItem] = useState('')
+    const [selectedMovie, setSelectedMovie] = useState(null);
+    const[tUrl, setTUrl] = useState("");
+	const[openTrailer, setOpenTrailer] = useState(false);
+    
+    // Connect and fetch movies from database
+    useEffect(() => {
+    axios.get('https://localhost:3000/movies')
+      .then(response => {
+        const movies = response.data;
+        const mappedItems = movies.map(movie => {
+          return {
+            id: movie.id,
+            imageUrl: movie.thumbnailUrl,
+            title: movie.title,
+            trailerUrl: movie.trailerUrl,
+            date: movie.releaseDate,
+            genres: movie.genres,
+            description: movie.description,
+            duration: movie.durationMinutes,
+            showings: movie.showings
+          };
+        });
+        setItems(mappedItems);
+        setFilteredMovies(mappedItems);
+      })
+      .catch(error => {
+        console.error('Error fetching movies:', error);
+      });
+    }, []);
+
+    // Clicked movie for modal
+    const handleClickOnMovie = (movieTitle) => {
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].title === movieTitle) {
+            setSelectedMovie(items[i]);
+            break;
+          }
+        }
+    }
+    for (let i = 0; i < items.length; i++) {
+        items[i].onClick = () => handleClickOnMovie(items[i].title);
+    }
+    function handleSelectShowing(showing) {
+        sessionStorage.setItem('selectedShowing', JSON.stringify(showing));
+        window.location.href = '/select-age';
+    }
     
     // Searchbar handler
     const handleInputChange = (e) => { 
@@ -22,25 +70,7 @@ const MovieSearch = () => {
         setFilteredMovies(filteredItems);
     }
 
-    // Connect and fetch movies from database
-    useEffect(() => {
-    axios.get('https://localhost:3000/movies')
-      .then(response => {
-        const movies = response.data;
-        const mappedItems = movies.map(movie => {
-          return {
-            imageUrl: movie.thumbnailUrl,
-            title: movie.title,
-            trailerUrl: movie.trailerUrl
-          };
-        });
-        setItems(mappedItems);
-        setFilteredMovies(mappedItems);
-      })
-      .catch(error => {
-        console.error('Error fetching movies:', error);
-      });
-    }, []);
+    
 
     return(
         <>
@@ -102,14 +132,29 @@ const MovieSearch = () => {
                 <div className="grid-item-3">
                     <ul>
                         {filteredMovies.map((item, index) => (
-                            <li key={index}>
-                                <img src={item.imageUrl} alt={item.title} />
+                            <li key={index} onClick={item.onClick} >
+                                <img src={item.imageUrl} alt={item.title}/>
 						        <h3 className='dm-sans-medium'>{item.title}</h3>
                             </li>
 				        ))}
                     </ul>
                 </div>
             </div>
+
+            <div className='tContainer'>
+			
+			{openTrailer && <button
+            	onClick={() => {
+                setOpenTrailer(false);
+              	}}
+				className='titleCloseBtn'
+            	> close </button>
+			}
+			{openTrailer && <ReactPlayer className='trailer' url={tUrl} />}
+			
+		    </div>
+
+            <Modal selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} handleSelectShowing={handleSelectShowing} />
 
         </>
     );

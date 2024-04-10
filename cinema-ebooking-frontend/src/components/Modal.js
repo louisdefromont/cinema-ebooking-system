@@ -1,40 +1,60 @@
-import React from "react";
+import React, { useState } from 'react';
 import './Modal.css'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import AddShowing from '../components/AddShowing';
+import EditShowing from '../components/EditShowing';
 
-function Modal({ setOpenModal }, { test }) {
-    return (
-      <div className="modalBackground">
-        <div className="modalContainer">
-          <div className="titleCloseBtn">
-            <button
-              onClick={() => {
-                setOpenModal(false);
-                console.log(test);
-              }}
-            >
-              X
-            </button>
-          </div>
-          <div className="title">
-            <h1> here </h1>
-          </div>
-          <div className="body">
-            <p>The next page looks amazing. Hope you want to go there!</p>
-          </div>
-          <div className="footer">
-            <button
-              onClick={() => {
-                setOpenModal(false);
-              }}
-              id="cancelBtn"
-            >
-              Cancel
-            </button>
-            <button>Continue</button>
-          </div>
+
+function Modal( {selectedMovie, setSelectedMovie, handleSelectShowing} ) {
+  const [editShowing, setEditShowing] = useState(false);
+
+  return(
+    <>
+      <Dialog open={selectedMovie !== null} onClose={() => setSelectedMovie(null)}>
+        <div className='display_top'>
+          <DialogTitle>{selectedMovie?.title}</DialogTitle>
+          <Button color="primary" onClick={() => setEditShowing(true)}> Edit </Button>
         </div>
-      </div>
-    );
-  }
+        <DialogContent>
+          <iframe
+            width="560"
+            height="315"
+            src={"https://www.youtube.com/embed/" + selectedMovie?.trailerUrl.replace("https://youtu.be/", "")}
+            title={selectedMovie?.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <div>
+            <h3>{selectedMovie?.genres}</h3>
+            <span>{selectedMovie?.description}</span>
+            <br></br>
+            <br></br>
+            <h3>Showtimes:</h3>
+            <ul>
+              {selectedMovie?.showings.map(showing => (
+                <li key={showing.id}>
+                  <span>{new Date(showing.dateTime).toLocaleString()}</span>
+                  <Button onClick={() => handleSelectShowing(showing)} color="primary">
+                    Buy Tickets
+                  </Button>
+                </li>
+              ))}
+              <li>
+                <AddShowing movie={selectedMovie} />
+              </li>
+            </ul>
+          </div>
+          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSelectedMovie(null)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}
   
   export default Modal;

@@ -1,22 +1,20 @@
 import React, { useRef, useState } from 'react';
 import './Carousel.css';
-// import Modal from './Modal';
 import ReactPlayer from 'react-player';
-import Button from '@mui/material/Button';
 
 export default function Carousel({ items }) {
 	const carouselRef = useRef(null);
 
 	const handleLeftClick = () => {
 		carouselRef.current.scrollBy({
-			left: -400,
+			left: -600,
 			behavior: 'smooth',
 		});
 	};
 
 	const handleRightClick = () => {
 		carouselRef.current.scrollBy({
-			left: 400,
+			left: 600,
 			behavior: 'smooth',
 		});
 	};
@@ -24,10 +22,6 @@ export default function Carousel({ items }) {
 	// Temp trailer player
 	const[tUrl, setTUrl] = useState("");
 	const[openTrailer, setOpenTrailer] = useState(false);
- 
-	//Modal
-	// const[openModal, setOpenModal] = useState(false);
-	// const[test, setTest] = useState([]);
 
 	return (
 	<>

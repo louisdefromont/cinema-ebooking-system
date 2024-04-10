@@ -38,6 +38,10 @@ div > ul {
     grid-gap: 35%;
 }
 
+div > ul > li {
+    margin-bottom: -8em;
+}
+
 li > img {
     width: 200px;
 }
