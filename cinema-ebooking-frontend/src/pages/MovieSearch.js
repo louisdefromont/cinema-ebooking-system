@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 import Modal from '../components/Modal';
 import ReactPlayer from 'react-player';
-
+import Button from '@mui/material/Button';
 
 const MovieSearch = () => {
     const [items, setItems] = useState([]);
@@ -59,7 +59,7 @@ const MovieSearch = () => {
     }
     
     // Searchbar handler
-    const handleInputChange = (e) => { 
+    const handleInputChange = (e) => {
         const searchTerm = e.target.value;
         setSearchItem(searchTerm)
 
@@ -70,7 +70,53 @@ const MovieSearch = () => {
         setFilteredMovies(filteredItems);
     }
 
-    
+    // Filter Checkbox handler
+    const filterHandler = (filter) => {
+        const filterTerm = filter.target.value;
+        const filteredItems = filteredMovies.filter((item) =>
+            item.genres.toLowerCase().includes(filterTerm.toLowerCase())
+        );
+        
+        setFilteredMovies(filteredItems);
+    }
+
+    const [genres, setGenres] = useState({
+        adventure: false,
+        action: false,
+        comedy: false,
+        drama: false,
+        fantasy: false,
+        horror: false,
+        romace: false,
+        sciFi: false,
+        thriller: false
+      });
+
+      const handleChange = (e) => {
+        const { name, checked } = e.target;
+        setGenres({
+          ...genres,
+          [name]: checked
+        });
+
+        filterHandler(e);
+      };
+
+      const handleReset = () => {
+        setGenres({
+            adventure: false,
+            action: false,
+            comedy: false,
+            drama: false,
+            fantasy: false,
+            horror: false,
+            romance: false,
+            sciFi: false,
+            thriller: false
+        });
+
+        setFilteredMovies(items);
+      };
 
     return(
         <>
@@ -94,36 +140,43 @@ const MovieSearch = () => {
                         <fieldset>
                             <h2> Filter </h2>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name="adventure" checked={genres.adventure} value="Adventure" onChange={handleChange}/>
+                                <label className='filter_label'> Adventure </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" name="action" checked={genres.action} value="Action" onChange={handleChange}/>
                                 <label className='filter_label'> Action </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name='comedy' checked={genres.comedy} value="Comedy" onChange={handleChange}/>
                                 <label className='filter_label'> Comedy </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name='drama' checked={genres.drama} value="Drama" onChange={handleChange}/>
                                 <label className='filter_label'> Drama </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
-                                <label className='filter_label'> Fanstasy </label>
+                                <input type="checkbox" name='fantasy' checked={genres.fantasy} value="Fantasy" onChange={handleChange}/>
+                                <label className='filter_label'> Fantasy </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name='horror' checked={genres.horror} value="Horror" onChange={handleChange}/>
                                 <label className='filter_label'> Horror </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name='romance' checked={genres.romance} value="Romance" onChange={handleChange}/>
                                 <label className='filter_label'> Romance </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
-                                <label className='filter_label'> Sci FI </label>
+                                <input type="checkbox" name='sciFi' checked={genres.sciFi} value="Sci-Fi" onChange={handleChange}/>
+                                <label className='filter_label'> Sci-FI </label>
                             </p>
                             <p>
-                                <input type="checkbox" value=""/>
+                                <input type="checkbox" name='thriller' checked={genres.thriller} value="Thriller" onChange={handleChange}/>
                                 <label className='filter_label'> Thriller </label>
+                            </p>
+                            <p>
+                                <Button onClick={handleReset}> Reset Filter </Button>
                             </p>
                         </fieldset>
                     </form>
