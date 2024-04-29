@@ -87,6 +87,7 @@ const Register = () => {
                 if (error.response.data.error === 'Email already exists') {
                     window.alert('An account with the email already exists');   
                 } else if (error.response.data.error === 'Payment Info is incomplete') {
+                    console.log(error.response.data.error + " this is the error");
                     window.alert('Payment Card info is incomplete');
                 } else {
                     window.alert('Please fill out all required fields');

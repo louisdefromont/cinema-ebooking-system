@@ -396,11 +396,17 @@ app.post('/register', async (req: Request, res: Response) => {
     // Check if any paymentInfo fields are null
     if (!cardName && !cardNum && !cvv && !expirationDate && !billingAddress && !billCity && !billState) {
         pcNull = true;
+        console.log("pcNull = " + pcNull);
         // return res.status(400).json({ error: 'Missing paymentInfo fields' });
     }
 
     // Additional check if pcNull is false but one of the fields from cardName...billState is not null
-    if (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState)) {
+    if (!pcNull && !(cardName && cardNum && cvv && expirationDate && billingAddress && billCity && billState)) {
+         //const info = (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState));
+         const info = (!pcNull);
+         const one = (!cardName);
+         const not = !(cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState);
+        console.log("Info = " + info + " " + not);
         return res.status(400).json({ error: 'Payment Info is incomplete' });
     }
 
