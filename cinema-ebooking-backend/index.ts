@@ -1050,21 +1050,24 @@ app.post('/showtimes', async (req, res) => {
     }
 });
 
+app.delete('/showtimes/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract showtime ID from URL
 
-/** 
- // shows all showtimes (admin page)
-app.get('/showtimes', async (req, res) => {
     try {
-        // Fetch all showings from the database
-        const showings = await prisma.showing.findMany();
-        
-        res.status(200).json(showings);
+        // Delete the showtime from the database
+        // Assume `prisma` is your database client
+        await prisma.showing.delete({
+            where: { id },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Showtime deleted successfully' });
     } catch (error) {
-        console.error('Error fetching showings:', error);
+        console.error('Error deleting showtime:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+/** 
 
 app.post('/showtimes', async (req, res) => {
     try {
@@ -1083,6 +1086,23 @@ app.post('/showtimes', async (req, res) => {
     }
 });
 */
+
+
+// Endpoint to get all tickets
+app.get('/tickets', async (req, res) => {
+    try {
+        // Retrieve all tickets from the database
+        const tickets = await prisma.ticketPrices.findMany();
+
+        // Return success response with the list of tickets
+        res.status(200).json(tickets);
+    } catch (error) {
+        console.error('Error fetching tickets:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),

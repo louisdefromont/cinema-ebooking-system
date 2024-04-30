@@ -10,12 +10,12 @@ const Showtimes = () => {
     function readCallback() {
         return Axios.get('https://localhost:3000/showtimes/');
     }
-
-
-    /** 
-s    function deleteCallback(row) {
+    function deleteCallback(row) {
         return Axios.delete('https://localhost:3000/showtimes/${row.id}');
     }
+
+    /** 
+
         function updateCallback(row) {
         return Axios.put('https://localhost:3000/showings/${row.id}', row);
     }
@@ -27,7 +27,7 @@ s    function deleteCallback(row) {
                 createCallback={createCallback}
                 readCallback={readCallback}
                 //updateCallback={updateCallback}
-               // deleteCallback={deleteCallback}
+                deleteCallback={deleteCallback}
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <li>
