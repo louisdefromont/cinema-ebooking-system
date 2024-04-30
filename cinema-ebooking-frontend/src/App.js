@@ -9,6 +9,8 @@ import AdminControl from './pages/admin/AdminControl';
 import AdminPromotions from './pages/admin/Promotions';
 import AdminUsers from './pages/admin/Users';
 import AdminMovies from './pages/admin/Movies';
+import AdminShowtimes from './pages/admin/Showtimes';
+import AdminTickets from './pages/admin/Tickets';
 import SelectAge from './pages/SelectAge';
 import SelectSeats from './pages/SelectSeats';
 import OrderSummary from './pages/OrderSummary';
@@ -41,6 +43,8 @@ function App() {
             <Route path='/admin/promotions' element={<AdminPromotions />} />
             <Route path='/admin/users' element={<AdminUsers />} />
             <Route path='/admin/movies' element={<AdminMovies />} />
+            <Route path='/admin/showtimes' element={<AdminShowtimes />} />
+            <Route path='/admin/tickets' element={<AdminTickets />} />
             <Route path='/select-age' element={<SelectAge />} />
             <Route path='/select-seats' element={<SelectSeats />} />
             <Route path='/order-summary' element={<OrderSummary/>} />

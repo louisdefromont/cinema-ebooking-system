@@ -956,7 +956,96 @@ app.post('/showings', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+// shows all showtimes (admin page)
+app.get('/showtimes', async (req, res) => {
+    try {
+        // Fetch all showings from the database
+        const showings = await prisma.showing.findMany({
+            include: {
+                movie: {
+                    select: {
+                        title: true
+                    }
+                }
+            }
+        });
 
+        // Map through showings and replace movieId with movie title
+        const formattedShowings = showings.map(showing => ({
+            ...showing,
+            movieId: showing.movie.title // Replace movieId with movie title
+        }));
+
+        res.status(200).json(formattedShowings);
+    } catch (error) {
+        console.error('Error fetching showings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// shows all showtimes (admin page)
+app.get('/showtimes', async (req, res) => {
+    try {
+        // Fetch all showings from the database
+        const showings = await prisma.showing.findMany({
+            include: {
+                movie: {
+                    select: {
+                        title: true
+                    }
+                }
+            }
+        });
+
+        // Map through showings and replace movieId with movie title
+        const formattedShowings = showings.map(showing => ({
+            ...showing,
+            movieId: showing.movie.title // Replace movieId with movie title
+        }));
+
+        res.status(200).json(formattedShowings);
+    } catch (error) {
+        console.error('Error fetching showings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+/** 
+// shows all showtimes (admin page)
+app.get('/showtimes', async (req, res) => {
+    try {
+        // Fetch all showings from the database
+        const showings = await prisma.showing.findMany();
+        
+        res.status(200).json(showings);
+    } catch (error) {
+        console.error('Error fetching showings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+app.post('/showtimes', async (req, res) => {
+    try {
+        const { dateTime, movieId, showroomId } = req.body;
+        
+        // Create a new showing in the database
+        const newShowing = await prisma.showing.create({
+            data: {
+                dateTime,
+                movieId,
+                showroomId
+            }
+        });
+        
+        res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
+    } catch (error) {
+        console.error('Error creating showing:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
     cert: fs.readFileSync('../ssl/server.cert')

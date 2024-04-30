@@ -62,6 +62,27 @@ export default function AdminControl() {
 				color="primary"
 				style={buttonStyle}
 				component={Link}
+				to="/admin/showtimes"
+			>
+				Manage Showtimes
+			</Button>
+			<Button
+				variant="contained"
+				color="primary"
+				style={buttonStyle}
+				component={Link}
+				to="/admin/tickets"
+			>
+				Manage Tickets
+			</Button>
+			<Button
+				variant="contained"
+				color="primary"
+				style={{
+					...buttonStyle,
+					border: '2px solid purple' // Add purple border
+				}}
+				component={Link}
 				to="/"
 			>
 				Return to Homepage
