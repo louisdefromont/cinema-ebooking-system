@@ -4,32 +4,29 @@ import Axios from 'axios';
 
 const Showtimes = () => {
      
-
-    
-    function readCallback(row) {
-        return Axios.get('https://localhost:3000/showtimes/');
-    }
-    /** 
-
     function createCallback(row) {
         return Axios.post('https://localhost:3000/showtimes', row);
     }
-
-
-    function updateCallback(row) {
-        return Axios.put('https://localhost:3000/showings/${row.id}', row);
+    function readCallback() {
+        return Axios.get('https://localhost:3000/showtimes/');
     }
-    function deleteCallback(row) {
-        return Axios.delete('https://localhost:3000/showings/${row.id}');
+
+
+    /** 
+s    function deleteCallback(row) {
+        return Axios.delete('https://localhost:3000/showtimes/${row.id}');
+    }
+        function updateCallback(row) {
+        return Axios.put('https://localhost:3000/showings/${row.id}', row);
     }
 */
     return (
         <div>
             <TableManager
-                rowHeaders={["dateTime", "movieId", "showroomId"]}
-               // createCallback={createCallback}
+                rowHeaders={["id", "dateTime", "movieId", "showroomId"]}
+                createCallback={createCallback}
                 readCallback={readCallback}
-              //  updateCallback={updateCallback}
+                //updateCallback={updateCallback}
                // deleteCallback={deleteCallback}
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>

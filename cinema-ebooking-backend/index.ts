@@ -983,6 +983,7 @@ app.get('/showtimes', async (req, res) => {
     }
 });
 
+ 
 // shows all showtimes (admin page)
 app.get('/showtimes', async (req, res) => {
     try {
@@ -1010,9 +1011,48 @@ app.get('/showtimes', async (req, res) => {
     }
 });
 
+// add new showtime row (admin)
+app.post('/showtimes', async (req, res) => {
+    try {
+        const { dateTime, movieId, showroomId } = req.body;
+
+        // Convert movieId to an integer
+        const movieIdInt = parseInt(movieId);
+        
+        // Convert showroomId to an integer or null
+        const showroomIdInt = showroomId ? parseInt(showroomId) : null;
+
+        // Find the movie ID associated with the given movieId
+        const movie = await prisma.movie.findUnique({
+            where: {
+                id: movieIdInt
+            },
+            select: {
+                id: true
+            }
+        });
+
+        if (!movie) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+
+        const newShowing = await prisma.showing.create({
+            data: {
+                dateTime: dateTime,
+                movieId: movieIdInt, // Use the parsed movieId
+                showroomId: showroomIdInt // Use the parsed showroomId
+            }
+        });
+        res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
+    } catch (error) {
+        console.error('Error creating showing:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 /** 
-// shows all showtimes (admin page)
+ // shows all showtimes (admin page)
 app.get('/showtimes', async (req, res) => {
     try {
         // Fetch all showings from the database
@@ -1029,16 +1069,13 @@ app.get('/showtimes', async (req, res) => {
 app.post('/showtimes', async (req, res) => {
     try {
         const { dateTime, movieId, showroomId } = req.body;
-        
-        // Create a new showing in the database
         const newShowing = await prisma.showing.create({
             data: {
-                dateTime,
-                movieId,
-                showroomId
+                dateTime: dateTime,
+                movieId: movieId,
+                showroomId: showroomId
             }
         });
-        
         res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
     } catch (error) {
         console.error('Error creating showing:', error);
@@ -1046,6 +1083,7 @@ app.post('/showtimes', async (req, res) => {
     }
 });
 */
+
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
     cert: fs.readFileSync('../ssl/server.cert')
