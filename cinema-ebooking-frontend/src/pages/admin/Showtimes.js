@@ -11,22 +11,19 @@ const Showtimes = () => {
         return Axios.get('https://localhost:3000/showtimes/');
     }
     function deleteCallback(row) {
-        return Axios.delete('https://localhost:3000/showtimes/${row.id}');
+        return Axios.delete(`https://localhost:3000/showtimes/${row.id}`);
+    }
+    function updateCallback(row) {
+        return Axios.put(`https://localhost:3000/showtimes/${row.id}`, row);
     }
 
-    /** 
-
-        function updateCallback(row) {
-        return Axios.put('https://localhost:3000/showings/${row.id}', row);
-    }
-*/
     return (
         <div>
             <TableManager
                 rowHeaders={["id", "dateTime", "movieId", "showroomId"]}
                 createCallback={createCallback}
                 readCallback={readCallback}
-                //updateCallback={updateCallback}
+                updateCallback={updateCallback}
                 deleteCallback={deleteCallback}
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>

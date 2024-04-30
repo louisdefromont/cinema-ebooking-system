@@ -10,27 +10,22 @@ const Tickets = () => {
     function createCallback(row) {
         return Axios.post('https://localhost:3000/tickets', row);
     }
-
-    /** 
-     * 
-     *      
-
-     * 
     function deleteCallback(row) {
-        return Axios.delete('https://localhost:3000/showtimes/${row.id}');
+        return Axios.delete(`https://localhost:3000/tickets/${row.id}`);
     }
+  
         function updateCallback(row) {
-        return Axios.put('https://localhost:3000/showings/${row.id}', row);
+        return Axios.put(`https://localhost:3000/tickets/${row.id}`, row);
     }
-*/
+
     return (
         <div>
             <TableManager
                 rowHeaders={["id", "price", "ticketType"]}
                 createCallback={createCallback}
                 readCallback={readCallback}
-                //updateCallback={updateCallback}
-               // deleteCallback={deleteCallback}
+                updateCallback={updateCallback}
+                deleteCallback={deleteCallback}
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <li>

@@ -1067,6 +1067,7 @@ app.delete('/showtimes/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 /** 
 
 app.post('/showtimes', async (req, res) => {
@@ -1098,6 +1099,180 @@ app.get('/tickets', async (req, res) => {
         res.status(200).json(tickets);
     } catch (error) {
         console.error('Error fetching tickets:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to create a ticket price
+app.post('/tickets', async (req, res) => {
+    try {
+        const { ticketType, price } = req.body;
+
+        // Parse price as float
+        const priceFloat = parseFloat(price);
+
+        const newTicketPrice = await prisma.ticketPrices.create({
+            data: {
+                ticketType,
+                price: priceFloat
+            }
+        });
+        res.status(201).json({ message: 'Ticket price created successfully', ticketPrice: newTicketPrice });
+    } catch (error) {
+        console.error('Error creating ticket price:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+// Endpoint to delete a ticket price by ID
+app.delete('/tickets/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract ticket ID from URL
+
+    console.log("ticket id: " + id);
+    try {
+        // Delete the ticket price from the database
+        const deletedTicketPrice = await prisma.ticketPrices.delete({
+            where: { id },
+        });
+
+        // Check if the ticket price was found and deleted
+        if (!deletedTicketPrice) {
+            // If not found, return a 404 status
+            return res.status(404).json({ error: 'Ticket price not found' });
+        }
+
+        // Return success response
+        res.status(200).json({ message: 'Ticket price deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting ticket price:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+// Endpoint to update a showtime by ID
+app.put('/showtimes/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract showtime ID from URL
+    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
+
+    try {
+            // Update the showtime in the database
+            const updatedShowtime = await prisma.showing.update({
+                where: { id },
+                data: { 
+                    dateTime, 
+                    movieId: parseInt(movieId), 
+                    showroomId: parseInt(showroomId) 
+                }, // Parse movieId and showroomId as integers
+            });
+   
+
+
+        // Return success response with the updated showtime
+        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
+    } catch (error) {
+        console.error('Error updating showtime:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/** 
+// Endpoint to update a showtime by ID
+app.put('/showtimes/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract showtime ID from URL
+    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
+
+    try {
+        // Construct data to update
+        const dataToUpdate: { dateTime: any; movieId?: number; showroomId?: number } = { dateTime };
+
+        // Check if movieId field is present and not null
+        if (movieId !== undefined && movieId !== null) {
+            dataToUpdate.movieId = parseInt(movieId);
+        }
+
+        // Check if showroomId field is present and not null
+        if (showroomId !== undefined && showroomId !== null) {
+            dataToUpdate.showroomId = parseInt(showroomId);
+        }
+
+        // Update the showtime in the database
+        const updatedShowtime = await prisma.showing.update({
+            where: { id },
+            data: dataToUpdate,
+        });
+
+        // Return success response with the updated showtime
+        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
+    } catch (error) {
+        console.error('Error updating showtime:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
+
+
+
+
+// Endpoint to update a showtime by ID
+app.put('/showtimes/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract showtime ID from URL
+    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
+
+    try {
+        // Prepare update data
+        const dataToUpdate: { dateTime: any; showroomId: number; movieId?: number } = {
+            dateTime,
+            showroomId: parseInt(showroomId), // Always update showroomId
+        };
+
+        // Conditionally update movieId if provided
+        if (movieId !== null && movieId !== undefined) {
+            dataToUpdate.movieId = parseInt(movieId);
+        }
+
+        // Update the showtime in the database
+        const updatedShowtime = await prisma.showing.update({
+            where: { id },
+            data: dataToUpdate,
+        });
+
+        // Return success response with the updated showtime
+        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
+    } catch (error) {
+        console.error('Error updating showtime:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
+
+*/
+
+
+// Update ticket endpoint 
+app.put('/tickets/:id', async (req, res) => {
+    try {
+        const ticketId = parseInt(req.params.id);
+        const { price, ticketType } = req.body;
+        const updatedTicket = await prisma.ticketPrices.update({
+            where: {
+                id: ticketId
+            },
+            data: {
+                price: parseFloat(price),
+                ticketType: ticketType
+            }
+        });
+        res.status(200).json({ message: 'Ticket updated successfully', ticket: updatedTicket });
+    } catch (error) {
+        console.error('Error updating ticket:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
