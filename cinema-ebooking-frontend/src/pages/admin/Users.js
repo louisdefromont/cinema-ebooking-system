@@ -1,5 +1,5 @@
 import React from 'react';
-import TableManager from './TableManager';
+import UserTableManager from './UserTableManager';
 import Axios from 'axios';
 
 const Users = () => {
@@ -18,7 +18,7 @@ const Users = () => {
 
     return (
         <div> 
-            <TableManager rowHeaders={['id', 'email', 'firstName', 'lastName', 'password', 'phone', 'city', 'state','regPromo', 'status', 'admin']} 
+            <UserTableManager rowHeaders={['id', 'email', 'firstName', 'lastName', 'password', 'phone', 'city', 'state','regPromo', 'status', 'admin']} 
             createCallback={createCallback} 
             readCallback={readCallback} 
             updateCallback={updateCallback} 
