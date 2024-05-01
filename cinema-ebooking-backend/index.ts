@@ -149,6 +149,7 @@ app.post('/checkAdmin/me', async (req, res) => {
 
 app.get('/paymentcards', async (req, res) => {
     try {
+        
         // Check if req.session.user is defined
         if (!req.session.user || !req.session.user.id) {
             return res.status(401).json({ error: 'User session not found' });
@@ -177,7 +178,6 @@ app.get('/paymentcards', async (req, res) => {
                 billState: await aesDecrypt(card.billState)
             };
         }));
-
         res.status(200).json(decryptedPaymentCards);
     } catch (error) {
         console.error('Error fetching payment cards:', error);
@@ -1360,6 +1360,35 @@ app.post('/checkUserStatus', async (req, res) => {
         }
     } catch (error) {
         console.error('Error checking user status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to get all payment cards
+app.get('/paymentcard', async (req, res) => {
+    try {
+        // Retrieve all payment cards from the database
+        const paymentCards = await prisma.paymentCard.findMany();
+
+        // Decrypt the sensitive payment card data
+        const decryptedPaymentCards = await Promise.all(paymentCards.map(async (paymentCard) => {
+            return {
+                id: paymentCard.id,
+                cardName: await aesDecrypt(paymentCard.cardName),
+                cardNum: await aesDecrypt(paymentCard.cardNum),
+                cvv: await aesDecrypt(paymentCard.cvv),
+                expirationDate: await aesDecrypt(paymentCard.expirationDate),
+                billingAddress: await aesDecrypt(paymentCard.billingAddress),
+                billCity: await aesDecrypt(paymentCard.billCity),
+                billState: await aesDecrypt(paymentCard.billState),
+                userId: paymentCard.userId
+            };
+        }));
+
+        // Return success response with the list of decrypted payment cards
+        res.status(200).json(decryptedPaymentCards);
+    } catch (error) {
+        console.error('Error fetching payment cards:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
