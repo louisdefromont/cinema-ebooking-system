@@ -42,7 +42,6 @@ const Homepage = () => {
           };
         });
         setItems(mappedItems);
-        console.log(items);
       })
       .catch(error => {
         console.error('Error fetching movies:', error);
@@ -83,12 +82,57 @@ const Homepage = () => {
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Now Showing</h2>
-        <Carousel items={items} />
+        <Carousel items={items} search={"<"}/>
       </section>
 
       <section className='soon_carousel'>
         <h2 className='header_font'>Coming Soon</h2>
-        <Carousel items={items} />
+        <Carousel items={items} search={">"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Adventure</h2>
+        <Carousel items={items} search={"Adventure"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Action</h2>
+        <Carousel items={items} search={"Action"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Comedy</h2>
+        <Carousel items={items} search={"Comedy"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Drama</h2>
+        <Carousel items={items} search={"Drama"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Fantasy</h2>
+        <Carousel items={items} search={"Fantasy"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Horror</h2>
+        <Carousel items={items} search={"Horror"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Romance</h2>
+        <Carousel items={items} search={"Romance"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Sci-FI</h2>
+        <Carousel items={items} search={"Sci-FI"}/>
+      </section>
+
+      <section className='playing_carousel'>
+        <h2 className='header_font'>Thriller</h2>
+        <Carousel items={items} search={"Thriller"}/>
       </section>
 
       <Modal selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} handleSelectShowing={handleSelectShowing} />

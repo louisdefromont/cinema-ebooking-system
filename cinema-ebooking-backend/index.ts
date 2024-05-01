@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express, Request, Response } from 'express';
 import session from 'express-session';
-import { PrismaClient } from '@prisma/client'
-import cors from 'cors'
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 import https from 'https';
 import fs from 'fs';
 import CryptoJS from 'crypto-js';
