@@ -10,6 +10,21 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+
+        // Send a POST request to check if the user's account is active
+        const statusResponse = await axios.post('https://localhost:3000/checkUserStatus', {
+            email: email,
+        });
+
+        const { status, message } = statusResponse.data;
+
+        if (!status) {
+            // If the status is false, display an alert indicating the account is inactive
+            alert(message);
+            return;
+        }
+
+
             // Send a POST request to check if the user is an admin
             const isAdminResponse = await axios.post('https://localhost:3000/checkAdmin', {
                 email: email,

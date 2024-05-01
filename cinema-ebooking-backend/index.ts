@@ -1309,6 +1309,34 @@ app.put('/user/:id', async (req, res) => {
     }
 });
 
+// Endpoint to check user status by email
+app.post('/checkUserStatus', async (req, res) => {
+    const { email } = req.body; // Extract email from the request body
+
+    try {
+        // Find the user in the database based on the email
+        const user = await prisma.user.findUnique({
+            where: { email: email },
+            select: { status: true } // Select only the status field
+        });
+
+        // If the user is found
+        if (user) {
+            // If the status is false, return an alert indicating the account is inactive
+            if (!user.status) {
+                return res.status(200).json({ status: false, message: 'This account is inactive' });
+            }
+            // If the status is true, return success with status true
+            return res.status(200).json({ status: true });
+        } else {
+            // If the user is not found, return an alert indicating the account does not exist
+            return res.status(404).json({ message: 'Account not found' });
+        }
+    } catch (error) {
+        console.error('Error checking user status:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 
 const httpsOptions = {
