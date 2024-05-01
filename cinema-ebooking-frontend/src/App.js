@@ -42,12 +42,12 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/account' element={<UserAccount />} />
             <Route path='/admin' element={<AdminRoute component={AdminControl} />} />
-            <Route path='/admin/promotions' element={<AdminPromotions />} />
-            <Route path='/admin/users' element={<AdminUsers />} />
-            <Route path='/admin/movies' element={<AdminMovies />} />
-            <Route path='/admin/showtimes' element={<AdminShowtimes />} />
-            <Route path='/admin/tickets' element={<AdminTickets />} />
-            <Route path='/admin/payment' element={<AdminPaymentcard />} />
+            <Route path='/admin/promotions' element={<AdminRoute component={AdminPromotions} />} />
+            <Route path='/admin/users' element={<AdminRoute component={AdminUsers} />} />
+            <Route path='/admin/movies' element={<AdminRoute component={AdminMovies} />} />
+            <Route path='/admin/showtimes' element={<AdminRoute component={AdminShowtimes} />} />
+            <Route path='/admin/tickets' element={<AdminRoute component={AdminTickets} />} />
+            <Route path='/admin/payment' element={<AdminRoute component={AdminPaymentcard} />} />
             <Route path='/select-age' element={<SelectAge />} />
             <Route path='/select-seats' element={<SelectSeats />} />
             <Route path='/order-summary' element={<OrderSummary/>} />
