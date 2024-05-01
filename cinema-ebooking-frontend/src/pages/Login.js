@@ -40,7 +40,7 @@ const Login = () => {
                 window.location.href = '/admin';
                 console.log('User is an admin');
                 // Optionally display a message or take specific action for admin users
-                return;
+                //return;
             }
     
             // Proceed with login if the user is not an admin
