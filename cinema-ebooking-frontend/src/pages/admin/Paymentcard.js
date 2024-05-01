@@ -4,24 +4,25 @@ import Axios from 'axios';
 
 const Paymentcard = () => {
     function readCallback(row) {
-        return Axios.get('https://localhost:3000/paymentcard');
+        return Axios.get('https://localhost:3000/payment');
+    }
+    function createCallback(row) {
+        return Axios.post('https://localhost:3000/payment', row);
     }
    /** 
-    function createCallback(row) {
-        return Axios.post('https://localhost:3000/movies', row);
-    }
+
 
     function updateCallback(row) {
-        return Axios.put(`https://localhost:3000/movies/${row.id}`, row);
+        return Axios.put(`https://localhost:3000/payment/${row.id}`, row);
     }
     function deleteCallback(row) {
-        return Axios.delete(`https://localhost:3000/movies/${row.id}`);
+        return Axios.delete(`https://localhost:3000/payment/${row.id}`);
     }
 */
     return (
         <div>
             <TableManager rowHeaders={["id", "billingAddress", "cardNum", "expirationDate", "billCity", "billState", "cardName", "cvv", "userId"]} 
-            //createCallback={createCallback} 
+            createCallback={createCallback} 
             readCallback={readCallback} 
            // updateCallback={updateCallback} 
            // deleteCallback={deleteCallback} 
