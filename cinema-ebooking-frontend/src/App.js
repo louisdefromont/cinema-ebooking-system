@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AdminRoute from './AdminRoute';
 import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
@@ -40,7 +41,7 @@ function App() {
             <Route path='/movie-search' element={<MovieSearch />} />
             <Route path='/login' element={<Login />} />
             <Route path='/account' element={<UserAccount />} />
-            <Route path='/admin' element={<AdminControl />} />
+            <Route path='/admin' element={<AdminRoute component={AdminControl} />} />
             <Route path='/admin/promotions' element={<AdminPromotions />} />
             <Route path='/admin/users' element={<AdminUsers />} />
             <Route path='/admin/movies' element={<AdminMovies />} />
