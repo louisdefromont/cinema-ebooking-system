@@ -1546,16 +1546,24 @@ app.put('/checkpassword/:id', async (req, res) => {
     }
 });
 
-app.post('/book-seats', async (req, res) => {
-    const selectedMovie = req.body.selectedMovie;
-    const selectedShowing = req.body.selectedShowing;
-    const selectedSeats = req.body.selectedSeats;
-    const userId = req.body.userId;
-    const paymentCard = req.body.paymentCard;
+// app.post('/book-seats', async (req, res) => {
+//     const selectedMovie = req.body.selectedMovie;
+//     const selectedShowing = req.body.selectedShowing;
+//     const selectedSeats = req.body.selectedSeats;
+//     const selectedTickets = req.body.selectedTickets;
+//     const userId = req.body.userId;
+//     const paymentCard = req.body.paymentCard;
 
-    return res.status(200).json({ message: 'Seats booked successfully' });
-    // TODO: Implement booking logic
-});
+//     for (let i = 0; i < selectedSeats.length; i++) {
+//         const selectedSeat = selectedSeats[i];
+//         const selectedTicket = selectedTickets[i];
+
+//         const ticket = await prisma.ticket.create({
+//             data: {
+//                 ticket: selectedTicket.ticketType,
+
+//             }
+//         });
 
 
 const httpsOptions = {
