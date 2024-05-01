@@ -1224,6 +1224,7 @@ app.post('/user', async (req, res) => {
         if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status || !admin) {
             return res.status(400).json({ error: 'All user fields are required' });
         }
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the user in the database
         const user = await prisma.user.create({
@@ -1231,7 +1232,7 @@ app.post('/user', async (req, res) => {
                 email,
                 firstName,
                 lastName,
-                password,
+                password: hashedPassword,
                 phone,
                 city,
                 state,
@@ -1288,7 +1289,6 @@ app.delete('/user/:id', async (req, res) => {
     }
 });
 
-
 // Endpoint to update a user by email
 app.put('/user/:email', async (req, res) => {
     const email = req.params.email; // Extract user email from URL
@@ -1299,7 +1299,6 @@ app.put('/user/:email', async (req, res) => {
         const updatedStatus = Boolean(status);
         //const updatedAdmin = Boolean(admin);
         const updatedAdmin = admin === 'true'; 
-        console.log("updDadmin " + updatedAdmin);
 
         // Fetch the current user from the database by email
         const currentUser = await prisma.user.findUnique({ where: { email } });
@@ -1313,7 +1312,6 @@ app.put('/user/:email', async (req, res) => {
             where: { id: currentUser.id }, // Use the ID of the found user
             data: { firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
         });
-        console.log("1 " + currentUser.admin + " " + updatedAdmin);
 
         // Check if admin value has changed
         if (currentUser.admin !== updatedAdmin) {
@@ -1332,7 +1330,6 @@ app.put('/user/:email', async (req, res) => {
                 });
             }
         }
-        console.log("2 " + currentUser);
 
         // Return success response with the updated user
         res.status(200).json({ message: 'User updated successfully', updatedUser });
@@ -1481,6 +1478,73 @@ app.get('/paymentcard', async (req, res) => {
     }
 });
 
+
+// Endpoint to update user's password
+app.put('/users/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { newPassword } = req.body; // Extract new password from request body
+
+    try {
+        console.log("1");
+        // Fetch the user from the database
+        const user = await prisma.user.findUnique({ where: { id } });
+
+        if (!user) {
+            console.log("1");
+            return res.status(404).json({ error: 'Users not found ' + user + " " + id });
+        }
+
+        // Compare the new password with the password in the database
+        const isPasswordMatch = await bcrypt.compare(newPassword, user.password);
+
+        if (isPasswordMatch) {
+            return res.status(400).json({ error: 'New password cannot be the same as the old one.' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+
+        // Return success response with the updated user
+        res.status(200).json({ message: 'Password updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.put('/checkpassword/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { currPassword } = req.body; // Extract current password from request body
+
+    try {
+        // Fetch the user from the database
+        const user = await prisma.user.findUnique({ where: { id } });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Compare the provided current password with the password in the database
+        const isPasswordMatch = await bcrypt.compare(currPassword, user.password);
+
+        if (isPasswordMatch) {
+            // Passwords match
+            return res.status(200).json({ message: 'Current password is correct' });
+        } else {
+            // Passwords don't match
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+    } catch (error) {
+        console.error('Error checking current password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
