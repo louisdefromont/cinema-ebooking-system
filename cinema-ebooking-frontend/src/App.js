@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminRoute from './AdminRoute';
+import UserRoute from './UserRoute';
 import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
@@ -48,10 +49,10 @@ function App() {
             <Route path='/admin/showtimes' element={<AdminRoute component={AdminShowtimes} />} />
             <Route path='/admin/tickets' element={<AdminRoute component={AdminTickets} />} />
             <Route path='/admin/payment' element={<AdminRoute component={AdminPaymentcard} />} />
-            <Route path='/select-age' element={<SelectAge />} />
-            <Route path='/select-seats' element={<SelectSeats />} />
-            <Route path='/order-summary' element={<OrderSummary/>} />
-            <Route path='/checkout' element={<Checkout/>} />
+            <Route path='/select-age' element={<UserRoute component={SelectAge} />} />
+            <Route path='/select-seats' element={<UserRoute component={SelectSeats} />} />
+            <Route path='/order-summary' element={<UserRoute component={OrderSummary} />} />
+            <Route path='/checkout' element={<UserRoute component={Checkout} />} />
             <Route path='/confirmation' element={<Confirmation />} />
             <Route path='/reg-confrimation' element={<RegConfrim />} />
             <Route path='/register' element={<Register />} />

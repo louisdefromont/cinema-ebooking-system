@@ -32,6 +32,7 @@ const Login = () => {
     
             const { isAdmin } = isAdminResponse.data;
 
+            sessionStorage.setItem('isLoggedIn', true);
             sessionStorage.setItem('isAdmin', isAdmin);
     
             // If the user is an admin, log the status and do not proceed with login
