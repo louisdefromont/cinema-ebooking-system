@@ -1546,6 +1546,18 @@ app.put('/checkpassword/:id', async (req, res) => {
     }
 });
 
+app.post('/book-seats', async (req, res) => {
+    const selectedMovie = req.body.selectedMovie;
+    const selectedShowing = req.body.selectedShowing;
+    const selectedSeats = req.body.selectedSeats;
+    const userId = req.body.userId;
+    const paymentCard = req.body.paymentCard;
+
+    return res.status(200).json({ message: 'Seats booked successfully' });
+    // TODO: Implement booking logic
+});
+
+
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
     cert: fs.readFileSync('../ssl/server.cert')

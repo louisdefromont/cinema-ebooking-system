@@ -52,6 +52,7 @@ model PaymentCard {
   billingAddress String @db.VarChar(255)
   billCity       String @db.VarChar(255)
   billState      String @db.VarChar(255)
+  bookingInfos   BookingInfo[]
 }
 
 model Admin {
@@ -125,7 +126,8 @@ model BookingInfo {
   bookingNum    Int      @id @default(autoincrement())
   showing       Showing  @relation(fields: [showingId], references: [id])
   showingId     Int
-  creditCardNum Int
+  paymentCard   PaymentCard?     @relation(fields: [paymentCardId], references: [id])
+  paymentCardId Int?     @db.Int
   promotion     String
   tickets       Ticket[]
   User          User?    @relation(fields: [userId], references: [id])
