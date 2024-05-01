@@ -1288,7 +1288,33 @@ app.delete('/user/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+// Endpoint to update a user by ID
+app.put('/user/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
 
+    try {
+        // Convert regPromo to boolean
+        const updatedRegPromo = Boolean(regPromo);
+
+        // Convert status to boolean
+        const updatedStatus = Boolean(status);
+
+        // Update the user in the database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus },
+        });
+
+        // Return success response with the updated user
+        res.status(200).json({ message: 'User updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/** 
 // Endpoint to update a user by ID
 app.put('/user/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Extract user ID from URL
@@ -1308,7 +1334,7 @@ app.put('/user/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+*/
 // Endpoint to check user status by email
 app.post('/checkUserStatus', async (req, res) => {
     const { email } = req.body; // Extract email from the request body
