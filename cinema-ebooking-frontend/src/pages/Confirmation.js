@@ -23,7 +23,7 @@ const Confirmation = () => {
             </Typography>
             <Typography variant="body1">
                 Selected Seats: {selectedSeats.map((seat, index) => (
-                    <span key={index}>{seat}{index !== selectedSeats.length - 1 ? ', ' : ''}</span>
+                    <span key={index}>{seat.name}{index !== selectedSeats.length - 1 ? ', ' : ''}</span>
                 ))}
             </Typography>
             <Typography variant="body1">

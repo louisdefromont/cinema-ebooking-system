@@ -1546,24 +1546,46 @@ app.put('/checkpassword/:id', async (req, res) => {
     }
 });
 
-// app.post('/book-seats', async (req, res) => {
-//     const selectedMovie = req.body.selectedMovie;
-//     const selectedShowing = req.body.selectedShowing;
-//     const selectedSeats = req.body.selectedSeats;
-//     const selectedTickets = req.body.selectedTickets;
-//     const userId = req.body.userId;
-//     const paymentCard = req.body.paymentCard;
+app.post('/book-tickets', async (req, res) => {
+    const showingId = req.body.showingId;
+    const selectedSeats = req.body.selectedSeats;
+    const selectedTickets = req.body.selectedTickets;
+    const userId = req.body.userId;
 
-//     for (let i = 0; i < selectedSeats.length; i++) {
-//         const selectedSeat = selectedSeats[i];
-//         const selectedTicket = selectedTickets[i];
+    var ticketsData = [];
+    var currentTicketIndex = 0;
+    for (var i = 0; i < selectedTickets.adultTickets; i++) {
+        ticketsData.push({
+            ticketType: 'ADULT',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
+    for (var i = 0; i < selectedTickets.seniorTickets; i++) {
+        ticketsData.push({
+            ticketType: 'SENIOR',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
+    for (var i = 0; i < selectedTickets.childTickets; i++) {
+        ticketsData.push({
+            ticketType: 'CHILD',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
 
-//         const ticket = await prisma.ticket.create({
-//             data: {
-//                 ticket: selectedTicket.ticketType,
-
-//             }
-//         });
+    const createdBooking = await prisma.bookingInfo.create({
+        data: {
+            userId: userId,
+            showingId: showingId,
+            tickets: {
+                create: ticketsData
+            }
+        }
+    });
+});
 
 
 const httpsOptions = {
