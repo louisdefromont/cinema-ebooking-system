@@ -6,6 +6,10 @@ import axios from 'axios';
 import Modal from '../components/Modal';
 import ReactPlayer from 'react-player';
 import Button from '@mui/material/Button';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+
+
 
 const MovieSearch = () => {
     const [items, setItems] = useState([]);
@@ -14,6 +18,7 @@ const MovieSearch = () => {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const[tUrl, setTUrl] = useState("");
 	const[openTrailer, setOpenTrailer] = useState(false);
+    const[date, setDate] = useState(new Date());
     
     // Connect and fetch movies from database
     useEffect(() => {
@@ -80,6 +85,14 @@ const MovieSearch = () => {
         setFilteredMovies(filteredItems);
     }
 
+    const dateChange = (e) => {
+        setDate(e);
+        const filteredItems = filteredMovies.filter((item) =>
+            new Date(item.date) - new Date(e) < 0
+        );
+        setFilteredMovies(filteredItems);
+    }
+
     const [genres, setGenres] = useState({
         adventure: false,
         action: false,
@@ -90,9 +103,9 @@ const MovieSearch = () => {
         romace: false,
         sciFi: false,
         thriller: false
-      });
+    });
 
-      const handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, checked } = e.target;
         setGenres({
           ...genres,
@@ -100,9 +113,9 @@ const MovieSearch = () => {
         });
 
         filterHandler(e);
-      };
+    };
 
-      const handleReset = () => {
+    const handleReset = () => {
         setGenres({
             adventure: false,
             action: false,
@@ -114,9 +127,9 @@ const MovieSearch = () => {
             sciFi: false,
             thriller: false
         });
-
+        setDate(new Date());
         setFilteredMovies(items);
-      };
+    };
 
     return(
         <>
@@ -174,6 +187,9 @@ const MovieSearch = () => {
                             <p>
                                 <input type="checkbox" name='thriller' checked={genres.thriller} value="Thriller" onChange={handleChange}/>
                                 <label className='filter_label'> Thriller </label>
+                            </p>
+                            <p>
+                                <Calendar onChange={dateChange} value={date} />
                             </p>
                             <p>
                                 <Button onClick={handleReset}> Reset Filter </Button>
