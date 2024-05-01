@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Modal.css'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import AddShowing from '../components/AddShowing';
 import EditShowing from '../components/EditShowing';
+import axios from 'axios';
 
 
-function Modal( {selectedMovie, setSelectedMovie, handleSelectShowing} ) {
+function Modal({ selectedMovie, setSelectedMovie, handleSelectShowing }) {
   const [editShowing, setEditShowing] = useState(false);
+  const isAdmin = JSON.parse(sessionStorage.getItem('isAdmin'));
 
-  return(
+  return (
     <>
       <Dialog open={selectedMovie !== null} onClose={() => setSelectedMovie(null)}>
         <div className='display_top'>
           <DialogTitle>{selectedMovie?.title}</DialogTitle>
-          <Button color="primary" onClick={() => setEditShowing(true)}> Edit </Button>
+          {
+            isAdmin &&
+            <Button color="primary" onClick={() => setEditShowing(true)}> Edit </Button>
+          }
         </div>
         <DialogContent>
           <iframe
@@ -40,12 +45,14 @@ function Modal( {selectedMovie, setSelectedMovie, handleSelectShowing} ) {
                   </Button>
                 </li>
               ))}
-              <li>
-                <AddShowing movie={selectedMovie} />
-              </li>
+              {isAdmin &&
+                <li>
+                  <AddShowing movie={selectedMovie} />
+                </li>
+              }
             </ul>
           </div>
-          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie}/>
+          <EditShowing editShowing={editShowing} setEditShowing={setEditShowing} movie={selectedMovie} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSelectedMovie(null)} color="primary">
@@ -56,5 +63,5 @@ function Modal( {selectedMovie, setSelectedMovie, handleSelectShowing} ) {
     </>
   )
 }
-  
-  export default Modal;
+
+export default Modal;
