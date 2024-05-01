@@ -13,12 +13,12 @@ const Users = () => {
         return Axios.delete(`https://localhost:3000/user/${row.id}`);
     }
     function updateCallback(row) {
-        return Axios.put(`https://localhost:3000/user/${row.id}`, row);
+        return Axios.put(`https://localhost:3000/user/${row.email}`, row);
     }
 
     return (
         <div> 
-            <TableManager rowHeaders={['id', 'email', 'firstName', 'lastName', 'password', 'phone', 'city', 'state','regPromo', 'status']} 
+            <TableManager rowHeaders={['id', 'email', 'firstName', 'lastName', 'password', 'phone', 'city', 'state','regPromo', 'status', 'admin']} 
             createCallback={createCallback} 
             readCallback={readCallback} 
             updateCallback={updateCallback} 

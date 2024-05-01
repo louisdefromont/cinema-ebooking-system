@@ -1214,16 +1214,14 @@ app.get('/user', async (req, res) => {
 // Create user (admin)
 app.post('/user', async (req, res) => {
     try {
-        const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract user details from request body
+        const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract user details from request body
 
-        // Convert regPromo to boolean
         const regPromoBool = regPromo === 'true'; // Assuming regPromo is a string "true" or "false"
-
-        // Convert status to boolean
-        const statusBool = status === 'true'; // Assuming status is a string "active" or "inactive"
+        const statusBool = status === 'true'; 
+        const adminBool = status === 'true'; 
 
         // Check if all required fields are provided
-        if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status) {
+        if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status || !admin) {
             return res.status(400).json({ error: 'All user fields are required' });
         }
 
@@ -1239,6 +1237,7 @@ app.post('/user', async (req, res) => {
                 state,
                 regPromo: regPromoBool,
                 status: statusBool,
+                admin: adminBool,
             },
         });
 
@@ -1288,23 +1287,52 @@ app.delete('/user/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Endpoint to update a user by ID
-app.put('/user/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract user ID from URL
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
+
+
+// Endpoint to update a user by email
+app.put('/user/:email', async (req, res) => {
+    const email = req.params.email; // Extract user email from URL
+    const { firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
 
     try {
-        // Convert regPromo to boolean
         const updatedRegPromo = Boolean(regPromo);
-
-        // Convert status to boolean
         const updatedStatus = Boolean(status);
+        //const updatedAdmin = Boolean(admin);
+        const updatedAdmin = admin === 'true'; 
+        console.log("updDadmin " + updatedAdmin);
+
+        // Fetch the current user from the database by email
+        const currentUser = await prisma.user.findUnique({ where: { email } });
+
+        if (!currentUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
         // Update the user in the database
         const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus },
+            where: { id: currentUser.id }, // Use the ID of the found user
+            data: { firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
         });
+        console.log("1 " + currentUser.admin + " " + updatedAdmin);
+
+        // Check if admin value has changed
+        if (currentUser.admin !== updatedAdmin) {
+            if (updatedAdmin) {
+                // If admin is set to true, add user to the Admin table
+                await prisma.admin.create({
+                    data: {
+                        id: updatedUser.id,
+                        email: updatedUser.email || '' // Handle null email
+                    }
+                });
+            } else {
+                // If admin is set to false, remove user from the Admin table
+                await prisma.admin.delete({
+                    where: { id: updatedUser.id }
+                });
+            }
+        }
+        console.log("2 " + currentUser);
 
         // Return success response with the updated user
         res.status(200).json({ message: 'User updated successfully', updatedUser });
@@ -1314,18 +1342,50 @@ app.put('/user/:id', async (req, res) => {
     }
 });
 
-/** 
+
+/**
+
 // Endpoint to update a user by ID
 app.put('/user/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Extract user ID from URL
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
+
+    const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
 
     try {
+        const updatedRegPromo = Boolean(regPromo);
+        const updatedStatus = Boolean(status);
+        const updatedAdmin = Boolean(admin);
+
+        // Fetch the current user from the database
+        const currentUser = await prisma.user.findUnique({ where: { email } });
+
+        if (!currentUser) {
+            return res.status(404).json({ error: 'User not found' + id});
+        }
+
         // Update the user in the database
         const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { email, firstName, lastName, password, phone, city, state, regPromo, status },
+            where: { id: currentUser.id }, // Use the ID of the found user
+            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
         });
+
+        // Check if admin value has changed
+        if (currentUser.admin !== updatedAdmin) {
+            if (updatedAdmin) {
+                // If admin is set to true, add user to the Admin table
+                await prisma.admin.create({
+                    data: {
+                        id: updatedUser.id,
+                        email: updatedUser.email || '' // Handle null email
+                    }
+                });
+            } else {
+                // If admin is set to false, remove user from the Admin table
+                await prisma.admin.delete({
+                    where: { id: updatedUser.id }
+                });
+            }
+        }
 
         // Return success response with the updated user
         res.status(200).json({ message: 'User updated successfully', updatedUser });
@@ -1335,6 +1395,34 @@ app.put('/user/:id', async (req, res) => {
     }
 });
 */
+
+/**
+// Endpoint to update a user by ID
+app.put('/user/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
+
+    try {
+        const updatedRegPromo = Boolean(regPromo);
+        const updatedStatus = Boolean(status);
+        const updatedAdmin = Boolean(status);
+
+        // Update the user in the database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
+        });
+
+        // Return success response with the updated user
+        res.status(200).json({ message: 'User updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+*/
+
 // Endpoint to check user status by email
 app.post('/checkUserStatus', async (req, res) => {
     const { email } = req.body; // Extract email from the request body

@@ -34,6 +34,7 @@ model User {
   state       String        @default("a") @db.VarChar(255)
   status      Boolean       @default(true)
   regPromo    Boolean       @default(false)
+  admin       Boolean       @default(false)
   paymentInfo PaymentCard[]
   bookings    BookingInfo[]
   Admin       Admin[]
