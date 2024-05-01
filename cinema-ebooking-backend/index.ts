@@ -1546,6 +1546,26 @@ app.put('/checkpassword/:id', async (req, res) => {
     }
 });
 
+// app.post('/book-seats', async (req, res) => {
+//     const selectedMovie = req.body.selectedMovie;
+//     const selectedShowing = req.body.selectedShowing;
+//     const selectedSeats = req.body.selectedSeats;
+//     const selectedTickets = req.body.selectedTickets;
+//     const userId = req.body.userId;
+//     const paymentCard = req.body.paymentCard;
+
+//     for (let i = 0; i < selectedSeats.length; i++) {
+//         const selectedSeat = selectedSeats[i];
+//         const selectedTicket = selectedTickets[i];
+
+//         const ticket = await prisma.ticket.create({
+//             data: {
+//                 ticket: selectedTicket.ticketType,
+
+//             }
+//         });
+
+
 const httpsOptions = {
     key: fs.readFileSync('../ssl/server.key'),
     cert: fs.readFileSync('../ssl/server.cert')
