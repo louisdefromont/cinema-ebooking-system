@@ -231,8 +231,8 @@ app.post('/paymentcards', async (req, res) => {
         // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
-                email: "2elainemaria@gmail.com",
-                //email: email,
+               // email: "2elainemaria@gmail.com",
+                email: email,
             },
         });
 
@@ -396,17 +396,10 @@ app.post('/register', async (req: Request, res: Response) => {
     // Check if any paymentInfo fields are null
     if (!cardName && !cardNum && !cvv && !expirationDate && !billingAddress && !billCity && !billState) {
         pcNull = true;
-        console.log("pcNull = " + pcNull);
-        // return res.status(400).json({ error: 'Missing paymentInfo fields' });
     }
 
     // Additional check if pcNull is false but one of the fields from cardName...billState is not null
     if (!pcNull && !(cardName && cardNum && cvv && expirationDate && billingAddress && billCity && billState)) {
-         //const info = (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState));
-         const info = (!pcNull);
-         const one = (!cardName);
-         const not = !(cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState);
-        console.log("Info = " + info + " " + not);
         return res.status(400).json({ error: 'Payment Info is incomplete' });
     }
 
@@ -1093,26 +1086,6 @@ app.put('/showtimes/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-/** 
-
-app.post('/showtimes', async (req, res) => {
-    try {
-        const { dateTime, movieId, showroomId } = req.body;
-        const newShowing = await prisma.showing.create({
-            data: {
-                dateTime: dateTime,
-                movieId: movieId,
-                showroomId: showroomId
-            }
-        });
-        res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
-    } catch (error) {
-        console.error('Error creating showing:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
-
 
 // Endpoint to get all tickets
 app.get('/tickets', async (req, res) => {
@@ -1268,14 +1241,7 @@ app.delete('/user/:id', async (req, res) => {
                 id: userId,
             },
         });
-/** 
-        // Delete related records from Customer table
-        await prisma.customer.deleteMany({
-            where: {
-                id: userId,
-            },
-        });
-*/
+
         // Then delete the user from the database
         await prisma.user.delete({
             where: { id: userId },
@@ -1339,87 +1305,6 @@ app.put('/user/:email', async (req, res) => {
     }
 });
 
-
-/**
-
-// Endpoint to update a user by ID
-app.put('/user/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract user ID from URL
-
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
-
-    try {
-        const updatedRegPromo = Boolean(regPromo);
-        const updatedStatus = Boolean(status);
-        const updatedAdmin = Boolean(admin);
-
-        // Fetch the current user from the database
-        const currentUser = await prisma.user.findUnique({ where: { email } });
-
-        if (!currentUser) {
-            return res.status(404).json({ error: 'User not found' + id});
-        }
-
-        // Update the user in the database
-        const updatedUser = await prisma.user.update({
-            where: { id: currentUser.id }, // Use the ID of the found user
-            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
-        });
-
-        // Check if admin value has changed
-        if (currentUser.admin !== updatedAdmin) {
-            if (updatedAdmin) {
-                // If admin is set to true, add user to the Admin table
-                await prisma.admin.create({
-                    data: {
-                        id: updatedUser.id,
-                        email: updatedUser.email || '' // Handle null email
-                    }
-                });
-            } else {
-                // If admin is set to false, remove user from the Admin table
-                await prisma.admin.delete({
-                    where: { id: updatedUser.id }
-                });
-            }
-        }
-
-        // Return success response with the updated user
-        res.status(200).json({ message: 'User updated successfully', updatedUser });
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
-
-/**
-// Endpoint to update a user by ID
-app.put('/user/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract user ID from URL
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
-
-    try {
-        const updatedRegPromo = Boolean(regPromo);
-        const updatedStatus = Boolean(status);
-        const updatedAdmin = Boolean(status);
-
-        // Update the user in the database
-        const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
-        });
-
-        // Return success response with the updated user
-        res.status(200).json({ message: 'User updated successfully', updatedUser });
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-*/
-
 // Endpoint to check user status by email
 app.post('/checkUserStatus', async (req, res) => {
     const { email } = req.body; // Extract email from the request body
@@ -1449,8 +1334,8 @@ app.post('/checkUserStatus', async (req, res) => {
     }
 });
 
-// Endpoint to get all payment cards
-app.get('/paymentcard', async (req, res) => {
+// Get all payment cards (admin)
+app.get('/payment', async (req, res) => {
     try {
         // Retrieve all payment cards from the database
         const paymentCards = await prisma.paymentCard.findMany();
@@ -1479,7 +1364,7 @@ app.get('/paymentcard', async (req, res) => {
 });
 
 
-// Endpoint to update user's password
+// Update user's password (admin)
 app.put('/users/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Extract user ID from URL
     const { newPassword } = req.body; // Extract new password from request body
@@ -1518,6 +1403,7 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 
+// check is curr and new password same (admin)
 app.put('/checkpassword/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Extract user ID from URL
     const { currPassword } = req.body; // Extract current password from request body
@@ -1545,6 +1431,77 @@ app.put('/checkpassword/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.post('/payment', async (req, res) => {
+    try {
+        const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+
+        // Check if all required fields are provided
+        if (!billingAddress || !cardNum || !expirationDate || !billCity || !billState || !cardName || !cvv || !userId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Encrypt sensitive payment card data
+        const paymentCardData = {
+            billingAddress,
+            cardNum,
+            expirationDate,
+            billCity,
+            billState,
+            cardName,
+            cvv,
+            userId
+        };
+        const encryptedPaymentCardData = await encryptBillingInfo(paymentCardData);
+
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: encryptedPaymentCardData,
+        });
+
+        // Return success response with the created payment card
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+// add payment card (admin)
+/** 
+app.post('/payment', async (req, res) => {
+    try {
+        const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+
+        // Check if all required fields are provided
+        if (!billingAddress || !cardNum || !expirationDate || !billCity || !billState || !cardName || !cvv || !userId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: {
+                billingAddress,
+                cardNum,
+                expirationDate,
+                billCity,
+                billState,
+                cardName,
+                cvv,
+                userId: parsedUserId
+            },
+        });
+
+        // Return success response with the created payment card
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
 
 // app.post('/book-seats', async (req, res) => {
 //     const selectedMovie = req.body.selectedMovie;
