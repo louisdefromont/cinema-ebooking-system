@@ -1068,6 +1068,31 @@ app.delete('/showtimes/:id', async (req, res) => {
     }
 });
 
+// Endpoint to update a showtime by ID
+app.put('/showtimes/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract showtime ID from URL
+    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
+
+    try {
+            // Update the showtime in the database
+            const updatedShowtime = await prisma.showing.update({
+                where: { id },
+                data: { 
+                    dateTime, 
+                    movieId: parseInt(movieId), 
+                    showroomId: parseInt(showroomId) 
+                }, // Parse movieId and showroomId as integers
+            });
+   
+
+
+        // Return success response with the updated showtime
+        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
+    } catch (error) {
+        console.error('Error updating showtime:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 /** 
 
 app.post('/showtimes', async (req, res) => {
@@ -1150,112 +1175,6 @@ app.delete('/tickets/:id', async (req, res) => {
     }
 });
 
-
-
-// Endpoint to update a showtime by ID
-app.put('/showtimes/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract showtime ID from URL
-    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
-
-    try {
-            // Update the showtime in the database
-            const updatedShowtime = await prisma.showing.update({
-                where: { id },
-                data: { 
-                    dateTime, 
-                    movieId: parseInt(movieId), 
-                    showroomId: parseInt(showroomId) 
-                }, // Parse movieId and showroomId as integers
-            });
-   
-
-
-        // Return success response with the updated showtime
-        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
-    } catch (error) {
-        console.error('Error updating showtime:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-/** 
-// Endpoint to update a showtime by ID
-app.put('/showtimes/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract showtime ID from URL
-    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
-
-    try {
-        // Construct data to update
-        const dataToUpdate: { dateTime: any; movieId?: number; showroomId?: number } = { dateTime };
-
-        // Check if movieId field is present and not null
-        if (movieId !== undefined && movieId !== null) {
-            dataToUpdate.movieId = parseInt(movieId);
-        }
-
-        // Check if showroomId field is present and not null
-        if (showroomId !== undefined && showroomId !== null) {
-            dataToUpdate.showroomId = parseInt(showroomId);
-        }
-
-        // Update the showtime in the database
-        const updatedShowtime = await prisma.showing.update({
-            where: { id },
-            data: dataToUpdate,
-        });
-
-        // Return success response with the updated showtime
-        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
-    } catch (error) {
-        console.error('Error updating showtime:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
-
-
-
-
-
-
-// Endpoint to update a showtime by ID
-app.put('/showtimes/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract showtime ID from URL
-    const { dateTime, movieId, showroomId } = req.body; // Extract updated showtime details from request body
-
-    try {
-        // Prepare update data
-        const dataToUpdate: { dateTime: any; showroomId: number; movieId?: number } = {
-            dateTime,
-            showroomId: parseInt(showroomId), // Always update showroomId
-        };
-
-        // Conditionally update movieId if provided
-        if (movieId !== null && movieId !== undefined) {
-            dataToUpdate.movieId = parseInt(movieId);
-        }
-
-        // Update the showtime in the database
-        const updatedShowtime = await prisma.showing.update({
-            where: { id },
-            data: dataToUpdate,
-        });
-
-        // Return success response with the updated showtime
-        res.status(200).json({ message: 'Showtime updated successfully', updatedShowtime });
-    } catch (error) {
-        console.error('Error updating showtime:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
-
-
-*/
-
-
 // Update ticket endpoint 
 app.put('/tickets/:id', async (req, res) => {
     try {
@@ -1273,6 +1192,119 @@ app.put('/tickets/:id', async (req, res) => {
         res.status(200).json({ message: 'Ticket updated successfully', ticket: updatedTicket });
     } catch (error) {
         console.error('Error updating ticket:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+// Get user (admin)
+app.get('/user', async (req, res) => {
+    try {
+        // Retrieve all users from the database
+        const users = await prisma.user.findMany();
+
+        // Return success response with the list of users
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Create user (admin)
+app.post('/user', async (req, res) => {
+    try {
+        const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract user details from request body
+
+        // Convert regPromo to boolean
+        const regPromoBool = regPromo === 'true'; // Assuming regPromo is a string "true" or "false"
+
+        // Convert status to boolean
+        const statusBool = status === 'true'; // Assuming status is a string "active" or "inactive"
+
+        // Check if all required fields are provided
+        if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status) {
+            return res.status(400).json({ error: 'All user fields are required' });
+        }
+
+        // Create the user in the database
+        const user = await prisma.user.create({
+            data: {
+                email,
+                firstName,
+                lastName,
+                password,
+                phone,
+                city,
+                state,
+                regPromo: regPromoBool,
+                status: statusBool,
+            },
+        });
+
+        // Return success response with the created user
+        res.status(201).json({ message: 'User created successfully', user });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to delete a user by ID
+app.delete('/user/:id', async (req, res) => {
+    const userId = parseInt(req.params.id); // Extract user ID from URL
+
+    try {
+        // Delete related records first from PaymentCard table
+        await prisma.paymentCard.deleteMany({
+            where: {
+                userId: userId,
+            },
+        });
+
+        // Delete related records from Admin table
+        await prisma.admin.deleteMany({
+            where: {
+                id: userId,
+            },
+        });
+/** 
+        // Delete related records from Customer table
+        await prisma.customer.deleteMany({
+            where: {
+                id: userId,
+            },
+        });
+*/
+        // Then delete the user from the database
+        await prisma.user.delete({
+            where: { id: userId },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to update a user by ID
+app.put('/user/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
+
+    try {
+        // Update the user in the database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { email, firstName, lastName, password, phone, city, state, regPromo, status },
+        });
+
+        // Return success response with the updated user
+        res.status(200).json({ message: 'User updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
