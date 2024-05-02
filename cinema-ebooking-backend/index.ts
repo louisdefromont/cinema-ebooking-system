@@ -949,6 +949,28 @@ app.post('/showings', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.get('/showings/:id/booked-seats', async (req, res) => {
+    try {
+        const showingId = parseInt(req.params.id);
+        const showing = await prisma.showing.findUnique({
+            where: {
+                id: showingId
+            },
+            include: {
+                bookedSeats: true
+            }
+        });
+        if (!showing) {
+            return res.status(404).json({ error: 'Showing not found' });
+        }
+        res.status(200).json(showing.bookedSeats);
+    } catch (error) {
+        console.error('Error fetching showing seats:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // shows all showtimes (admin page)
 app.get('/showtimes', async (req, res) => {
     try {
@@ -1676,6 +1698,22 @@ app.post('/book-tickets', async (req, res) => {
             showingId: showingId,
             tickets: {
                 create: ticketsData
+            }
+        }
+    });
+
+    var showingSeats = [];
+    for (var i = 0; i < selectedSeats.length; i++) {
+        showingSeats.push({
+            seatId: selectedSeats[i].seatId
+        });
+    }
+
+    await prisma.showing.update({
+        where: {id: showingId},
+        data: {
+            bookedSeats: {
+                create: showingSeats
             }
         }
     });

@@ -43,7 +43,7 @@ export default function SelectSeats() {
 					return {
 						seatId: seat.seatId,
 						name: seat.name,
-						status: selectedShowing.bookedSeats.includes(seat.seatId) ? 'booked' : 'available',
+						status: selectedShowing.bookedSeats.some(bookedSeat => bookedSeat.seatId === seat.seatId) ? 'booked' : 'available',
 					};
 				});
 				setAllSeats(seats);
