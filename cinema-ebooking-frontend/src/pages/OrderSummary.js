@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 const OrderSummary = () => {
 	// Calculate total cost
@@ -11,7 +13,20 @@ const OrderSummary = () => {
 	const selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
 	var ticketCost = selectedTickets.adultTickets * 12 + selectedTickets.childTickets * 6 + selectedTickets.seniorTickets * 6;
 	var salesTax = ticketCost * 0.074;
-	var totalCost = ticketCost + salesTax;
+	const [discountAmount, setDiscountAmount] = useState(0);
+
+	function handleSubmitPromo(e) {
+		e.preventDefault();
+		const promoCode = e.target.promoCode.value;
+		axios.get(`https://localhost:3000/promotions/${promoCode}`)
+			.then((response) => {
+				if (response.data) {
+					setDiscountAmount(response.data.discountAmount);
+				}
+			})
+	}
+
+	var totalCost = ticketCost + salesTax - discountAmount;
 
 	return (
 		<Paper>
@@ -29,6 +44,14 @@ const OrderSummary = () => {
 				Sales Tax: ${salesTax.toFixed(2)} <br />
 				Total Cost: ${totalCost.toFixed(2)}
 			</Typography>
+			<form onSubmit={handleSubmitPromo}>
+				<TextField
+					id="promoCode"
+					name="promoCode"
+					label="Promo Code"
+				/>
+				<Button type="submit">Submit</Button>
+			</form>
 			<div>
 				<Button variant="contained" color="primary" component='a' href='/select-seats'>
 					Go Back

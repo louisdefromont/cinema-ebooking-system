@@ -618,6 +618,24 @@ app.get('/promotions', async (req: Request, res: Response) => {
     }
 });
 
+app.get('/promotions/:id', async (req, res) => {
+    try {
+        const promotionId = parseInt(req.params.id);
+        const promotion = await prisma.promotion.findUnique({
+            where: {
+                id: promotionId
+            }
+        });
+        if (!promotion) {
+            return res.status(404).json({ error: 'Promotion not found' });
+        }
+        res.status(200).json(promotion);
+    } catch (error) {
+        console.error('Error fetching promotion:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Endpoint to update a promotion by ID
 app.put('/promotions/:id', async (req: Request, res: Response) => {
     const id = parseInt(req.params.id); // Extract promotion ID from URL
