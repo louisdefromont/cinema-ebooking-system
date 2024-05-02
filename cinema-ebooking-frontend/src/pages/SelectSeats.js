@@ -83,6 +83,9 @@ export default function SelectSeats() {
 		window.location.href = '/order-summary';
 	}
 
+	// Sort allSeats by seat name
+	allSeats.sort((a, b) => a.name.localeCompare(b.name));
+
 	// 2d array of seats
 	const seatRows = [];
 	if (allSeats.length > 0) {
