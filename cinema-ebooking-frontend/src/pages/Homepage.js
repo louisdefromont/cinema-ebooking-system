@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import './Homepage.css'
 import Carousel from '../components/Carousel';
@@ -6,13 +6,30 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 import Modal from '../components/Modal';
 
-
 const Homepage = () => {
+  //VIEWPORT TEST
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(document.documentElement.scrollTop);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+ 
+  //********************************************************************************* */
 
   //Carousel
   const [items, setItems] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(null);
+  const dummyHold = null;
 
 
   const handleClickOnMovie = (movieTitle) => {
@@ -58,6 +75,18 @@ const Homepage = () => {
       });
   }, []);
 
+ const dummyMappedItems = items.map(item => {
+    return {
+      ...item,
+      imageUrl: "https://www.colorpalettestore.com/cdn/shop/products/444A50_1024x.png?v=1614624964",
+      title: "Dummy Title",
+      trailerUrl: "https://youtu.be/dQw4w9WgXcQ",
+      genres: "none",
+      description: "Dummy Description",
+      date: "2024-05-10 05:19:03"
+    };
+  });
+
   function handleSelectShowing(showing) {
     sessionStorage.setItem('selectedShowing', JSON.stringify(showing));
     window.location.href = '/select-age';
@@ -97,42 +126,42 @@ const Homepage = () => {
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Action</h2>
-        <Carousel items={items} search={"Action"}/>
+        <Carousel items={scrollPosition < 400 ? dummyMappedItems : items} search={"Action"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Comedy</h2>
-        <Carousel items={items} search={"Comedy"}/>
+        <Carousel items={scrollPosition < 870 ? dummyMappedItems : items} search={"Comedy"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Drama</h2>
-        <Carousel items={items} search={"Drama"}/>
+        <Carousel items={scrollPosition < 1320 ? dummyMappedItems : items} search={"Drama"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Fantasy</h2>
-        <Carousel items={items} search={"Fantasy"}/>
+        <Carousel items={scrollPosition < 1795 ? dummyMappedItems : items} search={"Fantasy"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Horror</h2>
-        <Carousel items={items} search={"Horror"}/>
+        <Carousel items={scrollPosition < 2280 ? dummyMappedItems : items} search={"Horror"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Romance</h2>
-        <Carousel items={items} search={"Romance"}/>
+        <Carousel items={scrollPosition < 2750 ? dummyMappedItems : items} search={"Romance"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Sci-FI</h2>
-        <Carousel items={items} search={"Sci-FI"}/>
+        <Carousel items={scrollPosition < 3220 ? dummyMappedItems : items} search={"Sci-FI"}/>
       </section>
 
       <section className='playing_carousel'>
         <h2 className='header_font'>Thriller</h2>
-        <Carousel items={items} search={"Thriller"}/>
+        <Carousel items={scrollPosition < 3700 ? dummyMappedItems : items} search={"Thriller"}/>
       </section>
 
       <Modal selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} handleSelectShowing={handleSelectShowing} />
