@@ -1484,36 +1484,29 @@ app.post('/payment/:id', async (req, res) => {
         // Ensure userId is parsed as an integer
         const parsedUserId = parseInt(userId);
 
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
         // Create the payment card in the database
         const paymentCard = await prisma.paymentCard.create({
             data: {
-                billingAddress: await aesEncrypt(billingAddress.cardName),
-                cardNum: await aesEncrypt(cardNum.cardName),
-                expirationDate: await aesEncrypt(expirationDate.cardName),
-                billCity: await aesEncrypt(billCity.cardName),
-                billState: await aesEncrypt(billState.cardName),
-                cardName: await aesEncrypt(cardName.cardName),
-                cvv: await aesEncrypt(cvv.cardName),
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
                 userId: parsedUserId
             },
         });
-        /** 
-        const encryptedPaymentCardData = await encryptBillingInfo(paymentCard);
-
-        // Update the payment card in the database
-        const updatedPaymentCard = await prisma.paymentCard.update({
-            where: { id },
-            data: {
-                cardName: encryptedPaymentCardData.cardName,
-                cardNum: encryptedPaymentCardData.cardNum,
-                cvv: encryptedPaymentCardData.cvv,
-                expirationDate: encryptedPaymentCardData.expirationDate,
-                billingAddress: encryptedPaymentCardData.billingAddress,
-                billCity: encryptedPaymentCardData.billCity,
-                billState: encryptedPaymentCardData.billState
-            },
-        });
-        */
         // Return success response with the created payment card
         res.status(201).json({ message: 'Payment card created successfully', paymentCard });
     } catch (error) {
@@ -1540,7 +1533,113 @@ app.delete('/payment/:id', async (req, res) => {
     }
 });
 
+// Endpoint to update a payment card by ID
+app.put('/payment/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+    const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract updated payment card details from request body
 
+    try {
+
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
+                userId: parsedUserId
+            },
+        });
+
+        // Return success response with the updated payment card
+        res.status(200).json({ message: 'Payment card updated successfully', updatedPaymentCard, encryptedBillingInfo });
+    } catch (error) {
+        console.error('Error updating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+ /** 
+// Endpoint to update a payment card by ID
+app.put('/payment/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+    const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract updated payment card details from request body
+
+    try {
+        // Decrypt the new values
+        const decryptedCardName = await aesDecrypt(cardName);
+        const decryptedCardNum = await aesDecrypt(cardNum);
+        const decryptedCvv = await aesDecrypt(cvv);
+        const decryptedExpirationDate = await aesDecrypt(expirationDate);
+        const decryptedBillingAddress = await aesDecrypt(billingAddress);
+        const decryptedBillCity = await aesDecrypt(billCity);
+        const decryptedBillState = await aesDecrypt(billState);
+
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: {
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
+                userId: parsedUserId
+            },
+        });
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: decryptedCardName,
+                cardNum: decryptedCardNum,
+                cvv: decryptedCvv,
+                expirationDate: decryptedExpirationDate,
+                billingAddress: decryptedBillingAddress,
+                billCity: decryptedBillCity,
+                billState: decryptedBillState,
+                userId: parsedUserId,
+            },
+        });
+
+        // Return success response with the updated payment card
+        res.status(200).json({ message: 'Payment card updated successfully', updatedPaymentCard });
+    } catch (error) {
+        console.error('Error updating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
 app.post('/book-tickets', async (req, res) => {
     const showingId = req.body.showingId;
     const selectedSeats = req.body.selectedSeats;
@@ -1581,6 +1680,7 @@ app.post('/book-tickets', async (req, res) => {
         }
     });
 });
+
 
 
 const httpsOptions = {

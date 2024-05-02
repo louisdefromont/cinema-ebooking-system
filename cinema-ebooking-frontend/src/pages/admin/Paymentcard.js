@@ -12,20 +12,16 @@ const Paymentcard = () => {
     function deleteCallback(row) {
         return Axios.delete(`https://localhost:3000/payment/${row.id}`);
     }
-   /** 
-
-
     function updateCallback(row) {
         return Axios.put(`https://localhost:3000/payment/${row.id}`, row);
     }
 
-*/
     return (
         <div>
             <TableManager rowHeaders={["id", "billingAddress", "cardNum", "expirationDate", "billCity", "billState", "cardName", "cvv", "userId"]} 
             createCallback={createCallback} 
             readCallback={readCallback} 
-           // updateCallback={updateCallback} 
+            updateCallback={updateCallback} 
             deleteCallback={deleteCallback} 
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
