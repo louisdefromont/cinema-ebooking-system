@@ -1334,36 +1334,6 @@ app.post('/checkUserStatus', async (req, res) => {
     }
 });
 
-// Get all payment cards (admin)
-app.get('/payment', async (req, res) => {
-    try {
-        // Retrieve all payment cards from the database
-        const paymentCards = await prisma.paymentCard.findMany();
-
-        // Decrypt the sensitive payment card data
-        const decryptedPaymentCards = await Promise.all(paymentCards.map(async (paymentCard) => {
-            return {
-                id: paymentCard.id,
-                cardName: await aesDecrypt(paymentCard.cardName),
-                cardNum: await aesDecrypt(paymentCard.cardNum),
-                cvv: await aesDecrypt(paymentCard.cvv),
-                expirationDate: await aesDecrypt(paymentCard.expirationDate),
-                billingAddress: await aesDecrypt(paymentCard.billingAddress),
-                billCity: await aesDecrypt(paymentCard.billCity),
-                billState: await aesDecrypt(paymentCard.billState),
-                userId: paymentCard.userId
-            };
-        }));
-
-        // Return success response with the list of decrypted payment cards
-        res.status(200).json(decryptedPaymentCards);
-    } catch (error) {
-        console.error('Error fetching payment cards:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
 // Update user's password (admin)
 app.put('/users/:id', async (req, res) => {
     const id = parseInt(req.params.id); // Extract user ID from URL
@@ -1431,7 +1401,7 @@ app.put('/checkpassword/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
+/** 
 app.post('/payment', async (req, res) => {
     try {
         const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
@@ -1466,16 +1436,50 @@ app.post('/payment', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// add payment card (admin)
-/** 
-app.post('/payment', async (req, res) => {
-    try {
-        const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+*/
 
+// Get all payment cards (admin)
+app.get('/payment', async (req, res) => {
+    try {
+        // Retrieve all payment cards from the database
+        const paymentCards = await prisma.paymentCard.findMany();
+
+        // Decrypt the sensitive payment card data
+        const decryptedPaymentCards = await Promise.all(paymentCards.map(async (paymentCard) => {
+            return {
+                id: paymentCard.id,
+                cardName: await aesDecrypt(paymentCard.cardName),
+                cardNum: await aesDecrypt(paymentCard.cardNum),
+                cvv: await aesDecrypt(paymentCard.cvv),
+                expirationDate: await aesDecrypt(paymentCard.expirationDate),
+                billingAddress: await aesDecrypt(paymentCard.billingAddress),
+                billCity: await aesDecrypt(paymentCard.billCity),
+                billState: await aesDecrypt(paymentCard.billState),
+                userId: paymentCard.userId
+            };
+        }));
+
+        // Return success response with the list of decrypted payment cards
+        res.status(200).json(decryptedPaymentCards);
+        
+        //res.status(200).json(paymentCards);
+
+    } catch (error) {
+        console.error('Error fetching payment cards:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// add payment card (admin)
+app.post('/payment/:id', async (req, res) => {
+    try {
+        const {id, billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+        console.log("ID VALAUE IS " + id);
         // Check if all required fields are provided
         if (!billingAddress || !cardNum || !expirationDate || !billCity || !billState || !cardName || !cvv || !userId) {
             return res.status(400).json({ error: 'All fields are required' });
         }
+       // cardName: await aesEncrypt(billingInfo.cardName),
 
         // Ensure userId is parsed as an integer
         const parsedUserId = parseInt(userId);
@@ -1483,17 +1487,33 @@ app.post('/payment', async (req, res) => {
         // Create the payment card in the database
         const paymentCard = await prisma.paymentCard.create({
             data: {
-                billingAddress,
-                cardNum,
-                expirationDate,
-                billCity,
-                billState,
-                cardName,
-                cvv,
+                billingAddress: await aesEncrypt(billingAddress.cardName),
+                cardNum: await aesEncrypt(cardNum.cardName),
+                expirationDate: await aesEncrypt(expirationDate.cardName),
+                billCity: await aesEncrypt(billCity.cardName),
+                billState: await aesEncrypt(billState.cardName),
+                cardName: await aesEncrypt(cardName.cardName),
+                cvv: await aesEncrypt(cvv.cardName),
                 userId: parsedUserId
             },
         });
+        /** 
+        const encryptedPaymentCardData = await encryptBillingInfo(paymentCard);
 
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: encryptedPaymentCardData.cardName,
+                cardNum: encryptedPaymentCardData.cardNum,
+                cvv: encryptedPaymentCardData.cvv,
+                expirationDate: encryptedPaymentCardData.expirationDate,
+                billingAddress: encryptedPaymentCardData.billingAddress,
+                billCity: encryptedPaymentCardData.billCity,
+                billState: encryptedPaymentCardData.billState
+            },
+        });
+        */
         // Return success response with the created payment card
         res.status(201).json({ message: 'Payment card created successfully', paymentCard });
     } catch (error) {
@@ -1501,7 +1521,25 @@ app.post('/payment', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-*/
+
+// Endpoint to delete a payment card by ID
+app.delete('/payment/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+
+    try {
+        // Delete the payment card from the database
+        await prisma.paymentCard.delete({
+            where: { id },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Payment card deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 // app.post('/book-seats', async (req, res) => {
 //     const selectedMovie = req.body.selectedMovie;

@@ -7,7 +7,10 @@ const Paymentcard = () => {
         return Axios.get('https://localhost:3000/payment');
     }
     function createCallback(row) {
-        return Axios.post('https://localhost:3000/payment', row);
+        return Axios.post(`https://localhost:3000/payment/${row.id}`, row);
+    }
+    function deleteCallback(row) {
+        return Axios.delete(`https://localhost:3000/payment/${row.id}`);
     }
    /** 
 
@@ -15,9 +18,7 @@ const Paymentcard = () => {
     function updateCallback(row) {
         return Axios.put(`https://localhost:3000/payment/${row.id}`, row);
     }
-    function deleteCallback(row) {
-        return Axios.delete(`https://localhost:3000/payment/${row.id}`);
-    }
+
 */
     return (
         <div>
@@ -25,7 +26,7 @@ const Paymentcard = () => {
             createCallback={createCallback} 
             readCallback={readCallback} 
            // updateCallback={updateCallback} 
-           // deleteCallback={deleteCallback} 
+            deleteCallback={deleteCallback} 
             />
             <div className='backButton' style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <li>
