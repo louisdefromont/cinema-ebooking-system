@@ -149,6 +149,9 @@ const UserAccount = () => {
 
     const handleLogout = async () => {
         try {
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('isAdmin');
+            sessionStorage.setItem('isLoggedIn', false);
             await axios.post('https://localhost:3000/logout', {}, { withCredentials: true });
             // Clear user session and reset user state
             setUser(null);
