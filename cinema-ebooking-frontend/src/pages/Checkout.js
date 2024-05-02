@@ -4,8 +4,15 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from 'react-router-dom';
+import Axios from 'axios';
 
 const Checkout = ({ orderDetails }) => {
+    const selectedShowing = JSON.parse(sessionStorage.getItem('selectedShowing'));
+	const selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
+    const selectedTickets = JSON.parse(sessionStorage.getItem('selectedTickets'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+
     const [paymentInfo, setPaymentInfo] = useState({
         cardNumber: '',
         expirationDate: '',
@@ -23,6 +30,29 @@ const Checkout = ({ orderDetails }) => {
         // Handle submission of payment information
         // You can implement your logic for submitting the order here
         console.log('Payment Info:', paymentInfo);
+
+        Axios.post('https://localhost:3000/book-tickets', {
+            showingId: selectedShowing.id,
+            userId: user.id,
+            selectedSeats: selectedSeats,
+            selectedTickets: selectedTickets,
+        })
+            .then((response) => {
+                console.log('Order submitted successfully:', response.data);
+                // Save the order details to pass to the confirmation page
+                const orderDetails = {
+                    showing: selectedShowing,
+                    seats: selectedSeats,
+                    tickets: selectedTickets,
+                };
+                // Redirect the user to the confirmation page and pass orderDetails
+                navigate('/confirmation', { state: { orderDetails } });
+            })
+            .catch((error) => {
+                console.error('Error submitting order:', error);
+                alert('Failed to submit order. Please try again later.');
+            });
+
         // Redirect the user to the confirmation page and pass orderDetails
         navigate('/confirmation', { state: { orderDetails } });
     };

@@ -48,6 +48,8 @@ const Login = () => {
                 email: email,
                 password: password,
             }, { withCredentials: true });
+
+            sessionStorage.setItem('user', JSON.stringify(response.data.user));
             
             console.log(response.data); // Log the response from the backend
             window.location.href = '/';

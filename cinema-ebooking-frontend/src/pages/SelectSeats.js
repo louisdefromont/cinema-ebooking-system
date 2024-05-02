@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 
-function Seat({ name, status, onSeatClick }) {
+function Seat({ seat, onSeatClick }) {
 	return (
 		<Box
 			sx={{
@@ -15,11 +15,11 @@ function Seat({ name, status, onSeatClick }) {
 				alignItems: 'center',
 				justifyContent: 'center',
 				margin: 1.8,
-				bgcolor: status === 'available' ? 'white' : status === 'selected' ? '#b49ccc' : 'gray',
+				bgcolor: seat.status === 'available' ? 'white' : seat.status === 'selected' ? '#b49ccc' : 'gray',
 			}}
-			onClick={() => onSeatClick(name)}
+			onClick={() => onSeatClick(seat)}
 		>
-			{name}
+			{seat.name}
 		</Box>
 	);
 }
@@ -55,20 +55,20 @@ export default function SelectSeats() {
 
 
 
-	function onSeatClick(seatName) {
+	function onSeatClick(clickedSeat) {
 		const newSeats = allSeats.map((seat) => {
-			if (seat.name === seatName) {
+			if (seat.seatId === clickedSeat.seatId) {
 				if (seat.status === 'available') {
 					if (seatsRemainingCount === 0) {
 						return seat;
 					}
 					setSeatsRemainingCount((prevSeatsRemaining) => prevSeatsRemaining - 1);
-					setSelectedSeats((prevSelectedSeats) => [...prevSelectedSeats, seatName]);
+					setSelectedSeats((prevSelectedSeats) => [...prevSelectedSeats, clickedSeat]);
 					return { ...seat, status: 'selected' };
 				} else if (seat.status === 'selected') {
 					setSeatsRemainingCount((prevSeatsRemaining) => prevSeatsRemaining + 1);
 					setSelectedSeats((prevSelectedSeats) =>
-						prevSelectedSeats.filter((selectedSeat) => selectedSeat !== seatName)
+						prevSelectedSeats.filter((selectedSeat) => selectedSeat !== clickedSeat)
 					);
 					return { ...seat, status: 'available' };
 				}
@@ -107,8 +107,7 @@ export default function SelectSeats() {
 						{row.map((seat, index) => (
 							<Seat
 								key={index}
-								name={seat.name}
-								status={seat.status}
+								seat={seat}
 								onSeatClick={onSeatClick}
 							/>
 						))}
