@@ -21,7 +21,7 @@ const Login = () => {
         if (!status) {
             // If the status is false, display an alert indicating the account is inactive
             alert(message);
-            return;
+            //return;
         }
 
 
@@ -32,14 +32,21 @@ const Login = () => {
     
             const { isAdmin } = isAdminResponse.data;
 
-            sessionStorage.setItem('isAdmin', isAdmin);
+            if (isAdmin) {
+                sessionStorage.setItem('isAdmin', true);
+            } else {
+                sessionStorage.setItem('isAdmin', false);
+            }
+
+            sessionStorage.setItem('isLoggedIn', true);
+            
     
             // If the user is an admin, log the status and do not proceed with login
             if (isAdmin) {
                 window.location.href = '/admin';
                 console.log('User is an admin');
                 // Optionally display a message or take specific action for admin users
-                return;
+                //return;
             }
     
             // Proceed with login if the user is not an admin
@@ -47,6 +54,8 @@ const Login = () => {
                 email: email,
                 password: password,
             }, { withCredentials: true });
+
+            sessionStorage.setItem('user', JSON.stringify(response.data.user));
             
             console.log(response.data); // Log the response from the backend
             window.location.href = '/';

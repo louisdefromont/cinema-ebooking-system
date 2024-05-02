@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express, Request, Response } from 'express';
 import session from 'express-session';
-import { PrismaClient } from '@prisma/client'
-import cors from 'cors'
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 import https from 'https';
 import fs from 'fs';
 import CryptoJS from 'crypto-js';
@@ -149,6 +149,7 @@ app.post('/checkAdmin/me', async (req, res) => {
 
 app.get('/paymentcards', async (req, res) => {
     try {
+        
         // Check if req.session.user is defined
         if (!req.session.user || !req.session.user.id) {
             return res.status(401).json({ error: 'User session not found' });
@@ -177,7 +178,6 @@ app.get('/paymentcards', async (req, res) => {
                 billState: await aesDecrypt(card.billState)
             };
         }));
-
         res.status(200).json(decryptedPaymentCards);
     } catch (error) {
         console.error('Error fetching payment cards:', error);
@@ -231,8 +231,8 @@ app.post('/paymentcards', async (req, res) => {
         // Find the user by email
         const user = await prisma.user.findFirst({
             where: {
-                email: "2elainemaria@gmail.com",
-                //email: email,
+               // email: "2elainemaria@gmail.com",
+                email: email,
             },
         });
 
@@ -396,17 +396,10 @@ app.post('/register', async (req: Request, res: Response) => {
     // Check if any paymentInfo fields are null
     if (!cardName && !cardNum && !cvv && !expirationDate && !billingAddress && !billCity && !billState) {
         pcNull = true;
-        console.log("pcNull = " + pcNull);
-        // return res.status(400).json({ error: 'Missing paymentInfo fields' });
     }
 
     // Additional check if pcNull is false but one of the fields from cardName...billState is not null
     if (!pcNull && !(cardName && cardNum && cvv && expirationDate && billingAddress && billCity && billState)) {
-         //const info = (!pcNull && (cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState));
-         const info = (!pcNull);
-         const one = (!cardName);
-         const not = !(cardName || cardNum || cvv || expirationDate || billingAddress || billCity || billState);
-        console.log("Info = " + info + " " + not);
         return res.status(400).json({ error: 'Payment Info is incomplete' });
     }
 
@@ -1093,26 +1086,6 @@ app.put('/showtimes/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-/** 
-
-app.post('/showtimes', async (req, res) => {
-    try {
-        const { dateTime, movieId, showroomId } = req.body;
-        const newShowing = await prisma.showing.create({
-            data: {
-                dateTime: dateTime,
-                movieId: movieId,
-                showroomId: showroomId
-            }
-        });
-        res.status(201).json({ message: 'Showing created successfully', showing: newShowing });
-    } catch (error) {
-        console.error('Error creating showing:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
-
 
 // Endpoint to get all tickets
 app.get('/tickets', async (req, res) => {
@@ -1214,18 +1187,17 @@ app.get('/user', async (req, res) => {
 // Create user (admin)
 app.post('/user', async (req, res) => {
     try {
-        const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract user details from request body
+        const { email, firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract user details from request body
 
-        // Convert regPromo to boolean
         const regPromoBool = regPromo === 'true'; // Assuming regPromo is a string "true" or "false"
-
-        // Convert status to boolean
-        const statusBool = status === 'true'; // Assuming status is a string "active" or "inactive"
+        const statusBool = status === 'true'; 
+        const adminBool = status === 'true'; 
 
         // Check if all required fields are provided
-        if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status) {
+        if (!email || !firstName || !lastName || !password || !phone || !city || !state || !status || !admin) {
             return res.status(400).json({ error: 'All user fields are required' });
         }
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the user in the database
         const user = await prisma.user.create({
@@ -1233,12 +1205,13 @@ app.post('/user', async (req, res) => {
                 email,
                 firstName,
                 lastName,
-                password,
+                password: hashedPassword,
                 phone,
                 city,
                 state,
                 regPromo: regPromoBool,
                 status: statusBool,
+                admin: adminBool,
             },
         });
 
@@ -1268,14 +1241,7 @@ app.delete('/user/:id', async (req, res) => {
                 id: userId,
             },
         });
-/** 
-        // Delete related records from Customer table
-        await prisma.customer.deleteMany({
-            where: {
-                id: userId,
-            },
-        });
-*/
+
         // Then delete the user from the database
         await prisma.user.delete({
             where: { id: userId },
@@ -1288,23 +1254,48 @@ app.delete('/user/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Endpoint to update a user by ID
-app.put('/user/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract user ID from URL
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
+
+// Endpoint to update a user by email
+app.put('/user/:email', async (req, res) => {
+    const email = req.params.email; // Extract user email from URL
+    const { firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
 
     try {
-        // Convert regPromo to boolean
         const updatedRegPromo = Boolean(regPromo);
-
-        // Convert status to boolean
         const updatedStatus = Boolean(status);
+        //const updatedAdmin = Boolean(admin);
+        const updatedAdmin = admin === 'true'; 
+
+        // Fetch the current user from the database by email
+        const currentUser = await prisma.user.findUnique({ where: { email } });
+
+        if (!currentUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
         // Update the user in the database
         const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { email, firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus },
+            where: { id: currentUser.id }, // Use the ID of the found user
+            data: { firstName, lastName, password, phone, city, state, regPromo: updatedRegPromo, status: updatedStatus, admin: updatedAdmin },
         });
+
+        // Check if admin value has changed
+        if (currentUser.admin !== updatedAdmin) {
+            if (updatedAdmin) {
+                // If admin is set to true, add user to the Admin table
+                await prisma.admin.create({
+                    data: {
+                        id: updatedUser.id,
+                        email: updatedUser.email || '' // Handle null email
+                    }
+                });
+            } else {
+                // If admin is set to false, remove user from the Admin table
+                await prisma.admin.delete({
+                    where: { id: updatedUser.id }
+                });
+            }
+        }
 
         // Return success response with the updated user
         res.status(200).json({ message: 'User updated successfully', updatedUser });
@@ -1314,27 +1305,6 @@ app.put('/user/:id', async (req, res) => {
     }
 });
 
-/** 
-// Endpoint to update a user by ID
-app.put('/user/:id', async (req, res) => {
-    const id = parseInt(req.params.id); // Extract user ID from URL
-    const { email, firstName, lastName, password, phone, city, state, regPromo, status } = req.body; // Extract updated user details from request body
-
-    try {
-        // Update the user in the database
-        const updatedUser = await prisma.user.update({
-            where: { id },
-            data: { email, firstName, lastName, password, phone, city, state, regPromo, status },
-        });
-
-        // Return success response with the updated user
-        res.status(200).json({ message: 'User updated successfully', updatedUser });
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-*/
 // Endpoint to check user status by email
 app.post('/checkUserStatus', async (req, res) => {
     const { email } = req.body; // Extract email from the request body
@@ -1363,6 +1333,354 @@ app.post('/checkUserStatus', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// Update user's password (admin)
+app.put('/users/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { newPassword } = req.body; // Extract new password from request body
+
+    try {
+        console.log("1");
+        // Fetch the user from the database
+        const user = await prisma.user.findUnique({ where: { id } });
+
+        if (!user) {
+            console.log("1");
+            return res.status(404).json({ error: 'Users not found ' + user + " " + id });
+        }
+
+        // Compare the new password with the password in the database
+        const isPasswordMatch = await bcrypt.compare(newPassword, user.password);
+
+        if (isPasswordMatch) {
+            return res.status(400).json({ error: 'New password cannot be the same as the old one.' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { password: hashedPassword },
+        });
+
+        // Return success response with the updated user
+        res.status(200).json({ message: 'Password updated successfully', updatedUser });
+    } catch (error) {
+        console.error('Error updating password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// check is curr and new password same (admin)
+app.put('/checkpassword/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract user ID from URL
+    const { currPassword } = req.body; // Extract current password from request body
+
+    try {
+        // Fetch the user from the database
+        const user = await prisma.user.findUnique({ where: { id } });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Compare the provided current password with the password in the database
+        const isPasswordMatch = await bcrypt.compare(currPassword, user.password);
+
+        if (isPasswordMatch) {
+            // Passwords match
+            return res.status(200).json({ message: 'Current password is correct' });
+        } else {
+            // Passwords don't match
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+    } catch (error) {
+        console.error('Error checking current password:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+/** 
+app.post('/payment', async (req, res) => {
+    try {
+        const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+
+        // Check if all required fields are provided
+        if (!billingAddress || !cardNum || !expirationDate || !billCity || !billState || !cardName || !cvv || !userId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Encrypt sensitive payment card data
+        const paymentCardData = {
+            billingAddress,
+            cardNum,
+            expirationDate,
+            billCity,
+            billState,
+            cardName,
+            cvv,
+            userId
+        };
+        const encryptedPaymentCardData = await encryptBillingInfo(paymentCardData);
+
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: encryptedPaymentCardData,
+        });
+
+        // Return success response with the created payment card
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
+
+// Get all payment cards (admin)
+app.get('/payment', async (req, res) => {
+    try {
+        // Retrieve all payment cards from the database
+        const paymentCards = await prisma.paymentCard.findMany();
+
+        // Decrypt the sensitive payment card data
+        const decryptedPaymentCards = await Promise.all(paymentCards.map(async (paymentCard) => {
+            return {
+                id: paymentCard.id,
+                cardName: await aesDecrypt(paymentCard.cardName),
+                cardNum: await aesDecrypt(paymentCard.cardNum),
+                cvv: await aesDecrypt(paymentCard.cvv),
+                expirationDate: await aesDecrypt(paymentCard.expirationDate),
+                billingAddress: await aesDecrypt(paymentCard.billingAddress),
+                billCity: await aesDecrypt(paymentCard.billCity),
+                billState: await aesDecrypt(paymentCard.billState),
+                userId: paymentCard.userId
+            };
+        }));
+
+        // Return success response with the list of decrypted payment cards
+        res.status(200).json(decryptedPaymentCards);
+        
+        //res.status(200).json(paymentCards);
+
+    } catch (error) {
+        console.error('Error fetching payment cards:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// add payment card (admin)
+app.post('/payment/:id', async (req, res) => {
+    try {
+        const {id, billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract payment card details from request body
+        console.log("ID VALAUE IS " + id);
+        // Check if all required fields are provided
+        if (!billingAddress || !cardNum || !expirationDate || !billCity || !billState || !cardName || !cvv || !userId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+       // cardName: await aesEncrypt(billingInfo.cardName),
+
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: {
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
+                userId: parsedUserId
+            },
+        });
+        // Return success response with the created payment card
+        res.status(201).json({ message: 'Payment card created successfully', paymentCard });
+    } catch (error) {
+        console.error('Error creating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to delete a payment card by ID
+app.delete('/payment/:id', async (req, res) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+
+    try {
+        // Delete the payment card from the database
+        await prisma.paymentCard.delete({
+            where: { id },
+        });
+
+        // Return success response
+        res.status(200).json({ message: 'Payment card deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Endpoint to update a payment card by ID
+app.put('/payment/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+    const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract updated payment card details from request body
+
+    try {
+
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
+                userId: parsedUserId
+            },
+        });
+
+        // Return success response with the updated payment card
+        res.status(200).json({ message: 'Payment card updated successfully', updatedPaymentCard, encryptedBillingInfo });
+    } catch (error) {
+        console.error('Error updating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+ /** 
+// Endpoint to update a payment card by ID
+app.put('/payment/:id', async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id); // Extract payment card ID from URL
+    const { billingAddress, cardNum, expirationDate, billCity, billState, cardName, cvv, userId } = req.body; // Extract updated payment card details from request body
+
+    try {
+        // Decrypt the new values
+        const decryptedCardName = await aesDecrypt(cardName);
+        const decryptedCardNum = await aesDecrypt(cardNum);
+        const decryptedCvv = await aesDecrypt(cvv);
+        const decryptedExpirationDate = await aesDecrypt(expirationDate);
+        const decryptedBillingAddress = await aesDecrypt(billingAddress);
+        const decryptedBillCity = await aesDecrypt(billCity);
+        const decryptedBillState = await aesDecrypt(billState);
+
+        // Ensure userId is parsed as an integer
+        const parsedUserId = parseInt(userId);
+
+        const billingInfo = {
+            cardName,
+            cardNum,
+            cvv,
+            expirationDate,
+            billingAddress,
+            billCity,
+            billState,
+        };
+        const encryptedBillingInfo = await encryptBillingInfo(billingInfo);
+        // Create the payment card in the database
+        const paymentCard = await prisma.paymentCard.create({
+            data: {
+                cardName: encryptedBillingInfo.cardName,
+                cardNum: encryptedBillingInfo.cardNum,
+                cvv: encryptedBillingInfo.cvv,
+                expirationDate: encryptedBillingInfo.expirationDate,
+                billingAddress: encryptedBillingInfo.billingAddress,
+                billCity: encryptedBillingInfo.billCity,
+                billState: encryptedBillingInfo.billState,
+                userId: parsedUserId
+            },
+        });
+        // Update the payment card in the database
+        const updatedPaymentCard = await prisma.paymentCard.update({
+            where: { id },
+            data: {
+                cardName: decryptedCardName,
+                cardNum: decryptedCardNum,
+                cvv: decryptedCvv,
+                expirationDate: decryptedExpirationDate,
+                billingAddress: decryptedBillingAddress,
+                billCity: decryptedBillCity,
+                billState: decryptedBillState,
+                userId: parsedUserId,
+            },
+        });
+
+        // Return success response with the updated payment card
+        res.status(200).json({ message: 'Payment card updated successfully', updatedPaymentCard });
+    } catch (error) {
+        console.error('Error updating payment card:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+*/
+app.post('/book-tickets', async (req, res) => {
+    const showingId = req.body.showingId;
+    const selectedSeats = req.body.selectedSeats;
+    const selectedTickets = req.body.selectedTickets;
+    const userId = req.body.userId;
+
+    var ticketsData = [];
+    var currentTicketIndex = 0;
+    for (var i = 0; i < selectedTickets.adultTickets; i++) {
+        ticketsData.push({
+            ticketType: 'ADULT',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
+    for (var i = 0; i < selectedTickets.seniorTickets; i++) {
+        ticketsData.push({
+            ticketType: 'SENIOR',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
+    for (var i = 0; i < selectedTickets.childTickets; i++) {
+        ticketsData.push({
+            ticketType: 'CHILD',
+            seatId: selectedSeats[currentTicketIndex].seatId
+        });
+        currentTicketIndex++;
+    }
+
+    const createdBooking = await prisma.bookingInfo.create({
+        data: {
+            userId: userId,
+            showingId: showingId,
+            tickets: {
+                create: ticketsData
+            }
+        }
+    });
+});
+
 
 
 const httpsOptions = {

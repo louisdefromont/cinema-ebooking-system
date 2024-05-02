@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AdminRoute from './AdminRoute';
+import UserRoute from './UserRoute';
 import Homepage from './pages/Homepage'
 import MovieSearch from './pages/MovieSearch';
 import Login from './pages/Login'
@@ -11,6 +13,7 @@ import AdminUsers from './pages/admin/Users';
 import AdminMovies from './pages/admin/Movies';
 import AdminShowtimes from './pages/admin/Showtimes';
 import AdminTickets from './pages/admin/Tickets';
+import AdminPaymentcard from './pages/admin/Paymentcard';
 import SelectAge from './pages/SelectAge';
 import SelectSeats from './pages/SelectSeats';
 import OrderSummary from './pages/OrderSummary';
@@ -39,16 +42,17 @@ function App() {
             <Route path='/movie-search' element={<MovieSearch />} />
             <Route path='/login' element={<Login />} />
             <Route path='/account' element={<UserAccount />} />
-            <Route path='/admin' element={<AdminControl />} />
-            <Route path='/admin/promotions' element={<AdminPromotions />} />
-            <Route path='/admin/users' element={<AdminUsers />} />
-            <Route path='/admin/movies' element={<AdminMovies />} />
-            <Route path='/admin/showtimes' element={<AdminShowtimes />} />
-            <Route path='/admin/tickets' element={<AdminTickets />} />
-            <Route path='/select-age' element={<SelectAge />} />
-            <Route path='/select-seats' element={<SelectSeats />} />
-            <Route path='/order-summary' element={<OrderSummary/>} />
-            <Route path='/checkout' element={<Checkout/>} />
+            <Route path='/admin' element={<AdminRoute component={AdminControl} />} />
+            <Route path='/admin/promotions' element={<AdminRoute component={AdminPromotions} />} />
+            <Route path='/admin/users' element={<AdminRoute component={AdminUsers} />} />
+            <Route path='/admin/movies' element={<AdminRoute component={AdminMovies} />} />
+            <Route path='/admin/showtimes' element={<AdminRoute component={AdminShowtimes} />} />
+            <Route path='/admin/tickets' element={<AdminRoute component={AdminTickets} />} />
+            <Route path='/admin/payment' element={<AdminRoute component={AdminPaymentcard} />} />
+            <Route path='/select-age' element={<UserRoute component={SelectAge} />} />
+            <Route path='/select-seats' element={<UserRoute component={SelectSeats} />} />
+            <Route path='/order-summary' element={<UserRoute component={OrderSummary} />} />
+            <Route path='/checkout' element={<UserRoute component={Checkout} />} />
             <Route path='/confirmation' element={<Confirmation />} />
             <Route path='/reg-confrimation' element={<RegConfrim />} />
             <Route path='/register' element={<Register />} />

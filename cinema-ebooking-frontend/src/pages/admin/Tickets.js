@@ -14,7 +14,7 @@ const Tickets = () => {
         return Axios.delete(`https://localhost:3000/tickets/${row.id}`);
     }
   
-        function updateCallback(row) {
+     function updateCallback(row) {
         return Axios.put(`https://localhost:3000/tickets/${row.id}`, row);
     }
 

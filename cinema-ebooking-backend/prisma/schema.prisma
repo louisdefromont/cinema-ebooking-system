@@ -34,6 +34,7 @@ model User {
   state       String        @default("a") @db.VarChar(255)
   status      Boolean       @default(true)
   regPromo    Boolean       @default(false)
+  admin       Boolean       @default(false)
   paymentInfo PaymentCard[]
   bookings    BookingInfo[]
   Admin       Admin[]
@@ -51,6 +52,7 @@ model PaymentCard {
   billingAddress String @db.VarChar(255)
   billCity       String @db.VarChar(255)
   billState      String @db.VarChar(255)
+  bookingInfos   BookingInfo[]
 }
 
 model Admin {
@@ -118,14 +120,17 @@ model Promotion {
   expirationDate String
   discAmount     String
   regExpression  String
+  BookingInfo    BookingInfo[]
 }
 
 model BookingInfo {
   bookingNum    Int      @id @default(autoincrement())
   showing       Showing  @relation(fields: [showingId], references: [id])
   showingId     Int
-  creditCardNum Int
-  promotion     String
+  paymentCard   PaymentCard?     @relation(fields: [paymentCardId], references: [id])
+  paymentCardId Int?     @db.Int
+  promotion     Promotion?       @relation(fields: [promotionId], references: [id])
+  promotionId   Int?     @db.Int
   tickets       Ticket[]
   User          User?    @relation(fields: [userId], references: [id])
   userId        Int?
@@ -133,7 +138,7 @@ model BookingInfo {
 
 model Ticket {
   id         Int            @id @default(autoincrement())
-  ticket     TicketTypeEnum
+  ticketType     TicketTypeEnum
   booking    BookingInfo    @relation(fields: [bookingNum], references: [bookingNum])
   bookingNum Int
   seat       Seat           @relation(fields: [seatId], references: [seatId])

@@ -16,9 +16,9 @@ const MovieSearch = () => {
     const [filteredMovies, setFilteredMovies] = useState([])
     const [searchItem, setSearchItem] = useState('')
     const [selectedMovie, setSelectedMovie] = useState(null);
-    const[tUrl, setTUrl] = useState("");
-	const[openTrailer, setOpenTrailer] = useState(false);
-    const[date, setDate] = useState(new Date());
+    const [tUrl, setTUrl] = useState("");
+	const [openTrailer, setOpenTrailer] = useState(false);
+    const [date, setDate] = useState(new Date());
     
     // Connect and fetch movies from database
     useEffect(() => {

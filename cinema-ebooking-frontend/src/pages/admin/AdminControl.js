@@ -78,6 +78,15 @@ export default function AdminControl() {
 			<Button
 				variant="contained"
 				color="primary"
+				style={buttonStyle}
+				component={Link}
+				to="/admin/payment"
+			>
+				Manage Payment Cards
+			</Button>
+			<Button
+				variant="contained"
+				color="primary"
 				style={{
 					...buttonStyle,
 					border: '2px solid purple' // Add purple border
