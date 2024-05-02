@@ -9,6 +9,9 @@ const OrderSummary = () => {
 	const selectedTickets = JSON.parse(sessionStorage.getItem('selectedTickets'));
 	const selectedMovie = JSON.parse(sessionStorage.getItem('selectedMovie'));
 	const selectedSeats = JSON.parse(sessionStorage.getItem('selectedSeats'));
+	var ticketCost = selectedTickets.adultTickets * 12 + selectedTickets.childTickets * 6 + selectedTickets.seniorTickets * 6;
+	var salesTax = ticketCost * 0.074;
+	var totalCost = ticketCost + salesTax;
 
 	return (
 		<Paper>
@@ -22,7 +25,9 @@ const OrderSummary = () => {
 				Showtime: {new Date(selectedShowing.dateTime).toLocaleString()}
 			</Typography>
 			<Typography variant="h6" gutterBottom>
-				Total Cost: ${selectedTickets.adultTickets * 12 + selectedTickets.childTickets * 6 + selectedTickets.seniorTickets * 6}
+				Ticket Cost: ${ticketCost.toFixed(2)} <br />
+				Sales Tax: ${salesTax.toFixed(2)} <br />
+				Total Cost: ${totalCost.toFixed(2)}
 			</Typography>
 			<div>
 				<Button variant="contained" color="primary" component='a' href='/select-seats'>
