@@ -659,13 +659,17 @@ app.delete('/promotions/:id', async (req: Request, res: Response) => {
 // Create movie endpoint 
 app.post('/movies', async (req, res) => {
     try {
-        const { title, trailerUrl, thumbnailUrl, releaseDate } = req.body;
+        const { title, trailerUrl, thumbnailUrl, releaseDate, description, durationMinutes, genres } = req.body;
+        const parsedDurationMinutes = parseInt(durationMinutes);
         const newMovie = await prisma.movie.create({
             data: {
                 title: title,
                 trailerUrl: trailerUrl,
                 thumbnailUrl: thumbnailUrl,
-                releaseDate: releaseDate
+                releaseDate: releaseDate,
+                description: description,
+                durationMinutes: parsedDurationMinutes,
+                genres: genres
             }
         });
         res.status(201).json({ message: 'Movie created successfully', movie: newMovie });
@@ -698,7 +702,8 @@ app.get('/movies/:id', async (req, res) => {
 app.put('/movies/:id', async (req, res) => {
     try {
         const movieId = parseInt(req.params.id);
-        const { title, trailerUrl, thumbnailUrl, releaseDate } = req.body;
+        const { title, trailerUrl, thumbnailUrl, releaseDate, description, durationMinutes, genres } = req.body;
+        const parsedDurationMinutes = parseInt(durationMinutes);
         const updatedMovie = await prisma.movie.update({
             where: {
                 id: movieId
@@ -707,7 +712,11 @@ app.put('/movies/:id', async (req, res) => {
                 title: title,
                 trailerUrl: trailerUrl,
                 thumbnailUrl: thumbnailUrl,
-                releaseDate: releaseDate
+                releaseDate: releaseDate,
+                description: description,
+                durationMinutes: parsedDurationMinutes,
+                genres: genres
+
             }
         });
         res.status(200).json({ message: 'Movie updated successfully', movie: updatedMovie });
@@ -1283,9 +1292,11 @@ app.put('/user/:email', async (req, res) => {
     const { firstName, lastName, password, phone, city, state, regPromo, status, admin } = req.body; // Extract updated user details from request body
 
     try {
-        const updatedRegPromo = Boolean(regPromo);
-        const updatedStatus = Boolean(status);
+        //const updatedRegPromo = Boolean(regPromo);
+       // const updatedStatus = Boolean(status);
         //const updatedAdmin = Boolean(admin);
+        const updatedRegPromo = regPromo === 'true';
+        const updatedStatus = status === 'true';
         const updatedAdmin = admin === 'true'; 
 
         // Fetch the current user from the database by email
