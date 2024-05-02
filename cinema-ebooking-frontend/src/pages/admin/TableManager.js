@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField } from '@mui/material';
+import emailjs from 'emailjs-com';
+
+emailjs.init("9xrg1u7JrddOMAJz7")
 
 function TableManager({ rowHeaders, createCallback, readCallback, updateCallback, deleteCallback }) {
 	const [rows, setRows] = useState([]);
@@ -40,6 +43,16 @@ function TableManager({ rowHeaders, createCallback, readCallback, updateCallback
 		setRows(updatedRows);
 	};
 
+	const sendMail = (email) => {
+		let parms = {
+			to_email : email,
+			}
+	
+			emailjs.send("gmailkey", "passwordresettemp", parms)
+			.then(alert('Email has been sent!'))
+			.catch((error) => console.error('Error sending email:', error));
+	}
+
 	function handleSubmitChanges() {
 		const newRows = rows.filter(
 			function (row) {
@@ -79,6 +92,9 @@ function TableManager({ rowHeaders, createCallback, readCallback, updateCallback
 		newRows.forEach(row => createCallback(row));
 		updatedRows.forEach(row => updateCallback(row));
 		deletedRows.forEach(row => deleteCallback(row));
+		const usersSubscribedToPromotions = rows.filter(row => row.subscribedToPromotions).map(row => row.email);
+		// Send email to each user subscribed to promotions
+		usersSubscribedToPromotions.forEach(email => sendMail(email));
 		// Refresh the current page
 		window.location.reload();
 

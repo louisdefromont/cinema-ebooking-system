@@ -22,6 +22,12 @@ const UserAccount = () => {
 
     });
     const [currentlyEditingCard, setCurrentlyEditingCard] = useState(null);
+    const [newCard, setNewCard] = useState({
+        cardName: '',
+        cardNum: '',
+        cvv: '',
+        expirationDate: '',
+    });
 
     useEffect(() => {
         axios.get('https://localhost:3000/users/me', { withCredentials: true })
@@ -52,15 +58,19 @@ const UserAccount = () => {
     };
 
     const handleAddPaymentCard = () => {
-        setEditMode(true);
-        setEditedUserData({
-            userID: '',
+        setPaymentCards(prevPaymentCards => [...prevPaymentCards, newCard]);
+        setNewCard({
             cardName: '',
             cardNum: '',
             cvv: '',
             expirationDate: '',
         });
     };
+
+    const handleDeletePaymentCard = (cardId) => {
+        setPaymentCards(prevPaymentCards => prevPaymentCards.filter(card => card.id !== cardId));
+    };
+
 
 
     const handleEdit = () => {
@@ -82,6 +92,14 @@ const UserAccount = () => {
         const { name, value } = e.target;
         setEditedUserData(prevState => ({
             ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleNewCardInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewCard(prevNewCard => ({
+            ...prevNewCard,
             [name]: value
         }));
     };
@@ -350,6 +368,8 @@ const UserAccount = () => {
                                     </div>
                                 )}
 
+
+
                                 {editMode && (
                                     currentlyEditingCard && currentlyEditingCard.id === card.id ? (
                                         <div>
@@ -357,41 +377,76 @@ const UserAccount = () => {
                                             <Button onClick={() => setCurrentlyEditingCard(null)}>Cancel</Button>
                                         </div>
                                     ) : (
-                                        <Button onClick={() => setCurrentlyEditingCard(card)}>Edit</Button>
+                                        <div>
+                                            <Button onClick={() => setCurrentlyEditingCard(card)}>Edit</Button>
+                                            <Button onClick={() => handleDeletePaymentCard(card.id)}>Delete</Button>
+                                        </div>
+                                        
                                     )
                                 )}
                             </div>
                         ))}
-                        {editMode ? (
-                            <>
-                                <Button onClick={handleAddPaymentCard}>Add New Payment Card</Button>
-                            </>
-                        ) : null}
-                    </section>
 
-                    <section style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                        {editMode ? (
+
+                        {editMode && (
                             <div>
-                                <Button onClick={handleSave} variant="contained">Save</Button>
-                                <Button onClick={handleCancel} variant="contained">Cancel</Button>
+                                <input
+                                    type="text"
+                                    name="cardName"
+                                    placeholder="Card Name"
+                                    value={newCard.cardName}
+                                    onChange={handleNewCardInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="cardNum"
+                                    placeholder="Card Number"
+                                    value={newCard.cardNum}
+                                    onChange={handleNewCardInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="cvv"
+                                    placeholder="CVV"
+                                    value={newCard.cvv}
+                                    onChange={handleNewCardInputChange}
+                                />
+                                <input
+                                    type="text"
+                                    name="expirationDate"
+                                    placeholder="Expiration Date"
+                                    value={newCard.expirationDate}
+                                    onChange={handleNewCardInputChange}
+                                />
+                                <Button onClick={handleAddPaymentCard}>Add Payment Card</Button>
+                                <Button onClick={handleSavePaymentCard}>Save Payment Card</Button>
                             </div>
-                        ) :
-                            (
+                        )}
+                        </section>
+
+                        <section style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                            {editMode ? (
                                 <div>
-                                    <Button onClick={handleEdit} variant="contained">Edit</Button>
+                                    <Button onClick={handleSave} variant="contained">Save</Button>
+                                    <Button onClick={handleCancel} variant="contained">Cancel</Button>
                                 </div>
-                            )
-                        }
+                            ) :
+                                (
+                                    <div>
+                                        <Button onClick={handleEdit} variant="contained">Edit</Button>
+                                    </div>
+                                )
+                            }
 
-                        <div>
-                            {user != null ? (
-                                <Button onClick={handleLogout} variant="contained">Log Out</Button>
-                            ) : (
-                                null
-                            )}
+                            <div>
+                                {user != null ? (
+                                    <Button onClick={handleLogout} variant="contained">Log Out</Button>
+                                ) : (
+                                    null
+                                )}
 
-                        </div>
-                    </section>
+                            </div>
+                        </section>
 
 
                 </fieldset>
