@@ -21,7 +21,7 @@ const Login = () => {
         if (!status) {
             // If the status is false, display an alert indicating the account is inactive
             alert(message);
-            return;
+            //return;
         }
 
 
